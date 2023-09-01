@@ -1,0 +1,14 @@
+
+
+.music-player-panel {
+   background-color :  #1f1f1f !important;
+   height: 100px !important;
+   font-family: monospace !important;
+   font-weight: 700 !important;
+   font-size: 1.2rem !important;
+}
+
+.react-jinke-music-player-main .music-player-panel .panel-content .img-content {
+    width: 75px !important;
+    height: 75px !important;
+}
