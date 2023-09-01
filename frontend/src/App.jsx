@@ -4,7 +4,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 
 import CustomDrawer from './components/CustomDrawer/CustomDrawer'
-import ClippedDrawer from './components/CustomDrawer/Clipped'
+import Player from './components/Player/Player'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -12,6 +12,7 @@ function App() {
   return (
     <>
       <CustomDrawer />
+      <Player />
 
       <div>
         <a href="https://vitejs.dev" target="_blank">
