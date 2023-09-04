@@ -25,6 +25,7 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
 import PersonIcon from '@mui/icons-material/Person';
+import SearchIcon from '@mui/icons-material/Search';
 
 const drawerWidth = 300;
 
@@ -133,6 +134,16 @@ export default function CustomDrawer() {
                                         <HomeIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
                                     </ListItemIcon>
                                     <ListItemText primary="Inicio" sx={{ color: '#fff',}}
+                                        primaryTypographyProps={list_text} />
+                                </ListItemButton>
+                            </ListItem>
+
+                            <ListItem key="buscar">
+                                <ListItemButton>
+                                    <ListItemIcon>
+                                        <SearchIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
+                                    </ListItemIcon>
+                                    <ListItemText primary="Buscar" sx={{ color: '#fff',}}
                                         primaryTypographyProps={list_text} />
                                 </ListItemButton>
                             </ListItem>
