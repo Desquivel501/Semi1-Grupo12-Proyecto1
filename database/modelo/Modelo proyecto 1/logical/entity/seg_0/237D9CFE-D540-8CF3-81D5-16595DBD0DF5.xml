@@ -1,0 +1,48 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="237D9CFE-D540-8CF3-81D5-16595DBD0DF5" name="history">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-04 04:12:23 UTC</createdTime>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<engineerTo>
+<item key="43415F62-7D39-393C-20AF-A90E0B30867D" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="id_song" id="2AD27112-EDCD-5A1D-44BD-0702204554EE">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-04 04:13:05 UTC</createdTime>
+<generatorID>1723AE83-F19C-4EF8-72A2-6A7B331BD8C3</generatorID>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<engineerTo>
+<item key="43415F62-7D39-393C-20AF-A90E0B30867D" value="true"/>
+</engineerTo>
+<referedAttribute>0BD04781-93FC-52D2-5C2A-A57D1D5BBCF0</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="Email" id="91C8272E-1CA7-731A-6AAE-A7F467A52A47">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-04 04:13:11 UTC</createdTime>
+<generatorID>CF2975BD-AC46-664F-E7C8-F9DE56A2E8BB</generatorID>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<engineerTo>
+<item key="43415F62-7D39-393C-20AF-A90E0B30867D" value="true"/>
+</engineerTo>
+<referedAttribute>606681D0-1611-56A6-4683-F28B418787A0</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>255</dataTypeSize>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+</Entity>

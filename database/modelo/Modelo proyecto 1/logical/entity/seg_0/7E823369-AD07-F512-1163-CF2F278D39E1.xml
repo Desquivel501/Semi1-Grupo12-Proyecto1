@@ -1,0 +1,86 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="7E823369-AD07-F512-1163-CF2F278D39E1" name="Artist">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-04 03:59:49 UTC</createdTime>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<engineerTo>
+<item key="43415F62-7D39-393C-20AF-A90E0B30867D" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="id_artist" id="58BCBEE0-8C78-A234-0D0B-3B04FAEB5E12">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-04 03:59:55 UTC</createdTime>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<engineerTo>
+<item key="43415F62-7D39-393C-20AF-A90E0B30867D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="name" id="4CA85AD0-0294-814B-30C4-C3C8A9D00B5A">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-04 04:00:07 UTC</createdTime>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<engineerTo>
+<item key="43415F62-7D39-393C-20AF-A90E0B30867D" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>200</dataTypeSize>
+<ownDataTypeParameters>200,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="image" id="C69F0492-0E82-0BA3-D6E1-51615A6A6132">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-04 04:00:25 UTC</createdTime>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<engineerTo>
+<item key="43415F62-7D39-393C-20AF-A90E0B30867D" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>255</dataTypeSize>
+<ownDataTypeParameters>255,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="birthdate" id="8E6F5054-FF76-4B05-C749-BCD109A4EB73">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-04 04:00:36 UTC</createdTime>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<engineerTo>
+<item key="43415F62-7D39-393C-20AF-A90E0B30867D" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT008</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="E6A44CC0-91A2-5EE3-9308-6457B356136F" name="Artist PK">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-04 04:00:05 UTC</createdTime>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<engineerTo>
+<item key="43415F62-7D39-393C-20AF-A90E0B30867D" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>58BCBEE0-8C78-A234-0D0B-3B04FAEB5E12</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>
