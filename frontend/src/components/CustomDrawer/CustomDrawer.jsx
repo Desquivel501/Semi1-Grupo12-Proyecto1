@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-
+import { Link } from "react-router-dom";
 import { 
     Box, 
     Drawer, 
@@ -25,6 +25,7 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
 import PersonIcon from '@mui/icons-material/Person';
+import SearchIcon from '@mui/icons-material/Search';
 
 const drawerWidth = 300;
 
@@ -128,11 +129,21 @@ export default function CustomDrawer() {
 
                         <List>
                             <ListItem key="inicio">
-                                <ListItemButton>
+                                <ListItemButton component={Link} to="/">
                                     <ListItemIcon>
                                         <HomeIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
                                     </ListItemIcon>
                                     <ListItemText primary="Inicio" sx={{ color: '#fff',}}
+                                        primaryTypographyProps={list_text} />
+                                </ListItemButton>
+                            </ListItem>
+
+                            <ListItem key="buscar">
+                                <ListItemButton>
+                                    <ListItemIcon>
+                                        <SearchIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
+                                    </ListItemIcon>
+                                    <ListItemText primary="Buscar" sx={{ color: '#fff',}}
                                         primaryTypographyProps={list_text} />
                                 </ListItemButton>
                             </ListItem>
@@ -151,7 +162,7 @@ export default function CustomDrawer() {
 
                             <Collapse in={open} timeout="auto" unmountOnExit>
                                 <List component="div" sx={{ border:0, pl:3 }}>
-                                    <ListItemButton sx={{ pl: 4 }}>
+                                    <ListItemButton sx={{ pl: 4 }} component={Link} to="/Album">
                                         <ListItemIcon>
                                         <FeaturedPlayListIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
                                         </ListItemIcon>
