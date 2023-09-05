@@ -1,3 +1,4 @@
+import { pool } from "./database/connection";
 import { User } from "./types";
 
 export class UserModel {
@@ -10,14 +11,14 @@ export class UserModel {
   }
   static async getUser({ email }: { email: string }) {
     try {
-      /*const res = pool.query(
+      const res = pool.query(
         `SELECT * FROM User WHERE Email=${email}`,
         (error, result, fields) => {
           if (error) throw error;
           return result;
         },
-      );*/
-      return { res: "", ok: true };
+      );
+      return { res, ok: true };
     } catch (error) {
       console.log(error);
       return { error, ok: false };
