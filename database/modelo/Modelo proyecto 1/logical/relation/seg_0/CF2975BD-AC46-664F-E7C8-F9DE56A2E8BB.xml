@@ -1,0 +1,19 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="Relation_16" directorySegmentName="seg_0" id="CF2975BD-AC46-664F-E7C8-F9DE56A2E8BB">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-04 04:13:11 UTC</createdTime>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<engineerTo>
+<item key="43415F62-7D39-393C-20AF-A90E0B30867D" value="true"/>
+</engineerTo>
+<sourcePk>A09C2ED7-6130-3F70-9507-5BEB3FEA3A1F</sourcePk>
+<identifying>false</identifying>
+<optionalSource>true</optionalSource>
+<optionalTarget>false</optionalTarget>
+<sourceCardinality>1</sourceCardinality>
+<sourceEntity>B3EF5D6F-524C-0980-D58D-628E5FC967D3</sourceEntity>
+<targetCardinalityString>*</targetCardinalityString>
+<targetEntity>237D9CFE-D540-8CF3-81D5-16595DBD0DF5</targetEntity>
+<transferable>true</transferable>
+<deleteRule>NO ACTION</deleteRule>
+</Relation>
