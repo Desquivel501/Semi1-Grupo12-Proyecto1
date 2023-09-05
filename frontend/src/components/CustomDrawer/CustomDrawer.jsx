@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-
+import { Link } from "react-router-dom";
 import { 
     Box, 
     Drawer, 
@@ -129,7 +129,7 @@ export default function CustomDrawer() {
 
                         <List>
                             <ListItem key="inicio">
-                                <ListItemButton>
+                                <ListItemButton component={Link} to="/">
                                     <ListItemIcon>
                                         <HomeIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
                                     </ListItemIcon>
@@ -162,7 +162,7 @@ export default function CustomDrawer() {
 
                             <Collapse in={open} timeout="auto" unmountOnExit>
                                 <List component="div" sx={{ border:0, pl:3 }}>
-                                    <ListItemButton sx={{ pl: 4 }}>
+                                    <ListItemButton sx={{ pl: 4 }} component={Link} to="/Album">
                                         <ListItemIcon>
                                         <FeaturedPlayListIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
                                         </ListItemIcon>

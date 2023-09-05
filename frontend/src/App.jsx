@@ -1,20 +1,26 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import CustomDrawer from './components/CustomDrawer/CustomDrawer'
 import Player from './components/Player/Player'
 import StartPage from './pages/StartPage/StartPage'
+import AlbumPage from './pages/AlbumPage/AlbumPage';
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <>
+    <BrowserRouter>
+    
+    
       <CustomDrawer />
       <Player />
-      <StartPage />
+
+      <Routes>
+          <Route index path={"/"} element={<StartPage />} />
+          <Route path={"/Album"} element={<AlbumPage />} />
+      </Routes>
 
       {/* <div>
         <a href="https://vitejs.dev" target="_blank">
@@ -36,7 +42,7 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p> */}
-    </>
+    </BrowserRouter>
   )
 }
 

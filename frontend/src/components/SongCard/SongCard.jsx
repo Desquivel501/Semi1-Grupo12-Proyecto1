@@ -54,7 +54,6 @@ export const SongCard = (props) => {
         >
            <Box
                 component="img"
-                
                 sx={{
                   height: "auto",
                   maxWidth: "80%",
