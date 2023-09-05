@@ -1,16 +1,25 @@
 import { Request, Response } from "express";
+import { UserModel } from "../models/user";
 
 export class UserController {
-  static createUser(req: Request, res: Response) {
+  static async createUser(req: Request, res: Response) {
+    const user = req.body;
+    const file = req.file as Express.MulterS3.File
     // Validar datos
-    // Guardar avatar en S3
+    if (!file) return res.status(400).json({ message: "Falta la fotografía" });
     // Crear usuario
+    const ok = await UserModel.createUser(user, file);
     // Respuesta
-    res.json({ message: "User Created" });
+    res.status(ok ? 200 : 400).json({
+      message: `User ${ok ? "" : "not"} Created`,
+    });
   }
-  static getUser(req: Request, res: Response) {
-    const {id} = req.params
-    res.json({ user: {id} });
+  static async getUser(req: Request, res: Response) {
+    const { email } = req.params;
+    const response = await UserModel.getUser({ email });
+    res.status(response.ok ? 200 : 400).json({
+      response,
+    });
   }
 
   static editUser(req: Request, res: Response) {
