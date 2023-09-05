@@ -1,4 +1,5 @@
 import express from "express";
+import "dotenv/config"
 import { router as authRouter } from "./routes/auth";
 import { userRouter } from "./routes/user";
 import { songRouter } from "./routes/song";
