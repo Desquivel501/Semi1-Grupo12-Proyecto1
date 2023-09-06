@@ -4,21 +4,21 @@ import { UserModel } from "../models/user";
 export class UserController {
   static async createUser(req: Request, res: Response) {
     const user = req.body;
-    const file = req.file as Express.MulterS3.File
+    const file = req.file as Express.MulterS3.File;
     // Validar datos
     if (!file) return res.status(400).json({ message: "Falta la fotografía" });
     // Crear usuario
-    const ok = await UserModel.createUser(user, file);
-    // Respuesta
-    res.status(ok ? 200 : 400).json({
-      message: `User ${ok ? "" : "not"} Created`,
+    UserModel.createUser(user, file, (response: string, ok:boolean) => {
+      // Respuesta
+      res.status(ok ? 200 : 400).json(response);
     });
   }
   static async getUser(req: Request, res: Response) {
-    const { email } = req.params;
-    const response = await UserModel.getUser({ email });
-    res.status(response.ok ? 200 : 400).json({
-      response,
+    const { id } = req.params;
+    if (!id) return res.status(400).json({ message: "Falta la fotografía" });
+    UserModel.getUser({email:id}, (response: string, ok:boolean) => {
+      // Respuesta
+      res.status(ok ? 200 : 400).json(response);
     });
   }
 
