@@ -3,7 +3,7 @@ const JWT_KEY = process.env.JWT_KEY as string;
 export function newToken(data: any) {
   const token = jwt.sign(data, JWT_KEY, {
     algorithm: "HS256",
-    expiresIn: "1s",
+    expiresIn: "24h",
   });
   return token;
 }
