@@ -1,0 +1,102 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="95137E60-052C-7A1B-FE77-3AC0A0EA656D" name="Album">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-05 23:52:03 UTC</createdTime>
+<generatorID>C95779A4-B0FC-1B97-0D90-1CC5E1C87940</generatorID>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="id_album" id="684F20C5-4505-6FDF-FA56-5EF3A2A38F20">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-05 23:52:03 UTC</createdTime>
+<generatorID>BA40954C-5742-0970-6D1D-6B46661AF1C0</generatorID>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="name" id="E193E80F-1793-AD5D-C2D5-53A91E05DB2D">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-05 23:52:03 UTC</createdTime>
+<generatorID>159E2A27-A29D-B906-C72E-5D939347667D</generatorID>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>150</dataTypeSize>
+<ownDataTypeParameters>150,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="description" id="0EEADA6A-9D55-A325-C66F-123A851DE9C0">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-05 23:52:03 UTC</createdTime>
+<generatorID>CA0E88B5-F0A3-28D6-66BE-896235F04C52</generatorID>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>255</dataTypeSize>
+<ownDataTypeParameters>255,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="image" id="EEA6FF39-3E20-CF94-113A-30870C519D62">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-05 23:52:03 UTC</createdTime>
+<generatorID>996E9D04-23E0-CF4A-B507-F0E2B925B10E</generatorID>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>255</dataTypeSize>
+<ownDataTypeParameters>255,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="Artist_id_artist" id="20DE222B-3E73-9DEB-8BA9-ABA0E8D1FFB8">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-05 23:52:03 UTC</createdTime>
+<generatorID>07D2F0DA-B282-73A9-2F15-594B37D1FE28</generatorID>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="2E57BF13-1819-1813-AD93-83EB6C7A386D" referredColumn="50285908-C65F-5AD7-99B9-1A5F8D00A2C4"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="35DE4BBA-38A8-D414-B4F3-72F7FCE9B79C" name="Album_PK">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-05 23:52:03 UTC</createdTime>
+<generatorID>FC399B23-0074-540F-5C30-38A66BB8EC35</generatorID>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="684F20C5-4505-6FDF-FA56-5EF3A2A38F20"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="BAD96EC1-3DAE-5799-7AD5-1DC06A6C8433" name="Album_Artist_FK">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-05 23:52:03 UTC</createdTime>
+<generatorID>8C5AE302-A415-A186-170B-9AB1A94080DD</generatorID>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="20DE222B-3E73-9DEB-8BA9-ABA0E8D1FFB8"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

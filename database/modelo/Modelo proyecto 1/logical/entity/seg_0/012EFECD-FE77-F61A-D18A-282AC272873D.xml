@@ -68,30 +68,18 @@
 <logicalDatatype>LOGDT011</logicalDatatype>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 </Attribute>
-<Attribute name="Id_album" id="19953477-8FC9-F136-976D-D79BD589D6D3">
+<Attribute name="id_album" id="1C41CB0C-A7A0-64EB-B7B4-DB2B3137008E">
 <createdBy>monte</createdBy>
-<createdTime>2023-09-02 13:32:56 UTC</createdTime>
+<createdTime>2023-09-06 06:16:03 UTC</createdTime>
+<generatorID>340E44D7-19E4-034F-DF32-8F2B271BF689</generatorID>
 <ownerDesignName>Modelo proyecto 1</ownerDesignName>
 <engineerTo>
 <item key="43415F62-7D39-393C-20AF-A90E0B30867D" value="true"/>
 </engineerTo>
-<nullsAllowed>true</nullsAllowed>
+<referedAttribute>BA40954C-5742-0970-6D1D-6B46661AF1C0</referedAttribute>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
-<logicalDatatype>LOGDT024</logicalDatatype>
-<dataTypeSize>255</dataTypeSize>
-<ownDataTypeParameters>255,,</ownDataTypeParameters>
-</Attribute>
-<Attribute name="Id_artist" id="1B29F5DD-D0FC-E279-2344-84A24F7DCDDE">
-<createdBy>monte</createdBy>
-<createdTime>2023-09-02 13:38:15 UTC</createdTime>
-<ownerDesignName>Modelo proyecto 1</ownerDesignName>
-<engineerTo>
-<item key="43415F62-7D39-393C-20AF-A90E0B30867D" value="true"/>
-</engineerTo>
-<nullsAllowed>true</nullsAllowed>
-<useDomainConstraints>false</useDomainConstraints>
-<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 </Attribute>
 </attributes>

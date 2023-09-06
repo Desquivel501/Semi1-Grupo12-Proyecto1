@@ -19,6 +19,7 @@ BEGIN
     RETURN (valido);
 END $$
 
+
 -- FUNCIÓN PARA VERIFICAR QUE UN CORREO SEA ÚNICO
 DROP FUNCTION IF EXISTS email_exists $$
 CREATE FUNCTION email_exists(
@@ -31,3 +32,56 @@ BEGIN
     SELECT EXISTS( SELECT 1 FROM Users u WHERE u.email = email) INTO existe;  
     RETURN(existe);
 END $$
+
+
+-- FUNCIÓN PARA VERIFICAR QUE UN NOMBRE DE ARTISTA SEA ÚNICO
+DROP FUNCTION IF EXISTS artist_exists $$
+CREATE FUNCTION artist_exists(
+	name VARCHAR(200)
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE existe BOOLEAN;
+    SELECT EXISTS( SELECT 1 FROM Artists a WHERE a.name = name) INTO existe;  
+    RETURN(existe);
+END $$
+
+-- FUNCIÓN PARA VERIFICAR SI UN ARTISTA CUENTA YA CUENTA CON UN ALBUM CON EL NOMBRE INGRESADO
+DROP FUNCTION IF EXISTS album_name_exists $$
+CREATE FUNCTION album_name_exists(
+	id_artist INTEGER,
+	name VARCHAR(200)
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE existe BOOLEAN;
+    SELECT EXISTS( 
+    	SELECT 1 FROM Albums a
+		WHERE a.name = name
+   		AND a.id_artist = id_artist
+    ) INTO existe;  
+    RETURN(existe);	
+END $$
+
+-- FUNCIÓN PARA VERIFICAR SI UN ARTISTA CUENTA YA CUENTA CON UNA CANCIÓN CON EL NOMBRE INGRESADO
+DROP FUNCTION IF EXISTS song_name_exists $$
+CREATE FUNCTION song_name_exists(
+	id_artist INTEGER,
+	name VARCHAR(200)
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE existe BOOLEAN;
+    SELECT EXISTS( 
+    	SELECT 1 FROM Songs s
+   		JOIN Song_artists sa
+   		ON s.id_song = sa.id_song
+   		AND s.name = name
+   		AND sa.id_artist = id_artist
+    ) INTO existe;  
+    RETURN(existe);	
+END $$
+

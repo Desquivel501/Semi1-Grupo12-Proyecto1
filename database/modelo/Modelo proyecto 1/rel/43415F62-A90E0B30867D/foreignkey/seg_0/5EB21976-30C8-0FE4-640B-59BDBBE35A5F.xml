@@ -1,0 +1,17 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_0" id="5EB21976-30C8-0FE4-640B-59BDBBE35A5F" containerWithKeyObject="CDE9340A-FE14-D4F7-2C60-562EE333B057" localFKIndex="E60C5471-B418-0000-A41F-770742C69231" name="history_Song_FK">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-05 23:52:03 UTC</createdTime>
+<generatorID>1723AE83-F19C-4EF8-72A2-6A7B331BD8C3</generatorID>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<referredTableLongName>Song</referredTableLongName>
+<deleteRule>NO ACTION</deleteRule>
+<referredTableID>AF0D1C7E-A213-01D0-26E9-3D794C2958BD</referredTableID>
+<keyObject>748AE06B-D1BD-DF01-7225-6201439E8872</keyObject>
+<referredKeyID>748AE06B-D1BD-DF01-7225-6201439E8872</referredKeyID>
+<mandatory>true</mandatory>
+<refColNames>id_song</refColNames>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>true</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>

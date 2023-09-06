@@ -1,0 +1,66 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="F57F042C-5ADB-D70B-DC0A-A8AA28E5A3ED" name="Album_detail">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-05 23:52:03 UTC</createdTime>
+<generatorID>E7717476-4ADB-BF37-1869-99A4594AAC9D</generatorID>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="Song_id_song" id="F5520DBD-C0DC-7B3C-7F2C-588AA77E7F0F">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-05 23:52:03 UTC</createdTime>
+<generatorID>80684B0A-BAFB-7440-B168-E080F79AFCF3</generatorID>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="9B134A78-0A34-58B8-1CB2-CF0344278B68" referredColumn="EEE9D0D8-A6F5-ED90-BF19-439A8B5469B7"/>
+</associations>
+</Column>
+<Column name="Album_id_album" id="CAB7F7A1-68E9-3834-E109-3BD2381E6038">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-05 23:52:03 UTC</createdTime>
+<generatorID>66091478-F375-5D1F-D2B7-0145079A96BC</generatorID>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="46BC010B-C411-D22E-9973-4B282D4B5914" referredColumn="684F20C5-4505-6FDF-FA56-5EF3A2A38F20"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="62931E09-3D4E-18E7-8DDE-B47828863F10" name="Album_detail_Album_FK">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-05 23:52:03 UTC</createdTime>
+<generatorID>C024251E-B2CD-D2CF-15D5-B5D8E8818021</generatorID>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="CAB7F7A1-68E9-3834-E109-3BD2381E6038"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="E022A5DA-0FC3-5E4B-FFF0-960735A525F6" name="Album_detail_Song_FK">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-05 23:52:03 UTC</createdTime>
+<generatorID>9609A251-D350-E7AD-5E6C-7821D44DACAF</generatorID>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="F5520DBD-C0DC-7B3C-7F2C-588AA77E7F0F"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>
