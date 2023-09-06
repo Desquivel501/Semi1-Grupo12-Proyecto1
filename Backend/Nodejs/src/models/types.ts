@@ -31,3 +31,7 @@ export type Playlist = {
 export type Album = {
   artist: string;
 } & Playlist;
+export type Credentials = {
+  email: string
+  password: string
+}
