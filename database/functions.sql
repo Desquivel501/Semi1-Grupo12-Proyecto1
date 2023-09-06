@@ -85,3 +85,23 @@ BEGIN
     RETURN(existe);	
 END $$
 
+
+-- FUNCION PARA VERIFICAR QUE LA CANCIÓN QUE SE AGREGA A UN ALBUM, SEA DEL MISMO ARTISTA AL QUE PERTENECE EL ALBUM
+DROP FUNCTION IF EXISTS correct_song_album $$
+CREATE FUNCTION correct_song_album(
+	id_song INTEGER,
+	id_album INTEGER
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE correct BOOLEAN;
+	SELECT EXISTS(
+		SELECT 1 FROM Albums a
+		JOIN Song_artists sa
+		ON a.id_artist = sa.id_artist
+		AND a.id_album = id_album
+		AND sa.id_song = id_song
+	) INTO correct;
+	RETURN(correct);
+END $$

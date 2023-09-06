@@ -55,6 +55,16 @@ CREATE TABLE Song_artists (
 ) $$
 
 
+CREATE TABLE Playlists (
+	id_playlist INTEGER NOT NULL AUTO_INCREMENT,
+	name VARCHAR(150),
+	description VARCHAR(255),
+	image VARCHAR(255),
+	email VARCHAR(255),
+	PRIMARY KEY(id_playlist),
+	FOREIGN KEY(email) REFERENCES Users(email)
+) $$
+
 SELECT * FROM Artists
 
 CALL CreateArtist('Eminem', 'fsfasdfasdf', '1972-10-17')
@@ -72,6 +82,12 @@ CALL CreateSong('Never love again', 'asdfasfasd', 337, 1, 'afdsafdsafds')
 CALL CreateSong('Clouds', 'asdfasfasd', 243, 2, 'afdsafdsafds')
 
 CALL UpdateSong(3, 'The Search', 'adfasdaf', 242, 2, 'sfasdfsafda')
+
+CALL AddSongAlbum(1, 1);
+CALL AddSongAlbum(4, 1);
+CALL AddSongAlbum(2, 1);
+
+
 
 SELECT * FROM Albums
 SELECT * FROM Songs

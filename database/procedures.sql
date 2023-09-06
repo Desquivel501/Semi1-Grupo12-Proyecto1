@@ -398,3 +398,26 @@ update_song:BEGIN
 	SELECT 'La canción ha sido actualizada exitósamente' AS 'MESSAGE',
 	'SUCCESS' AS 'TYPE';
 END $$
+
+
+-- Procedimiento para agregar una canción a un album
+DROP PROCEDURE IF EXISTS AddSongAlbum $$
+CREATE PROCEDURE AddSongAlbum(
+	IN id_song_in INTEGER,
+	IN id_album_in INTEGER
+)
+add_song_album:BEGIN
+	IF NOT(correct_song_album(id_song_in, id_album_in)) THEN
+		SELECT 'La canción y el album a asignar deben ser del mismo artista' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE add_song_album;	
+	END IF;
+
+	UPDATE Songs
+	SET id_album = id_album_in
+	WHERE id_song = id_song_in;
+
+	SELECT 'La canción ha sido asignada al album exitósamente' AS 'MESSAGE',
+	'SUCCESS' AS 'TYPE';
+END $$
+
