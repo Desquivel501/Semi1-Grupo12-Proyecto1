@@ -10,11 +10,10 @@ const app = express();
 app.use(express.json())
 
 app.use("/api",authRouter)
-app.use("/api/user",userRouter)
-app.use("/api/song",songRouter)
-app.use("/api/artist",artistRouter)
-app.use("/api/album",albumRouter)
-app.use("/api/song",songRouter)
+app.use("/api/users",userRouter)
+app.use("/api/songs",songRouter)
+app.use("/api/artists",artistRouter)
+app.use("/api/albums",albumRouter)
 
 app.get("/", (req, res) => {
   res.send("<h1>Hola mundo</h1>");
