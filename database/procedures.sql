@@ -25,7 +25,7 @@ login:BEGIN
 		LEAVE login;
 	END IF;
 	
-	SELECT rol AS 'MESSAGE',
+	SELECT role AS 'MESSAGE',
 	'SUCCESS' AS 'TYPE';
 END $$
 
@@ -174,7 +174,13 @@ create_album:BEGIN
 	FROM Artists a 
 	WHERE a.id_artist = id_artist_in;
 
-	IF name_in = '' OR image_in IS NULL THEN
+	IF album_name_exists(id_artist_in, name_in) THEN
+		SELECT 'El artista que ha ingresado ya posee una canción/colaboración con el nombre indicado' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE create_album;
+	END IF;	
+
+	IF name_in = '' OR name_In IS NULL THEN
 		SELECT 'El nombre del album no puede estar en blanco' AS 'MESSAGE',
 		'ERROR' AS 'TYPE';
 		LEAVE create_album;
@@ -204,19 +210,25 @@ END $$
 -- Procedimiento para actualizar un album
 DROP PROCEDURE IF EXISTS UpdateAlbum $$
 CREATE PROCEDURE UpdateAlbum (
-	id_album_in INTEGER,
-	name_in VARCHAR(150),
-	description_in VARCHAR(255),
-	image_in VARCHAR(255),
-	id_artist_in INTEGER
+	IN id_album_in INTEGER,
+	IN name_in VARCHAR(150),
+	IN description_in VARCHAR(255),
+	IN image_in VARCHAR(255),
+	IN id_artist_in INTEGER
 )
 update_album:BEGIN
 	DECLARE artist_name VARCHAR(150);
+	DECLARE album_name VARCHAR(200);
+
+	SELECT a.name INTO album_name
+	FROM Albums a
+	WHERE a.id_album = id_song_in;
+
 	SELECT a.name INTO artist_name 
 	FROM Artists a 
-	WHERE a.id_artist = id_artist_in;
+	WHERE a.id_artist = id_album_in;
 
-	IF name_in = '' OR image_in IS NULL THEN
+	IF name_in = '' OR name_in IS NULL THEN
 		SELECT 'El nombre del album no puede estar en blanco' AS 'MESSAGE',
 		'ERROR' AS 'TYPE';
 		LEAVE update_album;
@@ -234,6 +246,12 @@ update_album:BEGIN
 		LEAVE update_album;
 	END IF;
 
+	IF album_name_exists(id_artist_in, name_in) AND name_in != album_name THEN
+		SELECT 'El artista que ha ingresado ya posee una canción/colaboración con el nombre indicado' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE update_album;
+	END IF;	
+
 	UPDATE Albums
 	SET name = name_in,
 	description = description_in,
@@ -242,5 +260,141 @@ update_album:BEGIN
 	WHERE id_album = id_album_in;
 
 	SELECT 'El album se ha actualizado exitosamente' AS 'MESSAGE',
+	'SUCCESS' AS 'TYPE';
+END $$
+
+
+-- Procedimiento para crear una canción
+DROP PROCEDURE IF EXISTS CreateSong $$
+CREATE PROCEDURE CreateSong (
+	IN name_in VARCHAR(200),
+	IN image_in VARCHAR(255),
+	IN length_in INTEGER,
+	IN id_artist_in INTEGER,
+	IN file_in VARCHAR(255)
+)
+create_song:BEGIN
+	DECLARE artist_name VARCHAR(150);
+	SELECT a.name INTO artist_name 
+	FROM Artists a 
+	WHERE a.id_artist = id_artist_in;
+
+	IF (artist_name = '' OR artist_name IS NULL) THEN 
+		SELECT 'El artista que ha seleccionado no existe' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE create_song;
+	END IF;
+
+	IF name_in = '' OR name_in IS NULL THEN
+		SELECT 'El nombre de la canción no puede estar en blanco' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE create_song;
+	END IF;
+
+	IF image_in = '' OR image_in IS NULL THEN
+		SELECT 'Se debe asignar una imagen a la canción' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE create_song;
+	END IF;	
+
+	IF length_in < 0 THEN
+		SELECT 'La duración de la canción no es válida' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE create_song;
+	END IF;
+
+	IF file_in = '' OR file_in IS NULL THEN
+		SELECT 'Se debe asignar un archivo de audio a la canción' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE create_song;
+	END IF;	
+
+	IF song_name_exists(id_artist_in, name_in) THEN
+		SELECT 'El artista que ha ingresado ya posee una canción/colaboración con el nombre indicado' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE create_song;
+	END IF;	
+
+	INSERT INTO Songs(name, image, length, file, id_album)
+	VALUES (name_in, image_in, length_in, file_in, NULL);
+
+	INSERT INTO Song_artists 
+	VALUES (LAST_INSERT_ID(), id_artist_in);
+	
+	SELECT 'La canción ha sido creada exitósamente' AS 'MESSAGE',
+	'SUCCESS' AS 'TYPE';
+END $$
+
+
+-- Procedimiento para actualizar una canción
+DROP PROCEDURE IF EXISTS UpdateSong $$
+CREATE PROCEDURE UpdateSong (
+	IN id_song_in INTEGER,
+	IN name_in VARCHAR(200),
+	IN image_in VARCHAR(255),
+	IN length_in INTEGER,
+	IN id_artist_in INTEGER,
+	IN file_in VARCHAR(255)
+)
+update_song:BEGIN
+	DECLARE artist_name VARCHAR(150);
+	DECLARE song_name VARCHAR(200);
+
+	SELECT s.name INTO song_name
+	FROM Songs s
+	WHERE s.id_song = id_song_in;
+
+	SELECT a.name INTO artist_name 
+	FROM Artists a 
+	WHERE a.id_artist = id_artist_in;
+
+	IF (artist_name = '' OR artist_name IS NULL) THEN 
+		SELECT 'El artista que ha seleccionado no existe' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE update_song;
+	END IF;
+
+	IF name_in = '' OR name_in IS NULL THEN
+		SELECT 'El nombre de la canción no puede estar en blanco' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE update_song;
+	END IF;
+
+	IF image_in = '' OR image_in IS NULL THEN
+		SELECT 'Se debe asignar una imagen a la canción' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE update_song;
+	END IF;	
+
+	IF length_in < 0 THEN
+		SELECT 'La duración de la canción no es válida' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE update_song;
+	END IF;
+
+	IF file_in = '' OR file_in IS NULL THEN
+		SELECT 'Se debe asignar un archivo de audio a la canción' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE update_song;
+	END IF;	
+
+	IF song_name_exists(id_artist_in, name_in) AND name_in != song_name THEN
+		SELECT 'El artista que ha ingresado ya posee una canción/colaboración con el nombre indicado' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE update_song;
+	END IF;	
+
+	UPDATE Songs
+	SET name = name_in,
+	image = image_in,
+	length = length_in,
+	file = file_in
+	WHERE id_song = id_song_in;
+
+	UPDATE Song_artists
+	SET id_artist = id_artist_in
+	WHERE id_song = id_song_in;
+
+	SELECT 'La canción ha sido actualizada exitósamente' AS 'MESSAGE',
 	'SUCCESS' AS 'TYPE';
 END $$

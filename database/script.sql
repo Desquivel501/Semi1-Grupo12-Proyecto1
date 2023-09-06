@@ -33,15 +33,27 @@ CREATE TABLE Albums (
 	FOREIGN KEY(id_artist) REFERENCES Artists(id_artist)
 ) $$
 
-/*
+
 CREATE TABLE Songs (
 	id_song INTEGER NOT NULL AUTO_INCREMENT,
 	name VARCHAR(200),
 	image VARCHAR(255),
-	lenght INTEGER,
-	id_album
+	length INTEGER,
+	file VARCHAR(255),
+	id_album INTEGER,
+	PRIMARY KEY(id_song),
+	FOREIGN KEY(id_album) REFERENCES Albums(id_album)
 ) $$
-*/
+
+
+CREATE TABLE Song_artists (
+	id_song INTEGER,
+	id_artist INTEGER,
+	UNIQUE(id_song, id_artist),
+	FOREIGN KEY(id_song) REFERENCES Songs(id_song),
+	FOREIGN KEY(id_artist) REFERENCES Artists(id_artist)
+) $$
+
 
 SELECT * FROM Artists
 
@@ -54,4 +66,13 @@ CALL CreateAlbum('Music to be murdered by', 'Music to be murdered by side A', 's
 
 CALL UpdateAlbum(1, 'Music to be murdered by', 'Music to be murdered by side A', 'sfasdfasf', 1)
 
+CALL CreateSong('Marsh', 'asdfasfasd', 200, 1, 'afdsafdsafds')
+CALL CreateSong('Darkness', 'asdfasfasd', 337, 1, 'afdsafdsafds')
+CALL CreateSong('Never love again', 'asdfasfasd', 337, 1, 'afdsafdsafds')
+CALL CreateSong('Clouds', 'asdfasfasd', 243, 2, 'afdsafdsafds')
+
+CALL UpdateSong(3, 'The Search', 'adfasdaf', 242, 2, 'sfasdfsafda')
+
 SELECT * FROM Albums
+SELECT * FROM Songs
+SELECT * FROM Song_artists
