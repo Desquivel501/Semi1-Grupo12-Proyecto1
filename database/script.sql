@@ -65,6 +65,15 @@ CREATE TABLE Playlists (
 	FOREIGN KEY(email) REFERENCES Users(email)
 ) $$
 
+
+CREATE TABLE Playlists_details (
+	id_playlist INTEGER,
+	id_song INTEGER,
+	UNIQUE(id_playlist, id_song),
+	FOREIGN KEY(id_playlist) REFERENCES Playlists(id_playlist),
+	FOREIGN KEY(id_song) REFERENCES Songs(id_song)
+) $$
+
 SELECT * FROM Artists
 
 CALL CreateArtist('Eminem', 'fsfasdfasdf', '1972-10-17')
@@ -87,8 +96,12 @@ CALL AddSongAlbum(1, 1);
 CALL AddSongAlbum(4, 1);
 CALL AddSongAlbum(2, 1);
 
+CALL CreatePlaylist('Hip Hop Mix', 'Test', 'sfafsdfasfg', 'montenegroandres2001@gmail.com') 
 
 
+
+SELECT * FROM Users u 
 SELECT * FROM Albums
 SELECT * FROM Songs
 SELECT * FROM Song_artists
+SELECT * FROM Playlists;

@@ -421,3 +421,40 @@ add_song_album:BEGIN
 	'SUCCESS' AS 'TYPE';
 END $$
 
+
+-- Procedimiento para crear una playlist
+DROP PROCEDURE IF EXISTS CreatePlaylist $$
+CREATE PROCEDURE CreatePlaylist (
+	IN name_in VARCHAR(150),
+	IN description_in VARCHAR(255),
+	IN image_in VARCHAR(255),
+	IN email_in VARCHAR(255)
+)
+create_playlist:BEGIN
+	IF NOT email_exists(email_in) THEN
+		SELECT 'El correo que ha ingresado no pertenece a una cuenta' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE create_playlist;
+	END IF;	
+
+	IF name_in = '' OR name_in IS NULL THEN
+		SELECT 'El nombre de la playlist no puede estar vacío' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE create_playlist;
+	END IF;
+
+	IF image_in = '' OR image_in IS NULL THEN
+		SELECT 'Se debe asignar una imagen de portada para la playlist' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE create_playlist;
+	END IF;	
+
+	INSERT INTO Playlists (name, description, image, email)
+	VALUES (name_in, description_in, image_in, email_in);
+
+	SELECT 'La playlist ha sido creada exitósamente' AS 'MESSAGE',
+	'SUCCESS' AS 'TYPE';
+END $$
+
+
+-- Procedimiento para agregar una canción a una playlist
