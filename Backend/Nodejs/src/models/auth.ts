@@ -16,6 +16,7 @@ export class AuthModel {
         },
       );
     } catch (error) {
+      console.log(error)
       callback(error, false);
     }
   }
