@@ -1,0 +1,17 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_0" id="46BC010B-C411-D22E-9973-4B282D4B5914" containerWithKeyObject="F57F042C-5ADB-D70B-DC0A-A8AA28E5A3ED" localFKIndex="62931E09-3D4E-18E7-8DDE-B47828863F10" name="Album_detail_Album_FK">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-05 23:52:03 UTC</createdTime>
+<generatorID>C024251E-B2CD-D2CF-15D5-B5D8E8818021</generatorID>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<referredTableLongName>Album</referredTableLongName>
+<deleteRule>NO ACTION</deleteRule>
+<referredTableID>95137E60-052C-7A1B-FE77-3AC0A0EA656D</referredTableID>
+<keyObject>35DE4BBA-38A8-D414-B4F3-72F7FCE9B79C</keyObject>
+<referredKeyID>35DE4BBA-38A8-D414-B4F3-72F7FCE9B79C</referredKeyID>
+<mandatory>true</mandatory>
+<refColNames>id_album</refColNames>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>true</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>

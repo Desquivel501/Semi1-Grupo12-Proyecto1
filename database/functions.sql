@@ -19,6 +19,7 @@ BEGIN
     RETURN (valido);
 END $$
 
+
 -- FUNCIÓN PARA VERIFICAR QUE UN CORREO SEA ÚNICO
 DROP FUNCTION IF EXISTS email_exists $$
 CREATE FUNCTION email_exists(
@@ -31,3 +32,18 @@ BEGIN
     SELECT EXISTS( SELECT 1 FROM Users u WHERE u.email = email) INTO existe;  
     RETURN(existe);
 END $$
+
+
+-- FUNCIÓN PARA VERIFICAR QUE UN NOMBRE DE ARTISTA SEA ÚNICO
+DROP FUNCTION IF EXISTS artist_exists $$
+CREATE FUNCTION artist_exists(
+	name VARCHAR(200)
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE existe BOOLEAN;
+    SELECT EXISTS( SELECT 1 FROM Artists a WHERE a.name = name) INTO existe;  
+    RETURN(existe);
+END $$
+

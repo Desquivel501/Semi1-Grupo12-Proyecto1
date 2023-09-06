@@ -1,0 +1,80 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="380C0EA5-2037-7B07-E28F-EC2AEB2FE42D" name="Favorites">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-05 23:52:03 UTC</createdTime>
+<generatorID>9111C2A8-AC6B-B93E-59DD-4FE52F790ABB</generatorID>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="User_Email" id="D4A982AB-12BB-7CFC-1F28-D2D8E5E78311">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-05 23:52:03 UTC</createdTime>
+<generatorID>3B080864-A050-9E6E-8896-91792746F370</generatorID>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>255</dataTypeSize>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="18893C72-5064-F1B0-AB50-D59A4E4E80CB" referredColumn="12C6C04E-DBCC-98FB-8D57-6EEAB25C9941"/>
+</associations>
+</Column>
+<Column name="Song_id_song" id="44004106-CA1F-110D-A63C-3C4402CA7488">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-05 23:52:03 UTC</createdTime>
+<generatorID>F34D3EFC-C05D-7F05-C04C-1DF23DE32CB0</generatorID>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="874CAC28-593C-EFD7-998B-4AE48DA0B66D" referredColumn="EEE9D0D8-A6F5-ED90-BF19-439A8B5469B7"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="CAC59364-6A0C-2E6C-5079-1D6F64C4CEB1" name="Favorites_PK">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-05 23:52:03 UTC</createdTime>
+<generatorID>B4458EDD-FB78-F68A-A373-5AE930E8321A</generatorID>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="D4A982AB-12BB-7CFC-1F28-D2D8E5E78311"/>
+<colUsage columnID="44004106-CA1F-110D-A63C-3C4402CA7488"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="371CCCE9-29E7-474A-ACB4-EE18E7C5CAE5" name="Favorites_User_FK">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-05 23:52:03 UTC</createdTime>
+<generatorID>C0C150D0-A826-4167-0809-26D7DE4E5621</generatorID>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="D4A982AB-12BB-7CFC-1F28-D2D8E5E78311"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="AC1A1D70-53E1-7DE1-6050-6A896E4DECCD" name="Favorites_Song_FK">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-05 23:52:03 UTC</createdTime>
+<generatorID>449B7960-D810-2E72-BDE5-9FBBBCDC4B94</generatorID>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="44004106-CA1F-110D-A63C-3C4402CA7488"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>
