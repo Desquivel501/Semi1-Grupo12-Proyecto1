@@ -107,4 +107,73 @@ BEGIN
 END $$
 
 
--- FUNCION PARA VERIFICAR QUE LA CANCIÓN QUE SE AGREGA A UN ALBUM, SEA DEL MISMO ARTISTA AL QUE PERTENECE EL ALBUM
+-- FUNCIÓN PARA VERIFICAR SI UN USUARIO CUENTA YA CUENTA CON UNA PLAYLIST CON EL NOMBRE INGRESADO
+DROP FUNCTION IF EXISTS playlist_name_exists $$
+CREATE FUNCTION playlist_name_exists (
+	email VARCHAR(255),
+	name VARCHAR(150)
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE exists_name BOOLEAN;
+	SELECT EXISTS(
+		SELECT 1 FROM Playlists p
+		WHERE p.email = email 
+		AND p.name = name
+	) INTO exists_name;
+	RETURN(exists_name);
+END $$
+
+
+-- FUNCIÓN PARA VERIFICAR SI UNA CANCIÓN YA SE ENCUENTRA EN UNA PLAYLIST
+DROP FUNCTION IF EXISTS song_in_playlist $$
+CREATE FUNCTION song_in_playlist(
+	id_playlist INTEGER,
+	id_song INTEGER
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE exists_song BOOLEAN;
+	SELECT EXISTS(
+		SELECT 1 FROM Playlists_details pd
+		WHERE pd.id_playlist = id_playlist
+		AND pd.id_song = id_song
+	) INTO exists_song;
+	RETURN(exists_song);
+END $$
+
+
+-- Verificar si una playlist existe
+DROP FUNCTION IF EXISTS exists_playlist $$
+CREATE FUNCTION exists_playlist (
+	id_playlist INTEGER
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+		DECLARE exists_playlist BOOLEAN;
+		SELECT EXISTS(
+			SELECT 1 FROM Playlists p
+			WHERE p.id_playlist = id_playlist
+		) INTO exists_playlist;
+		RETURN(exists_playlist);
+END $$
+
+
+-- Verificar si una canción existe
+DROP FUNCTION IF EXISTS exists_song $$
+CREATE FUNCTION exists_song (
+	id_song INTEGER
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+		DECLARE exists_song BOOLEAN;
+		SELECT EXISTS(
+			SELECT 1 FROM Songs s
+			WHERE s.id_song = id_song
+		) INTO exists_song;
+		RETURN(exists_song);
+END $$
