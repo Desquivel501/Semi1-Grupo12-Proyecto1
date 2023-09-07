@@ -1,5 +1,6 @@
 from flask import Flask
 from src.routes.auth import Authblueprint
+from src.routes.user import user_blueprint
 from src.models.database.connection import connect
 
 
@@ -12,7 +13,8 @@ def createApp():
 
 app = createApp()
 # Manejo de rutas
-app.register_blueprint(Authblueprint, url_prefix="/api/")
+app.register_blueprint(Authblueprint, url_prefix="/api/", name="auth")
+app.register_blueprint(user_blueprint, url_prefix="/api/users/", name="user")
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=5000, debug=True)
