@@ -36,7 +36,11 @@ export class SongModel {
   ) {
     try {
       pool.query(
-        `SELECT * FROM Songs s WHERE s.id_song=${id}`,
+        `SELECT s.name as name,a.name as singer,s.image as cover, s.file as musicSrc FROM Songs s  
+          JOIN Song_artists sa ON s.id_song=sa.id_song
+          JOIN Artists a ON sa.id_artist=a.id_artist
+          WHERE s.id_song=?`,
+        [id],
         (error, result, fields) => {
           if (error) throw error;
           callback(result[0], true);
@@ -51,7 +55,9 @@ export class SongModel {
   static getSongs(callback: (response: any, ok: Boolean) => void) {
     try {
       pool.query(
-        `SELECT * FROM Songs s `,
+        `SELECT s.name as name,a.name as singer,s.image as cover, s.file as musicSrc FROM Songs s  
+          JOIN Song_artists sa ON s.id_song=sa.id_song
+          JOIN Artists a ON sa.id_artist=a.id_artist`,
         (error, result, fields) => {
           if (error) throw error;
           callback(result, true);
