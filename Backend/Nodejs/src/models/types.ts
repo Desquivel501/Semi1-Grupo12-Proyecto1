@@ -29,7 +29,7 @@ export type Playlist = {
   songs: Song[];
 };
 export type Album = {
-  artist: string;
+  artist: number;
 } & Playlist;
 export type Credentials = {
   email: string;
