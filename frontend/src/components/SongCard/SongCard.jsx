@@ -30,6 +30,7 @@ export const SongCard = (props) => {
         py:2,
         pl: '0px !important',
         backgroundColor: '#1f1f1f',
+        cursor: 'pointer',
         "&:hover": {
           backgroundColor: "#626262",
         },
