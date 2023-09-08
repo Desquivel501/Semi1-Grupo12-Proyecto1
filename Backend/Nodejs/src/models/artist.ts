@@ -1,29 +1,63 @@
+import { formatDate } from "../utils/formatDate";
 import { pool } from "./database/connection";
 import { Artist } from "./types";
 
 export class ArtistModel {
-  static async createArtist(artist: Artist, photo: Express.MulterS3.File) {
-    const newAvatar: Artist = { ...artist };
-    newAvatar.avatar = photo.location;
-    // Guardar en DB
-    console.log(newAvatar);
-    return true;
-  }
-  static getArtist({ id }: { id: number }) {
+  static async createArtist(
+    artist: Artist,
+    photo: Express.MulterS3.File,
+    callback: Function,
+  ) {
     try {
-      const res = pool.query(
-        `SELECT * FROM Artist WHERE id_artist=${id}`,
-        (error, result, fields) => {
-          if (error) throw error;
-          return result;
-        },
-      );
-      return { res, ok: true };
+      const newArtist: Artist = { ...artist };
+      newArtist.avatar = photo.location;
+      // Guardar en DB
+      pool.query("CALL CreateArtist(?,?,?)", [
+        newArtist.name,
+        newArtist.avatar,
+        formatDate(newArtist.birthDate),
+      ], (err, result) => {
+        if (err) throw err;
+        if (result[0][0].TYPE == "ERROR") callback(result[0][0], false);
+        else {
+          callback(result[0][0], true);
+        }
+      });
     } catch (error) {
-      console.log(error);
-      return { error, ok: false };
+      callback(error, false);
     }
   }
+
+  static getArtist({ id }: { id: number }, callback: Function) {
+    try {
+      pool.query(
+        `SELECT a.id_artist AS id, a.name,a.image AS cover,a.birthdate  FROM Artists a WHERE a.id_artist=${id}`,
+        (error, result, fields) => {
+          if (error) throw error;
+          callback(result[0], true);
+        },
+      );
+    } catch (error) {
+      console.log(error);
+      callback(error, false);
+    }
+  }
+
+  static getArtists(callback: Function) {
+    try {
+      pool.query(
+        `SELECT a.id_artist AS id, a.name,a.image AS cover,a.birthdate  FROM Artists a`,
+        (error, result) => {
+          if (error) throw error;
+          callback(result, true);
+        },
+      );
+    } catch (error) {
+      console.log(error);
+      callback(error, false);
+    }
+  }
+
   static editArtist({ data }: { data: any }) {
   }
   static deleteArtist({ id }: { id: number }) {

@@ -281,17 +281,19 @@ export default function AlbumPage() {
 
                     {rows.map((row, i) => (
                         <Grid item xs={12} md={12} lg={12} align='left' display="-webkit-box" 
-                        sx={{
+                            sx={{
                                 pl:2, 
                                 cursor: 'pointer',
                                 "&:hover": {
                                     backgroundColor: "#787878",
                                 },
-                        }} 
-                        justify="flex-end"
-                        alignItems="center"
-                        onMouseEnter={() => handleMouseEnter(i+1)}
-                        onMouseLeave={handleMouseLeave}>
+                                borderRadius: 4,
+                            }} 
+                            justify="flex-end"
+                            alignItems="center"
+                            onMouseEnter={() => handleMouseEnter(i+1)}
+                            onMouseLeave={handleMouseLeave}
+                        >
 
                             <IconButton key={i+1}
                                 

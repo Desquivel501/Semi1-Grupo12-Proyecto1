@@ -8,19 +8,24 @@ export class ArtistController {
     const file = req.file as Express.MulterS3.File;
     if (!file) return res.status(401).json({ message: "Faltan datos" });
     // Crear usuario
-    const ok = await ArtistModel.createArtist(artist, file);
-    // Respuesta
-    res.status(ok ? 200 : 400).json({
-      message: `Artist ${ok ? "" : "not"} Created`,
+    ArtistModel.createArtist(artist, file, (response: any, ok: Boolean) => {
+      // Respuesta
+      res.status(ok ? 200 : 400).json(response);
     });
   }
+
   static getArtist(req: Request, res: Response) {
     const { id } = req.params;
     if (!id) return res.status(401).json({ message: "Falta el id" });
     const id_artist = parseInt(id);
-    const response = ArtistModel.getArtist({ id: id_artist });
-    res.status(response.ok ? 200 : 400).json({
-      response,
+    ArtistModel.getArtist({ id: id_artist }, (response: any, ok: Boolean) => {
+      res.status(ok ? 200 : 400).json(response);
+    });
+  }
+
+  static getArtists(req: Request, res: Response) {
+    ArtistModel.getArtists((response: any, ok: Boolean) => {
+      res.status(ok ? 200 : 400).json(response);
     });
   }
 

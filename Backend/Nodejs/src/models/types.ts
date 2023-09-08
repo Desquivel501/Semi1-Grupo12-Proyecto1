@@ -17,7 +17,7 @@ export type Artist = {
 export type Song = {
   name: string;
   cover: string;
-  duration: string;
+  duration: number;
   artist: number;
   source: string;
 };
@@ -32,6 +32,10 @@ export type Album = {
   artist: string;
 } & Playlist;
 export type Credentials = {
-  email: string
-  password: string
-}
+  email: string;
+  password: string;
+};
+export type SongFiles = {
+  cover: Express.MulterS3.File[]
+  source: Express.MulterS3.File[]
+};

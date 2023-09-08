@@ -1,19 +1,40 @@
 import { Request, Response } from "express";
+import { Song, SongFiles } from "../models/types";
+import { SongModel } from "../models/song";
 
 export class SongController {
   static createSong(req: Request, res: Response) {
-    res.json({ message: "Song created" });
+    const song = req.body as Song;
+    const files = req.files as SongFiles;
+    if (!song || !files) {
+      return res.status(400).json({ MESSAGE: "Faltan parámetros" });
+    }
+    SongModel.createSong(song, files, (response: any, ok: Boolean) => {
+      // Respuesta
+      res.status(ok ? 200 : 400).json(response);
+    });
   }
+
   static getSong(req: Request, res: Response) {
-    const {id} = req.params
-    res.json({ user: {id} });
+    const { id } = req.params;
+    if (!id) return res.status(401).json({ message: "Falta el id" });
+    const id_song = parseInt(id);
+    SongModel.getSong({ id: id_song }, (response: any, ok: Boolean) => {
+      res.status(ok ? 200 : 400).json(response);
+    });
   }
+
+  static getSongs(req: Request, res: Response) {
+    SongModel.getSongs((response: any, ok: Boolean) => {
+      res.status(ok ? 200 : 400).json(response);
+    });
+  }
+
 
   static editSong(req: Request, res: Response) {
     res.json({ message: "Song edited" });
   }
-  static deleteSong(req:Request,res:Response){
-    res.json({message:"Song deleted"})
+  static deleteSong(req: Request, res: Response) {
+    res.json({ message: "Song deleted" });
   }
 }
-
