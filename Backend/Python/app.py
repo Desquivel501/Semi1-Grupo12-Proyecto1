@@ -4,6 +4,7 @@ from decouple import config
 from src.routes.auth import Authblueprint
 from src.routes.user import user_blueprint
 from src.routes.artist import artist_blueprint
+from src.routes.song import song_blueprint
 from src.models.database.connection import connect
 
 
@@ -20,6 +21,7 @@ app = createApp()
 app.register_blueprint(Authblueprint, url_prefix="/api/", name="auth")
 app.register_blueprint(user_blueprint, url_prefix="/api/users/", name="user")
 app.register_blueprint(artist_blueprint, url_prefix="/api/artists/", name="artist")
+app.register_blueprint(song_blueprint, url_prefix="/api/songs/", name="song")
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=config("PORT"), debug=True)
