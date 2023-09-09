@@ -73,6 +73,14 @@ CREATE TABLE Playlists_details (
 	FOREIGN KEY(id_song) REFERENCES Songs(id_song) ON DELETE CASCADE
 ) $$
 
+CREATE TABLE Favorites (
+	email VARCHAR(255),
+	id_song INTEGER,
+	UNIQUE(email, id_song),
+	FOREIGN KEY(emaIl) REFERENCES Users(emaIl) ON DELETE CASCADE,
+	FOREIGN KEY(id_song) REFERENCES Songs(id_song) ON DELETE CASCADE
+) $$
+
 SELECT * FROM Artists
 
 CALL CreateArtist('Eminem', 'fsfasdfasdf', '1972-10-17')
@@ -113,9 +121,13 @@ CALL AddSongPlaylist(1,1, 'montenegroandres2001@gmail.com')
 
 CALL RemovePlaylist(1,  'montenegroandres2001@gmail.com') 
 
+CALL AddToFavorites(1, 'montenegroandres2001@gmail.com')
+CALL AddToFavorites(3, 'montenegroandres2001@gmail.com')
+
 SELECT * FROM Playlists_details;
 SELECT * FROM Users u 
 SELECT * FROM Albums
 SELECT * FROM Songs
 SELECT * FROM Song_artists
 SELECT * FROM Playlists;
+SELECT * FROM Favorites f;

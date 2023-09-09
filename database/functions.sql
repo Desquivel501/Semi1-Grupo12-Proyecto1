@@ -195,3 +195,22 @@ BEGIN
 		) INTO owner;
 		RETURN(owner);
 END $$
+
+--  Verifica si una canción ya se encuentra en la lista de favoritos de un determinado usuario
+DROP FUNCTION IF EXISTS song_in_favorites $$
+CREATE FUNCTION song_in_favorites (
+	id_song INTEGER,
+	email VARCHAR(255)
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+		DECLARE in_fav BOOLEAN;
+		SELECT EXISTS(
+			SELECT 1 FROM Favorites f 
+			WHERE f.id_song = id_song 
+			AND f.email = email
+		) INTO in_fav;
+		RETURN(in_fav);		
+END $$
+
