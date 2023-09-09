@@ -8,16 +8,22 @@ import StartPage from './pages/StartPage/StartPage'
 import AlbumPage from './pages/AlbumPage/AlbumPage';
 import Login from './pages/Login/Login';
 import Signup from './pages/Signup/Signup';
+import { SesionProvider } from './context/SessionContext';
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
+    <SesionProvider>
     <BrowserRouter>
 
-      {/* <Login /> */}
+      <Login />
+{/* 
+      <Routes>
+          <Route index path={"/"} element={<Signup />} />
+      </Routes> */}
 
-      <Signup />
+      {/* <Signup /> */}
     
 {/*     
       <CustomDrawer />
@@ -29,6 +35,7 @@ function App() {
       </Routes>  */}
 
     </BrowserRouter>
+    </SesionProvider>
   )
 }
 

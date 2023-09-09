@@ -13,9 +13,56 @@ import login_background from "../../assets/login_background_dark.png";
 import { alpha, styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
+import Swal from 'sweetalert2'
+import { useContext } from "react";
+import { sesionContext } from "../../context/SessionContext";
+
 export default function Signup() {
-  const [mensaje, setMensaje] = useState({ mensaje: "", tipo: "" });
   const navigate = useNavigate();
+  const { registro } = useContext(sesionContext);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const correo = data.get("email")
+    const email_pattern = /\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/g
+    if(!email_pattern.test(correo)){
+      Swal.fire({
+        color: '#fff',
+        background: '#1f1f1f',
+        icon: 'error',
+        title: 'Oops...',
+        text: "Correo electronico no valido.",
+      })
+      return
+    } else {
+      console.log(data)
+    }
+    
+    const mensaje = await registro(data);
+
+    console.log(mensaje)
+
+    // if (mensaje.TIPO == "EXITO") {
+    //   Swal.fire({
+    //     icon: 'success',
+    //     title: 'Creado',
+    //     text: mensaje.MENSAJE,
+    //   }).then((result) => {
+    //     if (result.isConfirmed) {
+    //       navigate("/");
+    //     }
+    //   })
+    // } else {
+    //   Swal.fire({
+    //     icon: 'error',
+    //     title: 'Oops...',
+    //     text: mensaje.MENSAJE,
+    //   })
+    // }
+
+    // event.target.reset();
+  };
 
   const customTheme = createTheme({
     palette: {
@@ -48,20 +95,7 @@ export default function Signup() {
       },
     },
   });
-
-  const VisuallyHiddenInput = styled('input')`
-    clip: rect(0 0 0 0);
-    clip-path: inset(50%);
-    height: 1px;
-    overflow: hidden;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    white-space: nowrap;
-    width: 1px;
-  `;
   
-
   return (
     <ThemeProvider theme={customTheme}>
       <CssBaseline />
@@ -104,7 +138,7 @@ export default function Signup() {
                 height: "100%"
               }}
               maxHeight={window.innerHeight}
-            //   onSubmit={handleSubmit}
+              onSubmit={handleSubmit}
               component="form"
               justifyContent={"center"}
             >
@@ -222,7 +256,7 @@ export default function Signup() {
                                 mt:1
                             }}
                         >
-                            Fecha de Nacimiento
+                            Fecha de Nacimiento*
                         </Typography>
 
                         <CssTextField
@@ -230,8 +264,8 @@ export default function Signup() {
                           margin="normal"
                           required
                           fullWidth
-                          id="date"
-                          name="date"
+                          id="birthDate"
+                          name="birthDate"
                           format="DD/MM/YYYY"
                           sx={{ input: { color: '#fff' }, borderColor: '#fff' }}
                           />
@@ -255,7 +289,7 @@ export default function Signup() {
                                 mt:1
                             }}
                         >
-                            Foto de perfil
+                            Foto de perfil*
                         </Typography>
 
                         <Button
@@ -265,10 +299,15 @@ export default function Signup() {
                           fullWidth
                           height="100%"
                           sx={{ mt: 3, mb: 2, bgcolor: "#353535", '&:hover': { backgroundColor: '#626262' } }}
-                          // href="#file-upload"
                         >
+                          <input
+                            type="file"
+                            id="file"
+                            hidden
+                            accept=".jpg,.jpeg,.png"
+                            name="avatar"
+                          />
                           Subir Imagen
-                          <VisuallyHiddenInput type="file" />
                         </Button>
 
                     </Grid>
