@@ -177,3 +177,21 @@ BEGIN
 		) INTO exists_song;
 		RETURN(exists_song);
 END $$
+
+-- Verificar si una playlist pertenece a un usuario específico
+DROP FUNCTION IF EXISTS playlist_owner $$
+CREATE FUNCTION playlist_owner (
+	id_playlist INTEGER,
+	email VARCHAR(255)
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+		DECLARE owner BOOLEAN;
+		SELECT EXISTS(
+			SELECT 1 FROM Playlists p 
+			WHERE p.id_playlist = id_playlist 
+			AND p.email = email
+		) INTO owner;
+		RETURN(owner);
+END $$

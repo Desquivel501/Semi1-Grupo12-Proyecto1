@@ -106,8 +106,8 @@ CALL AddSongPlaylist(2,1, 'a@b.com')
 CALL AddSongPlaylist(2,3, 'a@b.com')
 CALL AddSongPlaylist(2,4, 'a@b.com')
 
-CALL RemoveSongPlaylist(1,1, 'montenegroandres2001@gmail.com')
-CALL RemoveSongPlaylist(2,4, 'a@b.com')
+CALL RemoveSongPlaylist(2,1, 'montenegroandres2001@gmail.com')
+CALL RemoveSongPlaylist(2,3, 'a@b.com')
 
 CALL AddSongPlaylist(1,1, 'montenegroandres2001@gmail.com')
 

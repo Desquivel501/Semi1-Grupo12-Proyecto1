@@ -469,9 +469,15 @@ DROP PROCEDURE IF EXISTS AddSongPlaylist $$
 CREATE PROCEDURE AddSongPlaylist (
 	IN id_playlist_in INTEGER,
 	IN id_song_in INTEGER,
-	IN email VARCHAR(255)
+	IN email_in VARCHAR(255)
 )
 add_song_playlist:BEGIN
+	IF NOT playlist_owner(id_playlist_in, email_in) THEN
+		SELECT 'La playlist que intenta modificar no es de su propiedad' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE add_song_playlist;
+	END IF;
+
 	IF NOT exists_playlist(id_playlist_in) THEN
 		SELECT 'La playlist indicada no existe' AS 'MESSAGE',
 		'ERROR' AS 'TYPE';
@@ -503,9 +509,15 @@ DROP PROCEDURE IF EXISTS RemoveSongPlaylist $$
 CREATE PROCEDURE RemoveSongPlaylist (
 	IN id_playlist_in INTEGER,
 	IN id_song_in INTEGER,
-	IN email VARCHAR(255)
+	IN email_in VARCHAR(255)
 )
 remove_song_playlist:BEGIN
+	IF NOT playlist_owner(id_playlist_in, email_in) THEN
+		SELECT 'La playlist que intenta modificar no es de su propiedad' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE remove_song_playlist;
+	END IF;
+
 	IF NOT exists_playlist(id_playlist_in) THEN
 		SELECT 'La playlist indicada no existe' AS 'MESSAGE',
 		'ERROR' AS 'TYPE';
@@ -537,9 +549,15 @@ END $$
 DROP PROCEDURE IF EXISTS RemovePlaylist $$
 CREATE PROCEDURE RemovePlaylist (
 	IN id_playlist_in INTEGER,
-	IN email VARCHAR(255)
+	IN email_in VARCHAR(255)
 )
 remove_playlist:BEGIN
+	IF NOT playlist_owner(id_playlist_in, email_in) THEN
+		SELECT 'La playlist que intenta eliminar no es de su propiedad' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE remove_playlist;
+	END IF;
+
 	IF NOT exists_playlist(id_playlist_in) THEN
 		SELECT 'La playlist indicada no existe' AS 'MESSAGE',
 		'ERROR' AS 'TYPE';
