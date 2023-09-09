@@ -38,7 +38,6 @@ class UserModel:
         try:
             db = getCnx()  # Obtiene una conexión desde la función
             cursor = db.cursor(buffered=True)
-
             # Ejecuta la consulta SQL para obtener el usuario por su email
             cursor.execute(f"SELECT * FROM Users WHERE email='{email}'")
             result = cursor.fetchone()
@@ -52,3 +51,4 @@ class UserModel:
             return str(e), False
         finally:
             cursor.close()
+
