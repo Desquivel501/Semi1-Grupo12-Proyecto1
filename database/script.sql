@@ -77,9 +77,18 @@ CREATE TABLE Favorites (
 	email VARCHAR(255),
 	id_song INTEGER,
 	UNIQUE(email, id_song),
-	FOREIGN KEY(emaIl) REFERENCES Users(emaIl) ON DELETE CASCADE,
+	FOREIGN KEY(email) REFERENCES Users(email) ON DELETE CASCADE,
 	FOREIGN KEY(id_song) REFERENCES Songs(id_song) ON DELETE CASCADE
 ) $$
+
+CREATE TABLE History (
+	email VARCHAR(255),
+	id_song INTEGER,
+	date DATETIME,
+	FOREIGN KEY(email) REFERENCES Users(email) ON DELETE CASCADE
+	-- FOREIGN KEY(id_song) REFERENCES Songs(id_song) ON DELETE CASCADE
+) $$
+
 
 SELECT * FROM Artists
 
@@ -124,6 +133,13 @@ CALL RemovePlaylist(1,  'montenegroandres2001@gmail.com')
 CALL AddToFavorites(1, 'montenegroandres2001@gmail.com')
 CALL AddToFavorites(3, 'montenegroandres2001@gmail.com')
 
+CALL AddToHistory(1, 'montenegroandres2001@gmail.com')
+CALL AddToHistory(1, 'montenegroandres2001@gmail.com')
+CALL AddToHistory(1, 'montenegroandres2001@gmail.com')
+CALL AddToHistory(3, 'montenegroandres2001@gmail.com')
+CALL AddToHistory(4, 'montenegroandres2001@gmail.com')
+CALL AddToHistory(2, 'montenegroandres2001@gmail.com')
+
 SELECT * FROM Playlists_details;
 SELECT * FROM Users u 
 SELECT * FROM Albums
@@ -131,3 +147,4 @@ SELECT * FROM Songs
 SELECT * FROM Song_artists
 SELECT * FROM Playlists;
 SELECT * FROM Favorites f;
+SELECT * FROM History

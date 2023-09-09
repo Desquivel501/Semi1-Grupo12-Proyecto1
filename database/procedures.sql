@@ -601,3 +601,21 @@ add_to_favorites:BEGIN
 	SELECT 'La canción se agregó a favoritos' AS 'MESSAGE',
 	'SUCCESS' AS 'TYPE';
 END $$
+
+
+-- Procedimiento para agregar una canción al historial
+DROP PROCEDURE IF EXISTS AddToHistory $$
+CREATE PROCEDURE AddToHistory(
+	IN id_song_in INTEGER,
+	IN email_in VARCHAR(255)
+)
+add_to_history:BEGIN
+	IF NOT exists_song(id_song_in) THEN
+		SELECT 'La canción indicada no existe' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE add_to_history;
+	END IF;
+
+	INSERT INTO History
+	VALUES (email_in, id_song_in, NOW());
+END $$
