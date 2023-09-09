@@ -14,9 +14,60 @@ import { alpha, styled } from '@mui/material/styles';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 
+import Swal from 'sweetalert2'
+import { useContext } from "react";
+import { sesionContext } from "../../context/SessionContext";
+
 export default function Login() {
   const [mensaje, setMensaje] = useState({ mensaje: "", tipo: "" });
   const navigate = useNavigate();
+  const { login } = useContext(sesionContext);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const correo = data.get("email")
+    
+    const email_pattern = /\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/g
+    
+    if(!email_pattern.test(correo)){
+      Swal.fire({
+        color: '#fff',
+        background: '#1f1f1f',
+        icon: 'error',
+        title: 'Oops...',
+        text: "Correo electronico no valido.",
+      })
+      return
+    }
+    
+    const mensaje = await login({
+      email: data.get("email"),
+      password: data.get("password"),
+    });
+
+    console.log(mensaje)
+
+    // if (mensaje.TIPO == "EXITO") {
+    //   Swal.fire({
+    //     icon: 'success',
+    //     title: 'Creado',
+    //     text: mensaje.MENSAJE,
+    //   }).then((result) => {
+    //     if (result.isConfirmed) {
+    //       navigate("/");
+    //     }
+    //   })
+    // } else {
+    //   Swal.fire({
+    //     icon: 'error',
+    //     title: 'Oops...',
+    //     text: mensaje.MENSAJE,
+    //   })
+    // }
+
+    // event.target.reset();
+  };
 
   const customTheme = createTheme({
     palette: {
@@ -117,7 +168,7 @@ export default function Login() {
 
               <Box
                 component="form"
-                // onSubmit={handleSubmit}
+                onSubmit={handleSubmit}
                 sx={{ mt: 1 }}
               >
                 <CssTextField
