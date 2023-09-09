@@ -570,3 +570,34 @@ remove_playlist:BEGIN
 	SELECT 'La playlist fue eliminada exitósamente' AS 'MESSAGE',
 	'SUCCESS' AS 'TYPE';
 END $$
+
+
+-- Procedimiento para eliminar una canción de favoritos
+DROP PROCEDURE IF EXISTS AddToFavorites $$
+CREATE PROCEDURE AddToFavorites (
+	IN id_song_in INTEGER,
+	IN email_in VARCHAR(255)
+)
+add_to_favorites:BEGIN
+	IF NOT exists_song(id_song_in) THEN
+		SELECT 'La canción indicada no existe' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE add_to_favorites;
+	END IF;
+
+	IF song_in_favorites(id_song_in, email_in) THEN
+		DELETE FROM Favorites f
+		WHERE f.id_song = id_song_in
+		AND f.email = email_in;
+	
+		SELECT 'La canción se removió de favoritos' AS 'MESSAGE',
+		'SUCCESS' AS 'TYPE';
+		LEAVE add_to_favorites;
+	END IF;
+
+	INSERT INTO Favorites
+	VALUES (email_in, id_song_in);
+
+	SELECT 'La canción se agregó a favoritos' AS 'MESSAGE',
+	'SUCCESS' AS 'TYPE';
+END $$
