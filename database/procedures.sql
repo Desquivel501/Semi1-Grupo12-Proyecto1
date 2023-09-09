@@ -398,3 +398,175 @@ update_song:BEGIN
 	SELECT 'La canción ha sido actualizada exitósamente' AS 'MESSAGE',
 	'SUCCESS' AS 'TYPE';
 END $$
+
+
+-- Procedimiento para agregar una canción a un album
+DROP PROCEDURE IF EXISTS AddSongAlbum $$
+CREATE PROCEDURE AddSongAlbum(
+	IN id_song_in INTEGER,
+	IN id_album_in INTEGER
+)
+add_song_album:BEGIN
+	IF NOT(correct_song_album(id_song_in, id_album_in)) THEN
+		SELECT 'La canción y el album a asignar deben ser del mismo artista' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE add_song_album;	
+	END IF;
+
+	UPDATE Songs
+	SET id_album = id_album_in
+	WHERE id_song = id_song_in;
+
+	SELECT 'La canción ha sido asignada al album exitósamente' AS 'MESSAGE',
+	'SUCCESS' AS 'TYPE';
+END $$
+
+
+-- Procedimiento para crear una playlist
+DROP PROCEDURE IF EXISTS CreatePlaylist $$
+CREATE PROCEDURE CreatePlaylist (
+	IN name_in VARCHAR(150),
+	IN description_in VARCHAR(255),
+	IN image_in VARCHAR(255),
+	IN email_in VARCHAR(255)
+)
+create_playlist:BEGIN
+	IF NOT email_exists(email_in) THEN
+		SELECT 'El correo que ha ingresado no pertenece a una cuenta' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE create_playlist;
+	END IF;	
+
+	IF name_in = '' OR name_in IS NULL THEN
+		SELECT 'El nombre de la playlist no puede estar vacío' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE create_playlist;
+	END IF;
+
+	IF image_in = '' OR image_in IS NULL THEN
+		SELECT 'Se debe asignar una imagen de portada para la playlist' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE create_playlist;
+	END IF;	
+
+	IF playlist_name_exists(email_in, name_in) THEN
+		SELECT 'Ya existe una playlist con el nombre indicado' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE create_playlist;
+	END IF;
+
+
+	INSERT INTO Playlists (name, description, image, email)
+	VALUES (name_in, description_in, image_in, email_in);
+
+	SELECT 'La playlist ha sido creada exitósamente' AS 'MESSAGE',
+	'SUCCESS' AS 'TYPE';
+END $$
+
+
+-- Procedimiento para agregar una canción a una playlist
+DROP PROCEDURE IF EXISTS AddSongPlaylist $$
+CREATE PROCEDURE AddSongPlaylist (
+	IN id_playlist_in INTEGER,
+	IN id_song_in INTEGER,
+	IN email_in VARCHAR(255)
+)
+add_song_playlist:BEGIN
+	IF NOT playlist_owner(id_playlist_in, email_in) THEN
+		SELECT 'La playlist que intenta modificar no es de su propiedad' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE add_song_playlist;
+	END IF;
+
+	IF NOT exists_playlist(id_playlist_in) THEN
+		SELECT 'La playlist indicada no existe' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE add_song_playlist;
+	END IF;
+
+	IF NOT exists_song(id_song_in) THEN
+		SELECT 'La canción indicada no existe' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE add_song_playlist;
+	END IF;
+
+	IF song_in_playlist(id_playlist_in, id_song_in) THEN
+		SELECT 'La canción ya se encuentra en la playlist' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE add_song_playlist;
+	END IF;
+
+	INSERT INTO Playlists_details
+	VALUES(id_playlist_in, id_song_in);
+
+	SELECT 'La canción fue agregada exitósamente a la playlist' AS 'MESSAGE',
+	'SUCCESS' AS 'TYPE';
+END $$
+
+
+-- Procedimiento para eliminar una canción de una playlist
+DROP PROCEDURE IF EXISTS RemoveSongPlaylist $$
+CREATE PROCEDURE RemoveSongPlaylist (
+	IN id_playlist_in INTEGER,
+	IN id_song_in INTEGER,
+	IN email_in VARCHAR(255)
+)
+remove_song_playlist:BEGIN
+	IF NOT playlist_owner(id_playlist_in, email_in) THEN
+		SELECT 'La playlist que intenta modificar no es de su propiedad' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE remove_song_playlist;
+	END IF;
+
+	IF NOT exists_playlist(id_playlist_in) THEN
+		SELECT 'La playlist indicada no existe' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE remove_song_playlist;
+	END IF;
+
+	IF NOT exists_song(id_song_in) THEN
+		SELECT 'La canción indicada no existe' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE remove_song_playlist;
+	END IF;
+
+	IF NOT song_in_playlist(id_playlist_in, id_song_in) THEN
+		SELECT 'La canción indicada no se encuentra en la playlist' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE remove_song_playlist;
+	END IF;
+
+	DELETE FROM Playlists_details
+	WHERE id_song = id_song_in
+	AND id_playlist = id_playlist_in;
+
+	SELECT 'La canción fue eliminada exitósamente de la playlist' AS 'MESSAGE',
+	'SUCCESS' AS 'TYPE';
+END $$
+
+
+-- Procedimiento para eliminar una playlist
+DROP PROCEDURE IF EXISTS RemovePlaylist $$
+CREATE PROCEDURE RemovePlaylist (
+	IN id_playlist_in INTEGER,
+	IN email_in VARCHAR(255)
+)
+remove_playlist:BEGIN
+	IF NOT playlist_owner(id_playlist_in, email_in) THEN
+		SELECT 'La playlist que intenta eliminar no es de su propiedad' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE remove_playlist;
+	END IF;
+
+	IF NOT exists_playlist(id_playlist_in) THEN
+		SELECT 'La playlist indicada no existe' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE remove_playlist;
+	END IF;
+
+	DELETE FROM Playlists p
+	WHERE p.id_playlist = id_playlist_in;
+
+	SELECT 'La playlist fue eliminada exitósamente' AS 'MESSAGE',
+	'SUCCESS' AS 'TYPE';
+END $$
