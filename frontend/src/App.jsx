@@ -16,8 +16,8 @@ function App() {
   return (
     <SesionProvider>
     <BrowserRouter>
-
-      <Login />
+{/* 
+      <Login /> */}
 {/* 
       <Routes>
           <Route index path={"/"} element={<Signup />} />
@@ -25,14 +25,14 @@ function App() {
 
       {/* <Signup /> */}
     
-{/*     
+    
       <CustomDrawer />
       <Player />
 
       <Routes>
           <Route index path={"/"} element={<StartPage />} />
           <Route path={"/Album"} element={<AlbumPage />} />
-      </Routes>  */}
+      </Routes> 
 
     </BrowserRouter>
     </SesionProvider>

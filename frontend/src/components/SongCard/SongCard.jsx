@@ -1,26 +1,37 @@
 import * as React from "react";
 import { useTheme } from "@mui/material/styles";
-import { Box, Grid, Typography } from "@mui/material";
-import Paper from "@mui/material/Paper";
+import { Box, Grid, Typography, Fab, Paper } from "@mui/material";
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import { useState, useEffect, useRef } from 'react'
 
 export const SongCard = (props) => {
+  const ref = useRef(null)
+
   const {
     image,
     id,
     title,
     descripcion,
-    onSelect,
     size,
+    data,
+    song
   } = props;
 
   const handleSelect = () => {
-    onSelect(id);
+    if(song){
+      const queue = {
+        song_list: [data],
+        lastUpdate: Date.now()
+      }
+      window.sessionStorage.setItem("queue",JSON.stringify(queue));
+    }
   };
 
   const theme = useTheme();
 
   return (
     <Grid
+      ref={ref}
       item
       xs={size}
       sx={{
@@ -53,7 +64,7 @@ export const SongCard = (props) => {
           sx={{ border: 0 }}
           textAlign='center'
         >
-           <Box
+          <Box
                 component="img"
                 sx={{
                   height: "auto",
@@ -101,7 +112,6 @@ export const SongCard = (props) => {
                 {descripcion}
             </Typography>
         </Grid>
-
       </Grid>
     </Grid>
   );

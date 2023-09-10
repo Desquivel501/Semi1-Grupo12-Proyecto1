@@ -1,11 +1,12 @@
 
-import { ButtonGroup, Typography, Box, Container, Grid, Button, Paper, CssBaseline } from '@mui/material';
+import { ButtonGroup, Typography, Box, Container, Grid, Button, Paper, CssBaseline, Fab } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Divider from '@mui/material/Divider';
 import MopedIcon from '@mui/icons-material/Moped';
 import LocalPizzaIcon from '@mui/icons-material/LocalPizza';
 import LockIcon from '@mui/icons-material/Lock';
 import { SongCard } from '../../components/SongCard/SongCard';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 
 const theme = createTheme({
     typography: {
@@ -46,7 +47,8 @@ const theme = createTheme({
 export const Section = (props) => {
     const {
       title,
-      items
+      items,
+      songs
     } = props;
 
     return (
@@ -99,6 +101,8 @@ export const Section = (props) => {
                             image={item.cover}
                             descripcion={item.singer}
                             size={2}
+                            data={item}
+                            song={songs}
                         />
                         : null
                     })}
