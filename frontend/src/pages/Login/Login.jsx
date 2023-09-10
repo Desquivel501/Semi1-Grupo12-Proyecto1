@@ -204,7 +204,7 @@ export default function Login() {
                 {mensaje.tipo != "" &&
                   (
                     <p
-                      className="mensaje"
+                      classNameName="mensaje"
                       style={{
                         backgroundColor: mensaje.tipo == "Error"
                           ? "#c00"

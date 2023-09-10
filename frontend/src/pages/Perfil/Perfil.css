@@ -1,0 +1,50 @@
+.gradient-custom {
+    /* fallback for old browsers */
+    background: #f6d365;
+
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(to right bottom, rgba(246, 211, 101, 1), rgba(253, 160, 133, 1));
+
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: linear-gradient(to right bottom, rgba(246, 211, 101, 1), rgba(253, 160, 133, 1))
+}
+
+h5  {
+    color: #000;
+}
+
+h6 {
+    color: #000;
+}
+
+.button {
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    padding: 8px 13px;
+    border: 1px solid #5827a1;
+    border-radius: 100px;
+    background: #db4aff;
+    background: -webkit-gradient(linear, left top, left bottom, from(#db4aff), to(#2e2699));
+    background: -moz-linear-gradient(top, #db4aff, #2e2699);
+    background: linear-gradient(to bottom, #db4aff, #2e2699);
+    font: normal normal normal 14px verdana;
+    color: #ffffff;
+    text-decoration: none;
+}
+.button:hover,
+.button:focus {
+    border: 1px solid #8d3eff;
+    background: #ff59ff;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ff59ff), to(#372eb8));
+    background: -moz-linear-gradient(top, #ff59ff, #372eb8);
+    background: linear-gradient(to bottom, #ff59ff, #372eb8);
+    color: #ffffff;
+    text-decoration: none;
+}
+.button:active {
+    background: #832c99;
+    background: -webkit-gradient(linear, left top, left bottom, from(#832c99), to(#2e2699));
+    background: -moz-linear-gradient(top, #832c99, #2e2699);
+    background: linear-gradient(to bottom, #832c99, #2e2699);
+}

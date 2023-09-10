@@ -8,6 +8,7 @@ import StartPage from './pages/StartPage/StartPage'
 import AlbumPage from './pages/AlbumPage/AlbumPage';
 import Login from './pages/Login/Login';
 import Signup from './pages/Signup/Signup';
+import Perfil from './pages/Perfil/Perfil'
 import { SesionProvider } from './context/SessionContext';
 
 function App() {
@@ -16,23 +17,15 @@ function App() {
   return (
     <SesionProvider>
     <BrowserRouter>
-
-      <Login />
-{/* 
-      <Routes>
-          <Route index path={"/"} element={<Signup />} />
-      </Routes> */}
-
-      {/* <Signup /> */}
     
-{/*     
       <CustomDrawer />
       <Player />
 
       <Routes>
           <Route index path={"/"} element={<StartPage />} />
           <Route path={"/Album"} element={<AlbumPage />} />
-      </Routes>  */}
+          <Route path={"/Perfil"} element={<Perfil />} />
+      </Routes> 
 
     </BrowserRouter>
     </SesionProvider>
