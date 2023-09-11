@@ -5,6 +5,7 @@ import {
     Route,
     useNavigate,
 } from 'react-router-dom'
+import { ColorExtractor } from 'react-color-extractor'
 
 import { ButtonGroup, Typography, Box, Container, Grid, Button, Paper, CssBaseline, Divider, IconButton, Table, TableBody, TableHead, TableRow, TableContainer } from '@mui/material';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
@@ -84,6 +85,7 @@ const rows = [
 export default function AlbumPage() {
 
     const [isHovered, setIsHovered] = useState(0);
+    const [color, setColor] = useState('#626262');
 
     const handleMouseEnter = (n) => {
         setIsHovered(n);
@@ -94,6 +96,38 @@ export default function AlbumPage() {
       };
 
     const navigate = useNavigate();
+
+    
+    function selectColor(str) {
+
+        if(str === undefined || str === null || str === ''){
+            setColor('#626262') 
+            return;
+        };
+
+        var whiteLimit = 200, 
+            r,g,b;
+
+        r = parseInt("0x"+str.substring(1,3));
+        g = parseInt("0x"+str.substring(3,5));
+        b = parseInt("0x"+str.substring(5,7));
+        if(r < whiteLimit || b < whiteLimit || g < whiteLimit) {
+            setColor(str) 
+            return;
+        } 
+        setColor('#626262') 
+    }
+
+    function changeColor(color, amount) {
+        const clamp = (val) => Math.min(Math.max(val, 0), 0xFF)
+        const fill = (str) => ('00' + str).slice(-2)
+    
+        const num = parseInt(color.substr(1), 16)
+        const red = clamp((num >> 16) + amount)
+        const green = clamp(((num >> 8) & 0x00FF) + amount)
+        const blue = clamp((num & 0x0000FF) + amount)
+        return '#' + fill(red.toString(16)) + fill(green.toString(16)) + fill(blue.toString(16))
+    }
 
     return (
       <>
@@ -111,7 +145,7 @@ export default function AlbumPage() {
                 overflow: 'auto',
                 p: 3,
                 m:-2,
-                backgroundColor: '#626262',
+                backgroundColor: color,
                 borderRadius: 5,
             }}
             
@@ -159,15 +193,26 @@ export default function AlbumPage() {
                         sx={{
                             height: "auto",
                             maxWidth: "300px",
-                            ml:2
+                            ml:2,
+                            mr:2,
+                            mb:2,
+                            boxShadow: '5px 5px 10px #000000', 
                         }}
                         alt="Logo"
                         src='https://upload.wikimedia.org/wikipedia/en/6/64/SystemofaDownToxicityalbumcover.jpg'
                     />
+
+                    <ColorExtractor
+                        src='https://upload.wikimedia.org/wikipedia/en/6/64/SystemofaDownToxicityalbumcover.jpg'
+                        getColors={colors => {
+                            console.log(colors)
+                            selectColor(colors[0])
+                        }}
+                    />
                 
                     <Grid
                         item
-                        xs={ window.innerWidth < 1500 ? 7.5 : 9}
+                        xs={ window.innerWidth < 1500 ? 7 : 8.5}
                         sx={{ border: 0 }}
                         textAlign='center'
                             
@@ -285,7 +330,7 @@ export default function AlbumPage() {
                                 pl:2, 
                                 cursor: 'pointer',
                                 "&:hover": {
-                                    backgroundColor: "#787878",
+                                    backgroundColor: changeColor(color, -20),
                                 },
                                 borderRadius: 4,
                             }} 
