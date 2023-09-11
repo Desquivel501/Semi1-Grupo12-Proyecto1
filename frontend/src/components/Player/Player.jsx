@@ -27,8 +27,6 @@ export default function Player() {
     playerOptions: {...options, autoPlay: false, audioLists: []}
   });
 
-  const [audioInstance, setAudioInstance] = useState(null)
-
   useEffect(() => {
 
     const changeQueue = () => {
@@ -51,8 +49,7 @@ export default function Player() {
       } else {
         const queue = JSON.parse(window.sessionStorage.getItem("queue"));
         if(queue.lastUpdate != state.lastUpdate){
-          console.log("change")
-          console.log(queue)
+
           setState ({
             first: false,
             lastUpdate: queue.lastUpdate,
@@ -78,23 +75,21 @@ export default function Player() {
   },[state]);
 
 
+  function onAudioPlay(audioInfo) {
+    console.log('audio playing', audioInfo)
+  }
+
 
   return (
     <div ref={ref}>
       <ReactJkMusicPlayer className="player"
-        
         style={{zIndex:1300}}
         {...state.playerOptions}
-        // audioLists={state.list}
         showMediaSession
         quietUpdate={false}
         locale={{ playListsText: "Test" }}
-        // getAudioInstance={(instance) => {
-        //   setAudioInstance(instance);
-        // }}
+        onAudioPlay={onAudioPlay}
       />
     </div>
-
-    
   );
 }
