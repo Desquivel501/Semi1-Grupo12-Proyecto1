@@ -141,7 +141,7 @@ export default function CustomDrawer() {
                             </ListItem>
 
                             <ListItem key="buscar">
-                                <ListItemButton>
+                                <ListItemButton component={Link} to="/Search">
                                     <ListItemIcon>
                                         <SearchIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
                                     </ListItemIcon>

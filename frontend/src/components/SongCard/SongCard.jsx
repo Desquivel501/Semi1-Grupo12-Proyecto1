@@ -61,7 +61,7 @@ export const SongCard = (props) => {
         <Grid
           item
           xs={12}
-          sx={{ border: 0 }}
+          sx={{ border: 0, pb:1 }}
           textAlign='center'
         >
           <Box

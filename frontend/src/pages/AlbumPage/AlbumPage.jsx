@@ -325,7 +325,7 @@ export default function AlbumPage() {
                     <Divider sx={{borderColor:'#fff', mb:2}}/>
 
                     {rows.map((row, i) => (
-                        <Grid item xs={12} md={12} lg={12} align='left' display="-webkit-box" 
+                        <Grid item xs={12} md={12} lg={12} align='left' display="-webkit-box" key={i+1}
                             sx={{
                                 pl:2, 
                                 cursor: 'pointer',

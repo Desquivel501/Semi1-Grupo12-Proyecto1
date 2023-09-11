@@ -62,7 +62,7 @@ export const Section = (props) => {
                 sx={{ width: "100%", pl:2}}
                 alignItems="center"
                 justifyContent="space-around"
-                xs={12} 
+                // xs={12} 
             > 
                 <Grid 
                     item xs={8} 

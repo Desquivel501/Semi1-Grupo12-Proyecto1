@@ -8,6 +8,7 @@ import AlbumPage from './pages/AlbumPage/AlbumPage';
 import Login from './pages/Login/Login';
 import Signup from './pages/Signup/Signup';
 import Perfil from './pages/Perfil/Perfil';
+import SearchPage from './pages/SearchPage/SearchPage';
 import { SesionProvider } from './context/SessionContext';
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
           <Route path={"/Login"} element={<Login />} />
           <Route path={"/Signup"} element={<Signup />} />
           <Route path={"/Perfil"} element={<Perfil />} />
+          <Route path={"/Search"} element={<SearchPage />} />
           <Route path={"*"} element={<h1>Not Found</h1>} />
       </Routes> 
 
