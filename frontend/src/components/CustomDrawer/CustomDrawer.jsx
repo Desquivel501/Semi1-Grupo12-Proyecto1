@@ -97,7 +97,7 @@ export default function CustomDrawer() {
                             mb:-1
                         }}
                         alt="Logo"
-                        src="./src/assets/logo_white.png"
+                        src="https://soundstream-semi1-g12.s3.us-east-2.amazonaws.com/logo_white.png"
                     />
                     
                     <Toolbar  align="center" sx={{justifyContent:'center', pb:1}} >

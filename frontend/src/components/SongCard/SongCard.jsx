@@ -3,9 +3,14 @@ import { useTheme } from "@mui/material/styles";
 import { Box, Grid, Typography, Fab, Paper } from "@mui/material";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { useState, useEffect, useRef } from 'react'
+import {
+  useNavigate,
+} from 'react-router-dom'
 
 export const SongCard = (props) => {
   const ref = useRef(null)
+
+  const navigate = useNavigate();
 
   const {
     image,
@@ -14,16 +19,24 @@ export const SongCard = (props) => {
     descripcion,
     size,
     data,
-    song
+    type
   } = props;
 
   const handleSelect = () => {
-    if(song){
-      const queue = {
-        song_list: [data],
-        lastUpdate: Date.now()
-      }
-      window.sessionStorage.setItem("queue",JSON.stringify(queue));
+    console.log(type);
+    if(type == "song"){
+      const route = `/Song/${data.id}`;
+      navigate(route);
+    }
+
+    if(type == "album"){
+      const route = `/Album/${data.id}`;
+      navigate(route);
+    }
+
+    if(type == "artist"){
+      const route = `/Artist/${data.id}`;
+      navigate(route);
     }
   };
 

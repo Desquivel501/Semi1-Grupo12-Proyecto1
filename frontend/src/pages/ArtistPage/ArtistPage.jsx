@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Link,
-    Routes,
-    Route,
     useParams,
     useNavigate,
 } from 'react-router-dom'
@@ -83,8 +80,7 @@ const rows = [
   ];
 
 
-export default function AlbumPage(props) {
-
+export default function ArtistPage(props) {
     const {
         platlist = false,
         admin = true,
@@ -95,18 +91,21 @@ export default function AlbumPage(props) {
     const [isHovered, setIsHovered] = useState(0);
     const [color, setColor] = useState('#626262');
     const [count, setCount] = useState(0);
-    const [album, setAlbum] = useState({
+    const [artist, setArtist] = useState({
         id: 0,
         name: 'Test',
         cover:
             'https://soundstream-semi1-g12.s3.us-east-2.amazonaws.com/no_album.jpg',
     });
 
+
     useEffect(() => {
         console.log(id)
-        for(var i = 0; i < album_list.length; i++){
-            if(album_list[i].id == id){
-                setAlbum(album_list[i])
+        for(var i = 0; i < artist_list.length; i++){
+            console.log(song_list[i].id + " " + id)
+            if(artist_list[i].id == id){
+                console.log(artist_list[i])
+                setArtist(artist_list[i])
                 break;
             }
         }
@@ -114,7 +113,7 @@ export default function AlbumPage(props) {
      
     },[]);
 
-
+    
 
     const handleMouseEnter = (n) => {
         setIsHovered(n);
@@ -211,6 +210,8 @@ export default function AlbumPage(props) {
                     container
                     spacing={3}
                     sx={{ width: "100%", overflow: 'auto', ml:3, pt:3, border:0, display: 'flex', flexDirection: 'row'}}
+                    // alignItems="top"
+                    // justifyContent="left"
                     justify="flex-end"
                     alignItems="center"
                     
@@ -226,11 +227,11 @@ export default function AlbumPage(props) {
                             boxShadow: '5px 5px 10px #000000', 
                         }}
                         alt="Logo"
-                        src={album.cover}
+                        src={artist.cover}
                     />
 
                     <ColorExtractor
-                        src={album.cover}
+                        src={artist.cover}
                         getColors={colors => {
                             console.log(colors)
                             selectColor(colors[0])
@@ -254,7 +255,7 @@ export default function AlbumPage(props) {
                                     color: "#fff",
                                 }}
                                 >
-                                {platlist ? 'Playlist' : 'Album'}
+                                Artist
                             </Typography>
 
                             <Typography
@@ -267,40 +268,9 @@ export default function AlbumPage(props) {
                                     color: "#fff",
                                 }}
                                 >
-                                {album.name}
+                                {artist.name}
                             </Typography>
 
-                            {
-                                !platlist &&
-                                <Typography
-                                    variant="h3"
-                                    component="h3"
-                                    align="left"
-                                    sx={{
-                                        fontFamily: "monospace",
-                                        fontWeight: 700,
-                                        color: "#fff",
-                                    }}
-                                    >
-                                    {album.artist}
-                                </Typography>
-                            }
-
-                            {
-                                platlist &&
-                                <Typography
-                                    variant="h6"
-                                    component="h6"
-                                    align="left"
-                                    sx={{
-                                        fontFamily: "monospace",
-                                        fontWeight: 700,
-                                        color: "#fff",
-                                    }}
-                                    >
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer pulvinar nibh vel enim gravida sodales. Aliquam erat volutpat. Fusce eget est ante. Morbi vitae ante quis lacus imperdiet tristique id vel orci. Aliquam congue purus libero, eget pellentesque odio efficitur a. Duis tincidunt cursus finibus. Sed egestas erat id elit finibus mollis. 
-                                </Typography>
-                            }
 
                             <Grid item xs={12} md={12} lg={12} align='left' sx={{pt:2}} >
 
@@ -326,11 +296,7 @@ export default function AlbumPage(props) {
                                             backgroundColor: "#353535",
                                     },}} >Editar</Button>
                                 }
-
                             </Grid>
-
-                            
-                        
                     </Grid>
 
                 </Grid>

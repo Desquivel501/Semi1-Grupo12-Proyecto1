@@ -9,6 +9,8 @@ import Login from './pages/Login/Login';
 import Signup from './pages/Signup/Signup';
 import Perfil from './pages/Perfil/Perfil';
 import SearchPage from './pages/SearchPage/SearchPage';
+import SongPage from './pages/SongPage/SongPage';
+import ArtistPage from './pages/ArtistPage/ArtistPage';
 import { SesionProvider } from './context/SessionContext';
 
 function App() {
@@ -23,11 +25,13 @@ function App() {
 
       <Routes>
           <Route index path={"/"} element={<StartPage />} />
-          <Route path={"/Album"} element={<AlbumPage />} />
+          <Route path={"/Album/:id"} element={<AlbumPage />} />
           <Route path={"/Login"} element={<Login />} />
           <Route path={"/Signup"} element={<Signup />} />
           <Route path={"/Perfil"} element={<Perfil />} />
           <Route path={"/Search"} element={<SearchPage />} />
+          <Route path={"/Song/:id"} element={<SongPage />} />
+          <Route path={"/Artist/:id"} element={<ArtistPage />} />
           <Route path={"*"} element={<h1>Not Found</h1>} />
       </Routes> 
 
