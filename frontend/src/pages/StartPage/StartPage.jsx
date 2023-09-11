@@ -75,9 +75,9 @@ export default function StartPage() {
                 alignItems="top"
                 justifyContent="left"
             > 
-                <Section title="Canciones" items={song_list}/>
-                <Section title="Albumes" items={album_list}/>
-                <Section title="Artistas" items={artist_list}/>
+                <Section title="Canciones" items={song_list} type={"song"}/>
+                <Section title="Albumes" items={album_list} type={"album"}/>
+                <Section title="Artistas" items={artist_list} type={"artist"}/>
 
             </Grid>
 

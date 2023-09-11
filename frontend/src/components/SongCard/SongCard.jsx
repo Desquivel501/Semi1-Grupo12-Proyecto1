@@ -1,26 +1,50 @@
 import * as React from "react";
 import { useTheme } from "@mui/material/styles";
-import { Box, Grid, Typography } from "@mui/material";
-import Paper from "@mui/material/Paper";
+import { Box, Grid, Typography, Fab, Paper } from "@mui/material";
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import { useState, useEffect, useRef } from 'react'
+import {
+  useNavigate,
+} from 'react-router-dom'
 
 export const SongCard = (props) => {
+  const ref = useRef(null)
+
+  const navigate = useNavigate();
+
   const {
     image,
     id,
     title,
     descripcion,
-    onSelect,
     size,
+    data,
+    type
   } = props;
 
   const handleSelect = () => {
-    onSelect(id);
+    console.log(type);
+    if(type == "song"){
+      const route = `/Song/${data.id}`;
+      navigate(route);
+    }
+
+    if(type == "album"){
+      const route = `/Album/${data.id}`;
+      navigate(route);
+    }
+
+    if(type == "artist"){
+      const route = `/Artist/${data.id}`;
+      navigate(route);
+    }
   };
 
   const theme = useTheme();
 
   return (
     <Grid
+      ref={ref}
       item
       xs={size}
       sx={{
@@ -30,6 +54,7 @@ export const SongCard = (props) => {
         py:2,
         pl: '0px !important',
         backgroundColor: '#1f1f1f',
+        cursor: 'pointer',
         "&:hover": {
           backgroundColor: "#626262",
         },
@@ -49,10 +74,10 @@ export const SongCard = (props) => {
         <Grid
           item
           xs={12}
-          sx={{ border: 0 }}
+          sx={{ border: 0, pb:1 }}
           textAlign='center'
         >
-           <Box
+          <Box
                 component="img"
                 sx={{
                   height: "auto",
@@ -100,7 +125,6 @@ export const SongCard = (props) => {
                 {descripcion}
             </Typography>
         </Grid>
-
       </Grid>
     </Grid>
   );

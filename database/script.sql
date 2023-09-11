@@ -55,6 +55,41 @@ CREATE TABLE Song_artists (
 ) $$
 
 
+CREATE TABLE Playlists (
+	id_playlist INTEGER NOT NULL AUTO_INCREMENT,
+	name VARCHAR(150),
+	description VARCHAR(255),
+	image VARCHAR(255),
+	email VARCHAR(255),
+	PRIMARY KEY(id_playlist),
+	FOREIGN KEY(email) REFERENCES Users(email)
+) $$
+
+CREATE TABLE Playlists_details (
+	id_playlist INTEGER,
+	id_song INTEGER,
+	UNIQUE(id_playlist, id_song),
+	FOREIGN KEY(id_playlist) REFERENCES Playlists(id_playlist) ON DELETE CASCADE,
+	FOREIGN KEY(id_song) REFERENCES Songs(id_song) ON DELETE CASCADE
+) $$
+
+CREATE TABLE Favorites (
+	email VARCHAR(255),
+	id_song INTEGER,
+	UNIQUE(email, id_song),
+	FOREIGN KEY(email) REFERENCES Users(email) ON DELETE CASCADE,
+	FOREIGN KEY(id_song) REFERENCES Songs(id_song) ON DELETE CASCADE
+) $$
+
+CREATE TABLE History (
+	email VARCHAR(255),
+	id_song INTEGER,
+	date DATETIME,
+	FOREIGN KEY(email) REFERENCES Users(email) ON DELETE CASCADE
+	-- FOREIGN KEY(id_song) REFERENCES Songs(id_song) ON DELETE CASCADE
+) $$
+
+
 SELECT * FROM Artists
 
 CALL CreateArtist('Eminem', 'fsfasdfasdf', '1972-10-17')
@@ -73,6 +108,43 @@ CALL CreateSong('Clouds', 'asdfasfasd', 243, 2, 'afdsafdsafds')
 
 CALL UpdateSong(3, 'The Search', 'adfasdaf', 242, 2, 'sfasdfsafda')
 
+CALL AddSongAlbum(1, 1);
+CALL AddSongAlbum(4, 1);
+CALL AddSongAlbum(2, 1);
+
+CALL CreatePlaylist('Hip Hop Mix', 'Test', 'sfafsdfasfg', 'montenegroandres2001@gmail.com')
+CALL CreatePlaylist('Hip Hop Mix', 'Test', 'sfafsdfasfg', 'a@b.com') 
+
+CALL AddSongPlaylist(1,1, 'montenegroandres2001@gmail.com')
+CALL AddSongPlaylist(1,2, 'montenegroandres2001@gmail.com')
+CALL AddSongPlaylist(1,4, 'montenegroandres2001@gmail.com')
+
+CALL AddSongPlaylist(2,1, 'a@b.com')
+CALL AddSongPlaylist(2,3, 'a@b.com')
+CALL AddSongPlaylist(2,4, 'a@b.com')
+
+CALL RemoveSongPlaylist(2,1, 'montenegroandres2001@gmail.com')
+CALL RemoveSongPlaylist(2,3, 'a@b.com')
+
+CALL AddSongPlaylist(1,1, 'montenegroandres2001@gmail.com')
+
+CALL RemovePlaylist(1,  'montenegroandres2001@gmail.com') 
+
+CALL AddToFavorites(1, 'montenegroandres2001@gmail.com')
+CALL AddToFavorites(3, 'montenegroandres2001@gmail.com')
+
+CALL AddToHistory(1, 'montenegroandres2001@gmail.com')
+CALL AddToHistory(1, 'montenegroandres2001@gmail.com')
+CALL AddToHistory(1, 'montenegroandres2001@gmail.com')
+CALL AddToHistory(3, 'montenegroandres2001@gmail.com')
+CALL AddToHistory(4, 'montenegroandres2001@gmail.com')
+CALL AddToHistory(2, 'montenegroandres2001@gmail.com')
+
+SELECT * FROM Playlists_details;
+SELECT * FROM Users u 
 SELECT * FROM Albums
 SELECT * FROM Songs
 SELECT * FROM Song_artists
+SELECT * FROM Playlists;
+SELECT * FROM Favorites f;
+SELECT * FROM History
