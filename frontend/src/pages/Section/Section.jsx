@@ -48,7 +48,7 @@ export const Section = (props) => {
     const {
       title,
       items,
-      songs
+      type
     } = props;
 
     return (
@@ -102,7 +102,7 @@ export const Section = (props) => {
                             descripcion={item.singer}
                             size={2}
                             data={item}
-                            song={songs}
+                            type={type}
                         />
                         : null
                     })}

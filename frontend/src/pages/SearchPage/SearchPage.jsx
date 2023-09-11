@@ -230,6 +230,7 @@ export default function SearchPage() {
                                 descripcion={item.singer}
                                 size={2}
                                 data={item}
+                                type={"song"}
                             />
                         )
                         
