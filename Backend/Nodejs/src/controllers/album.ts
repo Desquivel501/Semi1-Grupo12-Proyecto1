@@ -23,6 +23,12 @@ export class AlbumController {
     });
   }
 
+  static getAlbums(req: Request, res: Response) {
+    AlbumModel.getAlbums((response, ok) => {
+      res.status(ok ? 200 : 400).json(response);
+    });
+  }
+
   static getSongs(req: Request, res: Response) {
     const { id } = req.params;
     if (!id) return res.status(401).json({ MESSAGE: "Falta el id" });
