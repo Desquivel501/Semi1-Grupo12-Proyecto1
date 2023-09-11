@@ -13,7 +13,6 @@ const options = {
   showReload: false,
   showThemeSwitch: false,
   mode: "full",
-  onAutoPlayInitLoadPlayList : true,
   spaceBar: true,
 };
 
@@ -25,7 +24,7 @@ export default function Player() {
     first: true,
     lastUpdate: 0,
     list: song_list,
-    playerOptions: options
+    playerOptions: {...options, autoPlay: false, audioLists: []}
   });
 
   const [audioInstance, setAudioInstance] = useState(null)
@@ -46,7 +45,7 @@ export default function Player() {
         setState ({
           first: false,
           lastUpdate: date,
-          playerOptions: {...options, audioLists: song_list}
+          playerOptions: {...options, autoPlay: false, audioLists: song_list}
         })
 
       } else {
@@ -59,6 +58,8 @@ export default function Player() {
             lastUpdate: queue.lastUpdate,
             playerOptions: {
                 ...options, 
+                autoPlay: true,
+                onAutoPlayInitLoadPlayList: true,
                 clearPriorAudioLists: true,
                 quietUpdate: false,
                 audioLists: queue.song_list,
@@ -86,7 +87,6 @@ export default function Player() {
         {...state.playerOptions}
         // audioLists={state.list}
         showMediaSession
-        // autoPlay={false}
         quietUpdate={false}
         locale={{ playListsText: "Test" }}
         // getAudioInstance={(instance) => {
