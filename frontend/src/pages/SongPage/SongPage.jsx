@@ -316,6 +316,7 @@ export default function SongPage(props) {
                                 {
                                     admin &&
                                     <Button id='1'
+                                        onClick={() => navigate('/Edit/Song/'+song.id)}
                                         sx={{backgroundColor:'#1f1f1f', color:'#fff', borderRadius: "20px", fontSize: '0.9rem', fontWeight: 700, mx:1, py:1, px:2,
                                         "&:hover": {
                                             backgroundColor: "#353535",
@@ -331,11 +332,7 @@ export default function SongPage(props) {
                 </Grid>
 
             </Grid>
-
-               
-
             </ThemeProvider>
-
         </Box>
       </>
     );

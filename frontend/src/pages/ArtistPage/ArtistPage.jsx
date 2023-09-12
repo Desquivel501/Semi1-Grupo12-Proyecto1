@@ -161,11 +161,7 @@ export default function ArtistPage(props) {
       <>
          <Box
             component="main"
-            display="flex"
             width="100%"
-            height={window.innerHeight - 130}
-            justify="flex-end"
-            alignItems="top"
             sx={{
                 flexGrow: 1,
                 border:0,
@@ -255,7 +251,7 @@ export default function ArtistPage(props) {
                                     color: "#fff",
                                 }}
                                 >
-                                Artist
+                                Artista
                             </Typography>
 
                             <Typography
@@ -291,6 +287,7 @@ export default function ArtistPage(props) {
                                 {
                                     admin &&
                                     <Button id='1'
+                                        onClick={() => navigate('/Edit/Artist/'+artist.id)}
                                         sx={{backgroundColor:'#1f1f1f', color:'#fff', borderRadius: "20px", fontSize: '0.9rem', fontWeight: 700, mx:1, py:1, px:2,
                                         "&:hover": {
                                             backgroundColor: "#353535",
