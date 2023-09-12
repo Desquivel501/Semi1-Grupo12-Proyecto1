@@ -40,7 +40,7 @@ class ArtistModel:
                 f"SELECT a.id_artist AS id, a.name,a.image AS cover,a.birthdate  FROM Artists a WHERE a.id_artist='{id}'"
             )
             result = cursor.fetchone()
-            if len(result) > 0:
+            if result is not None and len(result) > 0:
                 # Convierte el resultado en un diccionario y lo devuelve
                 response = dict(zip(cursor.column_names, result))
                 return response, True

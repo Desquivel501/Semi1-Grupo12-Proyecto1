@@ -37,15 +37,13 @@ class SongModel:
             cursor = db.cursor(buffered=True)
             # Ejecuta la consulta SQL para obtener el usuario por su email
             cursor.execute(
-                """SELECT s.name as name,a.name as singer,s.image as cover, s.file as musicSrc FROM Songs s  
+                f"""SELECT s.name as name,a.name as singer,s.image as cover, s.file as musicSrc FROM Songs s  
                     JOIN Song_artists sa ON s.id_song=sa.id_song
                     JOIN Artists a ON sa.id_artist=a.id_artist
-                    WHERE s.id_song={id}""".format(
-                    id=id
-                ),
+                    WHERE s.id_song={int(id)}"""
             )
             result = cursor.fetchone()
-            if len(result) > 0:
+            if result is not None and len(result) > 0:
                 # Convierte el resultado en un diccionario y lo devuelve
                 response = dict(zip(cursor.column_names, result))
                 return response, True
