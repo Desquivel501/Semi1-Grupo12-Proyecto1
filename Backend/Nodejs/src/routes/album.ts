@@ -10,5 +10,6 @@ albumRouter.get("/",AlbumController.getAlbums);
 albumRouter.get("/:id",AlbumController.getAlbum);
 albumRouter.get("/:id/songs",AlbumController.getSongs);
 albumRouter.post("/newAlbum",uploadAlbum.single("cover"),AlbumController.createAlbum);
+albumRouter.post("/addSong",AlbumController.addSong);
 albumRouter.patch("/:id");
 albumRouter.delete("/:id");

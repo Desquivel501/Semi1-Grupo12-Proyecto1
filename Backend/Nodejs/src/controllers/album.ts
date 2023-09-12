@@ -38,6 +38,20 @@ export class AlbumController {
     });
   }
 
+  static addSong(req: Request, res: Response) {
+    const { id_album, id_song } = req.body;
+    if (!id_album || !id_song) {
+      return res.status(400).json({ MESSAGE: "Faltan datos" });
+    }
+    AlbumModel.addSong(
+      parseInt(id_album),
+      parseInt(id_song),
+      (response, ok) => {
+        res.status(ok ? 200 : 400).json(response);
+      },
+    );
+  }
+
   static editAlbum(req: Request, res: Response) {
     res.json({ message: "Album edited" });
   }
