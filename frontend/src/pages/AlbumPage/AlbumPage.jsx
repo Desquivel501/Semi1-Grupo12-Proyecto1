@@ -269,12 +269,12 @@ export default function AlbumPage(props) {
                                 >
                                 {album.name}
                             </Typography>
-
+                            
                             {
                                 !platlist &&
                                 <Typography
-                                    variant="h3"
-                                    component="h3"
+                                    variant="h4"
+                                    component="h4"
                                     align="left"
                                     sx={{
                                         fontFamily: "monospace",
@@ -282,7 +282,7 @@ export default function AlbumPage(props) {
                                         color: "#fff",
                                     }}
                                     >
-                                    {album.artist}
+                                    {album.singer}
                                 </Typography>
                             }
 
@@ -321,6 +321,7 @@ export default function AlbumPage(props) {
                                 {
                                     admin &&
                                     <Button id='1'
+                                        onClick={() => navigate('/Edit/Album/'+id)}
                                         sx={{backgroundColor:'#1f1f1f', color:'#fff', borderRadius: "20px", fontSize: '0.9rem', fontWeight: 700, mx:1, py:1, px:2,
                                         "&:hover": {
                                             backgroundColor: "#353535",
@@ -442,6 +443,8 @@ export default function AlbumPage(props) {
                                 >
                                 {row.title}
                             </Typography>
+
+                            
 
                         </Grid>
                         
