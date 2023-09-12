@@ -82,6 +82,20 @@
 <logicalDatatype>LOGDT011</logicalDatatype>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 </Attribute>
+<Attribute name="id_artist" id="FE8C3546-36B4-303C-B4CD-1EF1B0D73D6A">
+<createdBy>monte</createdBy>
+<createdTime>2023-09-12 08:58:40 UTC</createdTime>
+<generatorID>992F0404-20C9-36F4-3FB8-2F86A37DB074</generatorID>
+<ownerDesignName>Modelo proyecto 1</ownerDesignName>
+<engineerTo>
+<item key="43415F62-7D39-393C-20AF-A90E0B30867D" value="true"/>
+</engineerTo>
+<referedAttribute>58BCBEE0-8C78-A234-0D0B-3B04FAEB5E12</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
 </attributes>
 <identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
 <identifier id="240FDB93-322D-1671-E001-15386B628176" name="Song PK">

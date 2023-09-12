@@ -157,8 +157,29 @@ END $$
 
 
 -- Procedimiento para la eliminación de un artista
-/*PENDIENTE*/
+DROP PROCEDURE IF EXISTS DeleteArtist $$
+CREATE PROCEDURE DeleteArtist (
+	IN id_artist_In INTEGER
+)
+delete_artist:BEGIN
+	DECLARE artist_name VARCHAR(200);
+	SELECT a.name INTO artist_name
+	FROM Artists a 
+	WHERE a.id_artist = id_artist_in;
 
+	if artist_name = '' OR artist_name IS NULL THEN 
+		SELECT 'El artista que ingresó no existe' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE delete_artist;
+	END IF;
+
+	DELETE FROM 
+	Artists a
+	WHERE a.id_artist = id_artist_in;
+
+	SELECT 'El artista ha sido eliminado exitosamente' AS 'MESSAGE',
+	'SUCCESS' AS 'TYPE';
+END $$
 
 -- Procedimiento para crear un nuevo album
 DROP PROCEDURE IF EXISTS CreateAlbum $$
@@ -206,7 +227,6 @@ create_album:BEGIN
 
 END $$
 
-
 -- Procedimiento para actualizar un album
 DROP PROCEDURE IF EXISTS UpdateAlbum $$
 CREATE PROCEDURE UpdateAlbum (
@@ -222,7 +242,7 @@ update_album:BEGIN
 
 	SELECT a.name INTO album_name
 	FROM Albums a
-	WHERE a.id_album = id_song_in;
+	WHERE a.id_album = id_album_in;
 
 	SELECT a.name INTO artist_name 
 	FROM Artists a 
@@ -263,6 +283,79 @@ update_album:BEGIN
 	'SUCCESS' AS 'TYPE';
 END $$
 
+-- Procedimiento para agregar una canción a un album
+DROP PROCEDURE IF EXISTS AddSongAlbum $$
+CREATE PROCEDURE AddSongAlbum(
+	IN id_song_in INTEGER,
+	IN id_album_in INTEGER
+)
+add_song_album:BEGIN
+	DECLARE album_song INTEGER;
+
+	IF NOT(correct_song_album(id_song_in, id_album_in)) THEN
+		SELECT 'La canción y el album a asignar deben ser del mismo artista' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE add_song_album;	
+	END IF;
+
+	SELECT s.id_album INTO album_song
+	FROM Songs s 
+	WHERE s.id_song = id_song_in;
+
+	IF album_song IS NOT NULL THEN
+		SELECT 'La canción seleccionada ya pertenece a un album' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE add_song_album;	
+	END IF;
+
+	UPDATE Songs
+	SET id_album = id_album_in
+	WHERE id_song = id_song_in;
+
+	SELECT 'La canción ha sido asignada al album exitósamente' AS 'MESSAGE',
+	'SUCCESS' AS 'TYPE';
+END $$
+
+-- Procedimiento para eliminar una canción de un album
+DROP PROCEDURE IF EXISTS RemoveSongAlbum $$
+CREATE PROCEDURE RemoveSongAlbum(
+	IN id_song_in INTEGER,
+	IN id_album_in INTEGER	
+)
+remove_song_album:BEGIN
+	IF NOT(song_in_album(id_song_in, id_album_in)) THEN
+		SELECT 'La canción a eliminar no se encuentra en el album indicado' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE remove_song_album;	
+	END IF;
+	
+	UPDATE Songs 
+	SET id_album = NULL
+	WHERE id_song = id_song_in
+	AND id_album = id_album_in;
+
+	SELECT 'La canción ha sido eliminada del album exitósamente' AS 'MESSAGE',
+	'SUCCESS' AS 'TYPE';
+END $$
+
+-- Procedimiento para eliminar un album
+DROP PROCEDURE IF EXISTS DeleteAlbum $$
+CREATE PROCEDURE DeleteAlbum (
+	id_album_in INTEGER
+)
+delete_album:BEGIN
+	IF NOT exists_album(id_album_in) THEN
+		SELECT 'El album indicado no existe' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE delete_album;
+	END IF;	
+
+	DELETE FROM Albums a
+	WHERE a.id_album = id_album_in;
+
+	SELECT 'El album ha sido removido exitósamente' AS 'MESSAGE',
+	'SUCCESS' AS 'TYPE';
+END $$
 
 -- Procedimiento para crear una canción
 DROP PROCEDURE IF EXISTS CreateSong $$
@@ -315,12 +408,12 @@ create_song:BEGIN
 		LEAVE create_song;
 	END IF;	
 
-	INSERT INTO Songs(name, image, length, file, id_album)
-	VALUES (name_in, image_in, length_in, file_in, NULL);
-
+	INSERT INTO Songs(name, image, length, file, id_album, id_artist)
+	VALUES (name_in, image_in, length_in, file_in, NULL, id_artist_in);
+	/*
 	INSERT INTO Song_artists 
 	VALUES (LAST_INSERT_ID(), id_artist_in);
-	
+	*/
 	SELECT 'La canción ha sido creada exitósamente' AS 'MESSAGE',
 	'SUCCESS' AS 'TYPE';
 END $$
@@ -388,36 +481,36 @@ update_song:BEGIN
 	SET name = name_in,
 	image = image_in,
 	length = length_in,
-	file = file_in
+	file = file_in,
+	id_artist = id_artist_in
 	WHERE id_song = id_song_in;
 
+	/*
 	UPDATE Song_artists
 	SET id_artist = id_artist_in
 	WHERE id_song = id_song_in;
-
+	*/
 	SELECT 'La canción ha sido actualizada exitósamente' AS 'MESSAGE',
 	'SUCCESS' AS 'TYPE';
 END $$
 
 
--- Procedimiento para agregar una canción a un album
-DROP PROCEDURE IF EXISTS AddSongAlbum $$
-CREATE PROCEDURE AddSongAlbum(
-	IN id_song_in INTEGER,
-	IN id_album_in INTEGER
+-- Procedimiento para eliminar una canción
+DROP PROCEDURE IF EXISTS DeleteSong $$
+CREATE PROCEDURE DeleteSong(
+	IN id_song_in INTEGER
 )
-add_song_album:BEGIN
-	IF NOT(correct_song_album(id_song_in, id_album_in)) THEN
-		SELECT 'La canción y el album a asignar deben ser del mismo artista' AS 'MESSAGE',
+delete_song:BEGIN
+	IF NOT exists_song(id_song_in) THEN
+		SELECT 'La canción indicada no existe' AS 'MESSAGE',
 		'ERROR' AS 'TYPE';
-		LEAVE add_song_album;	
+		LEAVE delete_song;
 	END IF;
 
-	UPDATE Songs
-	SET id_album = id_album_in
-	WHERE id_song = id_song_in;
+	DELETE FROM Songs s
+	WHERE s.id_song = id_song_in;
 
-	SELECT 'La canción ha sido asignada al album exitósamente' AS 'MESSAGE',
+	SELECT 'La canción ha sido eliminada exitósamente' AS 'MESSAGE',
 	'SUCCESS' AS 'TYPE';
 END $$
 
