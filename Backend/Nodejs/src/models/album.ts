@@ -89,6 +89,29 @@ export class AlbumModel {
     }
   }
 
+  static addSong(
+    id_album: number,
+    id_song: number,
+    callback: (response: any, ok: Boolean) => void,
+  ) {
+    try {
+      pool.query("CALL AddSongAlbum(?,?)", [
+        id_album,
+        id_song
+      ], (err, result) => {
+        if (err) throw err;
+        if (result[0][0].TYPE == "ERROR") callback(result[0][0], false);
+        else {
+          callback(result[0][0], true);
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      callback(error, false);
+    }
+  }
+
+
   static editAlbum({ data }: { data: any }) {
   }
   static deleteAlbum({ id }: { id: number }) {
