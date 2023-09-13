@@ -25,6 +25,8 @@ import song_list from '../../assets/song_list';
 import album_list from '../../assets/album_list';
 import artist_list from '../../assets/artist_list';
 
+import GetAll from './GetAll';
+
 
 import SearchBar from '../../components/SearchBar/SearchBar';
 
@@ -85,7 +87,11 @@ const rows = [
   ];
 
 
-export default function SearchPage() {
+export default function SearchPage(props) {
+
+    const {
+        crud = false,
+    } = props;
 
     const [isHovered, setIsHovered] = useState(0);
     const [color, setColor] = useState('#626262');
@@ -93,10 +99,12 @@ export default function SearchPage() {
     const [sent, setSent] = useState('');
 
     const [buttons, setButtons] = useState([ 
-        {id: 1, name: 'Canciones', active: true, color: '#626262'},
-        {id: 2, name: 'Álbumes', active: false, color: '#1f1f1f'},
-        {id: 3, name: 'Artistas', active: false, color: '#1f1f1f'},
+        {id: 1, name: 'Canciones', active: true, color: '#626262', type: 'song'},
+        {id: 2, name: 'Álbumes', active: false, color: '#1f1f1f', type: 'album'},
+        {id: 3, name: 'Artistas', active: false, color: '#1f1f1f', type: 'artist'},
     ]);
+
+    const [active, setActive] = useState('song');
 
     const [cont, setCont] = useState(0);
 
@@ -111,6 +119,7 @@ export default function SearchPage() {
             if(buttons[i].id == id){
                 buttons[i].active = true;
                 buttons[i].color = '#626262';
+                setActive(buttons[i].type)
             } else {
                 buttons[i].active = false;
                 buttons[i].color = '#1f1f1f';
@@ -119,6 +128,7 @@ export default function SearchPage() {
         setButtons(buttons)
         setCont(cont+1)
     }
+
 
     useEffect(() => {
 
@@ -137,6 +147,7 @@ export default function SearchPage() {
         }, 750);
         return () => clearInterval(interval);
       },[search, sent]);
+    
 
     return (
       <>
@@ -152,6 +163,7 @@ export default function SearchPage() {
                 m:-2,
                 backgroundColor: "#4b4b4b",
                 borderRadius: 5,
+                height: window.innerHeight - 150,
             }}
             
         >
@@ -191,7 +203,7 @@ export default function SearchPage() {
                 <Grid
                     container
                     spacing={3}
-                    sx={{ width: "100%", ml:3, mt:1}}
+                    sx={{ width: "100%", ml:3, mt:1, mb:3}}
                     alignItems="top"
                     justifyContent="left"
                 > 
@@ -212,32 +224,10 @@ export default function SearchPage() {
                         },}} >Artistas</Button>
                 </Grid>
 
-                <Grid
-                    container
-                    spacing={3}
-                    sx={{ width: "100%", ml:3, mt:2}}
-                    alignItems="top"
-                    justifyContent="space-around"
-                > 
+                <GetAll type={active} title={false} crud={crud} search={search} sx={{mt:0}}/>
 
-                    {song_list.map((item, i) => {
-                        return (
-                            <SongCard 
-                                key={i}
-                                id={i}
-                                title={item.name}
-                                image={item.cover}
-                                descripcion={item.singer}
-                                size={2}
-                                data={item}
-                                type={"song"}
-                            />
-                        )
-                        
-                    })}
-
-                </Grid>
             </Grid>
+            
             </ThemeProvider>
 
         </Box>
