@@ -38,6 +38,16 @@ export const SongCard = (props) => {
       const route = `/Artist/${data.id}`;
       navigate(route);
     }
+
+    if(type == "playlist"){
+      const route = `/Playlist/${data.id}`;
+      navigate(route);
+    }
+
+    if(type == "new_song"){
+      const route = `/New/Song`;
+      navigate(route);
+    }
   };
 
   const theme = useTheme();
