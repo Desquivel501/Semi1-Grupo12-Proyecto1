@@ -128,7 +128,7 @@ export default function GetAll(props) {
                             <SongCard 
                                 key={0}
                                 id={0}
-                                title='Agregar Cancion'
+                                title={type === "song" ? "Nueva Canción" : type === "album" ? "Nuevo Album" : type === "artist" ? "Nuevo Artista" : ""}
                                 image='https://shorturl.at/pxAF1'
                                 descripcion=""
                                 size={2}
