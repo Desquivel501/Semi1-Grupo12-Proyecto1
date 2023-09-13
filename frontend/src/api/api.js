@@ -25,3 +25,15 @@ export function inicioSesion(data) {
   .then((res) => res.json())
   .catch((err) => console.log(err));
 }
+
+export function sendFormData({ endpoint, data }) {
+  return fetch(`${API}${endpoint}`, {
+    method: "POST",
+    body: data,
+    headers: {
+      "Access-Control-Allow-Origin_Origin": "*",
+    },
+  })
+    .then((res) => res.json())
+    .catch((err) => console.log(err));
+}

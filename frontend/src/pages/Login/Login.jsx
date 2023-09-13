@@ -46,27 +46,17 @@ export default function Login() {
       password: data.get("password"),
     });
 
-    console.log(mensaje)
+    if (mensaje.TYPE == "SUCCESS") {
+      navigate("/");
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: mensaje.MENSAJE,
+      })
+    }
 
-    // if (mensaje.TIPO == "EXITO") {
-    //   Swal.fire({
-    //     icon: 'success',
-    //     title: 'Creado',
-    //     text: mensaje.MENSAJE,
-    //   }).then((result) => {
-    //     if (result.isConfirmed) {
-    //       navigate("/");
-    //     }
-    //   })
-    // } else {
-    //   Swal.fire({
-    //     icon: 'error',
-    //     title: 'Oops...',
-    //     text: mensaje.MENSAJE,
-    //   })
-    // }
-
-    // event.target.reset();
+    event.target.reset();
   };
 
   const customTheme = createTheme({
@@ -217,6 +207,7 @@ export default function Login() {
                 <Grid container>
                   <Grid item>
                     <Link
+                      href="/Signup"
                     //   href="/RegistroCliente"
                       variant="body2"
                     //   style={{ color: "#626262", borderBottomColor: "#626262", '&:hover': { backgroundColor: '#626262' }}}
