@@ -38,8 +38,8 @@ CALL AddSongAlbum(1, 1) $$
 CALL AddSongAlbum(4, 1) $$
 CALL AddSongAlbum(2, 1) $$
 CALL AddSongAlbum(3, 1) $$
-CALL AddSongAlbum(4, 2) $$
-CALL AddSongAlbum(5, 2) $$
+CALL AddSongAlbum(7, 3) $$
+CALL AddSongAlbum(8, 3) $$
 
 /*CREANDO PLAYLISTS*/
 CALL CreatePlaylist('Hip Hop Mix', 'Test', 'sfafsdfasfg', 'montenegroandres2001@gmail.com') $$
@@ -60,6 +60,9 @@ CALL RemoveSongPlaylist(2,3, 'a@b.com') $$
 
 /*AGREGANDO CANCIONES A PLAYLSIT*/
 CALL AddSongPlaylist(1,1, 'montenegroandres2001@gmail.com') $$
+CALL AddSongPlaylist(1,2, 'montenegroandres2001@gmail.com') $$
+CALL AddSongPlaylist(1,3, 'montenegroandres2001@gmail.com') $$
+call AddSongPlaylist(:id_playlist_in, :id_song_in, :email_in) 
 
 /*REMOVIENDO CANCIONES DE PLAYLSIT*/
 CALL RemovePlaylist(1,  'montenegroandres2001@gmail.com')  $$
@@ -71,6 +74,29 @@ CALL AddToFavorites(3, 'montenegroandres2001@gmail.com') $$
 CALL AddToFavorites(4, 'montenegroandres2001@gmail.com') $$
 CALL AddToFavorites(5, 'montenegroandres2001@gmail.com') $$
 
+/*AGREGANDO AL HISTORIAL*/
+CALL AddToHistory(1, 'montenegroandres2001@gmail.com') $$ 
+CALL AddToHistory(1, 'montenegroandres2001@gmail.com') $$ 
+CALL AddToHistory(7, 'montenegroandres2001@gmail.com') $$ 
+CALL AddToHistory(8, 'montenegroandres2001@gmail.com') $$ 
+CALL AddToHistory(9, 'montenegroandres2001@gmail.com') $$ 
+CALL AddToHistory(9, 'montenegroandres2001@gmail.com') $$ 
+CALL AddToHistory(9, 'montenegroandres2001@gmail.com') $$ 
+CALL AddToHistory(9, 'montenegroandres2001@gmail.com') $$ 
+CALL AddToHistory(2, 'montenegroandres2001@gmail.com') $$ 
+CALL AddToHistory(2, 'montenegroandres2001@gmail.com') $$ 
+CALL AddToHistory(3, 'montenegroandres2001@gmail.com') $$ 
+CALL AddToHistory(7, 'montenegroandres2001@gmail.com') $$ 
+CALL AddToHistory(3, 'montenegroandres2001@gmail.com') $$ 
+CALL AddToHistory(2, 'montenegroandres2001@gmail.com') $$ 
+CALL AddToHistory(3, 'a@b.com') $$ 
+CALL AddToHistory(3, 'a@b.com') $$ 
+CALL AddToHistory(3, 'a@b.com') $$ 
+CALL AddToHistory(3, 'a@b.com') $$ 
+CALL AddToHistory(3, 'a@b.com') $$ 
+CALL AddToHistory(1, 'a@b.com') $$ 
+CALL AddToHistory(8, 'a@b.com') $$
+
 /*ELIMINANDO ARTISTA*/
 CALL DeleteArtist(2) $$ 
 
@@ -81,6 +107,34 @@ CALL DeleteSong(1) $$
 /*ELIMINANDO ALBUM*/
 CALL DeleteAlbum(1) $$
 
+/*TOP 5 CANCIONES MÁS REPRODUCIDAS*/
+CALL TopCanciones('montenegroandres2001@gmail.com') $$
+CALL TopCanciones('a@b.com') $$
+
+/*TOP 3 ARTISTAS MÁS ESCUCHADOS*/
+CALL TopArtistas('montenegroandres2001@gmail.com') $$
+CALL TopArtistas('a@b.com') $$
+
+/*TOP 5 ALBUMES MÁS REPRODUCIDOS*/
+CALL TopAlbumes('montenegroandres2001@gmail.com') $$
+CALL TopAlbumes('a@b.com') $$
+
+/*Obteniendo información de canciones*/
+CALL GetSong(1,'montenegroandres2001@gmail.com' ) $$
+
+
+CALL GetArtistSongs(3)
+
+CALL GetAlbumSongs(3) 
+
+CALL GetPlaylistSongs(2) 
+
+CALL GetAllSongs() 
+
+CALL GetAllArtists()
+
+CALL GetUserPlaylists('a@b.com')
+
 SELECT * FROM Songs s $$
 SELECT * FROM Song_artists sa $$
 SELECT * FROM Playlists p $$
@@ -88,3 +142,4 @@ SELECT * FROM Playlists_details pd $$
 SELECT * FROM Artists a $$
 SELECT * FROM Favorites f $$
 SELECT * FROM Albums a2 $$
+SELECT * FROM History h $$
