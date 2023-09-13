@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { 
     Box, 
@@ -26,6 +27,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
 import PersonIcon from '@mui/icons-material/Person';
 import SearchIcon from '@mui/icons-material/Search';
+
 
 const drawerWidth = 300;
 
@@ -95,7 +97,7 @@ export default function CustomDrawer() {
                             mb:-1
                         }}
                         alt="Logo"
-                        src="./src/assets/logo_white.png"
+                        src="https://soundstream-semi1-g12.s3.us-east-2.amazonaws.com/logo_white.png"
                     />
                     
                     <Toolbar  align="center" sx={{justifyContent:'center', pb:1}} >
@@ -139,7 +141,7 @@ export default function CustomDrawer() {
                             </ListItem>
 
                             <ListItem key="buscar">
-                                <ListItemButton>
+                                <ListItemButton component={Link} to="/Search">
                                     <ListItemIcon>
                                         <SearchIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
                                     </ListItemIcon>
@@ -181,7 +183,9 @@ export default function CustomDrawer() {
 
 
                             <ListItem key="perfil">
-                                <ListItemButton>
+                                <ListItemButton   
+                                component={Link} to="/Perfil"   
+                                >
                                     <ListItemIcon>
                                         <PersonIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
                                     </ListItemIcon>
@@ -193,7 +197,7 @@ export default function CustomDrawer() {
                     </Box>
                 </Drawer>
             </ThemeProvider>
-    
         </Box>
+        
     );
     }
