@@ -1,4 +1,5 @@
 from src.models.database.connection import getCnx
+from src.libs.crypto import encrypt
 from src.utils.formatDate import formatDate
 
 
@@ -10,6 +11,9 @@ class UserModel:
             db = getCnx()  # Obtiene una conexión desde la función
             cursor = db.cursor(buffered=True)
             birth_date = formatDate(user["birthDate"])
+            # crypto
+            password = encrypt(user["password"])
+            print(password)
             # Query
             cursor.callproc(
                 "Register",
@@ -18,7 +22,7 @@ class UserModel:
                     user["name"],
                     user["lastname"],
                     avatar_filename,
-                    user["password"],
+                    password,
                     birth_date,
                 ),
             )
@@ -51,4 +55,3 @@ class UserModel:
             return str(e), False
         finally:
             cursor.close()
-
