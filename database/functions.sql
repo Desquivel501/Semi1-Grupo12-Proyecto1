@@ -74,13 +74,21 @@ CREATE FUNCTION song_name_exists(
 RETURNS BOOLEAN
 DETERMINISTIC
 BEGIN
-	DECLARE existe BOOLEAN;
+	/*DECLARE existe BOOLEAN;
     SELECT EXISTS( 
     	SELECT 1 FROM Songs s
    		JOIN Song_artists sa
    		ON s.id_song = sa.id_song
    		AND s.name = name
    		AND sa.id_artist = id_artist
+    ) INTO existe;  
+    RETURN(existe);*/
+   
+   	DECLARE existe BOOLEAN;
+    SELECT EXISTS( 
+    	SELECT 1 FROM Songs s
+		WHERE s.name = name
+   		AND s.id_artist = id_artist
     ) INTO existe;  
     RETURN(existe);	
 END $$
@@ -97,15 +105,38 @@ DETERMINISTIC
 BEGIN
 	DECLARE correct BOOLEAN;
 	SELECT EXISTS(
-		SELECT 1 FROM Albums a
+		/*SELECT 1 FROM Albums a
 		JOIN Song_artists sa
 		ON a.id_artist = sa.id_artist
 		AND a.id_album = id_album
 		AND sa.id_song = id_song
+		*/
+		SELECT 1 FROM Albums a 
+		JOIN Songs s 
+		ON s.id_artist = a.id_artist 
+		AND a.id_album = id_album 
+		AND s.id_song = id_song
 	) INTO correct;
 	RETURN(correct);
 END $$
 
+-- FUNCIÓN PARA VERIFICAR QUE UNA CANCIÓN SE ENCUENTRE EN UN ALBUM
+DROP FUNCTION IF EXISTS song_in_album $$
+CREATE FUNCTION song_in_album(
+	id_song_in INTEGER,
+	id_album_in INTEGER
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+	DECLARE exists_song BOOLEAN;
+	SELECT EXISTS(
+		SELECT 1 FROM Songs a
+		WHERE a.id_song = id_song_in 
+		AND id_album = id_album_in
+	) INTO exists_song;
+	RETURN(exists_song);
+END $$
 
 -- FUNCIÓN PARA VERIFICAR SI UN USUARIO CUENTA YA CUENTA CON UNA PLAYLIST CON EL NOMBRE INGRESADO
 DROP FUNCTION IF EXISTS playlist_name_exists $$
@@ -176,6 +207,22 @@ BEGIN
 			WHERE s.id_song = id_song
 		) INTO exists_song;
 		RETURN(exists_song);
+END $$
+
+-- Verificar si un album existe
+DROP FUNCTION IF EXISTS exists_album $$
+CREATE FUNCTION exists_album (
+	id_album INTEGER
+)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+		DECLARE exists_album BOOLEAN;
+		SELECT EXISTS(
+			SELECT 1 FROM Albums a
+			WHERE a.id_album  = id_album
+		) INTO exists_album;
+		RETURN(exists_album);
 END $$
 
 -- Verificar si una playlist pertenece a un usuario específico

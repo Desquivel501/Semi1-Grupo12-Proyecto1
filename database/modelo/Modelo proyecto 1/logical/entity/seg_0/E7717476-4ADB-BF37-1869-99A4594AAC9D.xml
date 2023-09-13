@@ -1,7 +1,7 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
-<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="237D9CFE-D540-8CF3-81D5-16595DBD0DF5" name="history">
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="E7717476-4ADB-BF37-1869-99A4594AAC9D" name="Album_detail">
 <createdBy>monte</createdBy>
-<createdTime>2023-09-04 04:12:23 UTC</createdTime>
+<createdTime>2023-09-04 04:05:23 UTC</createdTime>
 <ownerDesignName>Modelo proyecto 1</ownerDesignName>
 <engineerTo>
 <item key="43415F62-7D39-393C-20AF-A90E0B30867D" value="true"/>
@@ -15,10 +15,10 @@
 <minVolumes>0</minVolumes>
 <normalForm>Third</normalForm>
 <attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
-<Attribute name="id_song" id="2AD27112-EDCD-5A1D-44BD-0702204554EE">
+<Attribute name="id_song" id="80684B0A-BAFB-7440-B168-E080F79AFCF3">
 <createdBy>monte</createdBy>
-<createdTime>2023-09-04 04:13:05 UTC</createdTime>
-<generatorID>1723AE83-F19C-4EF8-72A2-6A7B331BD8C3</generatorID>
+<createdTime>2023-09-04 04:05:38 UTC</createdTime>
+<generatorID>9609A251-D350-E7AD-5E6C-7821D44DACAF</generatorID>
 <ownerDesignName>Modelo proyecto 1</ownerDesignName>
 <engineerTo>
 <item key="43415F62-7D39-393C-20AF-A90E0B30867D" value="true"/>
@@ -29,32 +29,18 @@
 <logicalDatatype>LOGDT011</logicalDatatype>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 </Attribute>
-<Attribute name="Email" id="91C8272E-1CA7-731A-6AAE-A7F467A52A47">
+<Attribute name="id_album" id="66091478-F375-5D1F-D2B7-0145079A96BC">
 <createdBy>monte</createdBy>
-<createdTime>2023-09-04 04:13:11 UTC</createdTime>
-<generatorID>CF2975BD-AC46-664F-E7C8-F9DE56A2E8BB</generatorID>
+<createdTime>2023-09-04 04:05:54 UTC</createdTime>
+<generatorID>C024251E-B2CD-D2CF-15D5-B5D8E8818021</generatorID>
 <ownerDesignName>Modelo proyecto 1</ownerDesignName>
 <engineerTo>
 <item key="43415F62-7D39-393C-20AF-A90E0B30867D" value="true"/>
 </engineerTo>
-<referedAttribute>606681D0-1611-56A6-4683-F28B418787A0</referedAttribute>
+<referedAttribute>BA40954C-5742-0970-6D1D-6B46661AF1C0</referedAttribute>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
-<logicalDatatype>LOGDT024</logicalDatatype>
-<dataTypeSize>255</dataTypeSize>
-<ownDataTypeParameters>255,,</ownDataTypeParameters>
-</Attribute>
-<Attribute name="date" id="431309BF-E790-1BAE-726A-9CBEED796B9C">
-<createdBy>monte</createdBy>
-<createdTime>2023-09-09 05:20:31 UTC</createdTime>
-<ownerDesignName>Modelo proyecto 1</ownerDesignName>
-<engineerTo>
-<item key="43415F62-7D39-393C-20AF-A90E0B30867D" value="true"/>
-</engineerTo>
-<nullsAllowed>true</nullsAllowed>
-<useDomainConstraints>false</useDomainConstraints>
-<use>1</use>
-<logicalDatatype>LOGDT008</logicalDatatype>
+<logicalDatatype>LOGDT011</logicalDatatype>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 </Attribute>
 </attributes>

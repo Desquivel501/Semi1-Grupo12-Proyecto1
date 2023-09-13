@@ -78,6 +78,7 @@ register:BEGIN
 	'SUCCESS' AS 'TYPE';
 END $$
 
+/*********************************************** PROCEDIMIENTOS PARA EL MANEJO DE ARTISTAS ***********************************************/
 
 -- Procedimiento para la creación de un artista
 DROP PROCEDURE IF EXISTS CreateArtist $$
@@ -157,8 +158,31 @@ END $$
 
 
 -- Procedimiento para la eliminación de un artista
-/*PENDIENTE*/
+DROP PROCEDURE IF EXISTS DeleteArtist $$
+CREATE PROCEDURE DeleteArtist (
+	IN id_artist_In INTEGER
+)
+delete_artist:BEGIN
+	DECLARE artist_name VARCHAR(200);
+	SELECT a.name INTO artist_name
+	FROM Artists a 
+	WHERE a.id_artist = id_artist_in;
 
+	if artist_name = '' OR artist_name IS NULL THEN 
+		SELECT 'El artista que ingresó no existe' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE delete_artist;
+	END IF;
+
+	DELETE FROM 
+	Artists a
+	WHERE a.id_artist = id_artist_in;
+
+	SELECT 'El artista ha sido eliminado exitosamente' AS 'MESSAGE',
+	'SUCCESS' AS 'TYPE';
+END $$
+
+/*********************************************** PROCEDIMIENTOS PARA EL MANEJO DE ALBUMES ***********************************************/
 
 -- Procedimiento para crear un nuevo album
 DROP PROCEDURE IF EXISTS CreateAlbum $$
@@ -206,7 +230,6 @@ create_album:BEGIN
 
 END $$
 
-
 -- Procedimiento para actualizar un album
 DROP PROCEDURE IF EXISTS UpdateAlbum $$
 CREATE PROCEDURE UpdateAlbum (
@@ -222,7 +245,7 @@ update_album:BEGIN
 
 	SELECT a.name INTO album_name
 	FROM Albums a
-	WHERE a.id_album = id_song_in;
+	WHERE a.id_album = id_album_in;
 
 	SELECT a.name INTO artist_name 
 	FROM Artists a 
@@ -263,6 +286,81 @@ update_album:BEGIN
 	'SUCCESS' AS 'TYPE';
 END $$
 
+-- Procedimiento para agregar una canción a un album
+DROP PROCEDURE IF EXISTS AddSongAlbum $$
+CREATE PROCEDURE AddSongAlbum(
+	IN id_song_in INTEGER,
+	IN id_album_in INTEGER
+)
+add_song_album:BEGIN
+	DECLARE album_song INTEGER;
+
+	IF NOT(correct_song_album(id_song_in, id_album_in)) THEN
+		SELECT 'La canción y el album a asignar deben ser del mismo artista' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE add_song_album;	
+	END IF;
+
+	SELECT s.id_album INTO album_song
+	FROM Songs s 
+	WHERE s.id_song = id_song_in;
+
+	IF album_song IS NOT NULL THEN
+		SELECT 'La canción seleccionada ya pertenece a un album' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE add_song_album;	
+	END IF;
+
+	UPDATE Songs
+	SET id_album = id_album_in
+	WHERE id_song = id_song_in;
+
+	SELECT 'La canción ha sido asignada al album exitósamente' AS 'MESSAGE',
+	'SUCCESS' AS 'TYPE';
+END $$
+
+-- Procedimiento para eliminar una canción de un album
+DROP PROCEDURE IF EXISTS RemoveSongAlbum $$
+CREATE PROCEDURE RemoveSongAlbum(
+	IN id_song_in INTEGER,
+	IN id_album_in INTEGER	
+)
+remove_song_album:BEGIN
+	IF NOT(song_in_album(id_song_in, id_album_in)) THEN
+		SELECT 'La canción a eliminar no se encuentra en el album indicado' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE remove_song_album;	
+	END IF;
+	
+	UPDATE Songs 
+	SET id_album = NULL
+	WHERE id_song = id_song_in
+	AND id_album = id_album_in;
+
+	SELECT 'La canción ha sido eliminada del album exitósamente' AS 'MESSAGE',
+	'SUCCESS' AS 'TYPE';
+END $$
+
+-- Procedimiento para eliminar un album
+DROP PROCEDURE IF EXISTS DeleteAlbum $$
+CREATE PROCEDURE DeleteAlbum (
+	id_album_in INTEGER
+)
+delete_album:BEGIN
+	IF NOT exists_album(id_album_in) THEN
+		SELECT 'El album indicado no existe' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE delete_album;
+	END IF;	
+
+	DELETE FROM Albums a
+	WHERE a.id_album = id_album_in;
+
+	SELECT 'El album ha sido removido exitósamente' AS 'MESSAGE',
+	'SUCCESS' AS 'TYPE';
+END $$
+
+/*********************************************** PROCEDIMIENTOS PARA EL MANEJO DE CANCIONES ***********************************************/
 
 -- Procedimiento para crear una canción
 DROP PROCEDURE IF EXISTS CreateSong $$
@@ -315,12 +413,12 @@ create_song:BEGIN
 		LEAVE create_song;
 	END IF;	
 
-	INSERT INTO Songs(name, image, length, file, id_album)
-	VALUES (name_in, image_in, length_in, file_in, NULL);
-
+	INSERT INTO Songs(name, image, length, file, id_album, id_artist)
+	VALUES (name_in, image_in, length_in, file_in, NULL, id_artist_in);
+	/*
 	INSERT INTO Song_artists 
 	VALUES (LAST_INSERT_ID(), id_artist_in);
-	
+	*/
 	SELECT 'La canción ha sido creada exitósamente' AS 'MESSAGE',
 	'SUCCESS' AS 'TYPE';
 END $$
@@ -388,39 +486,40 @@ update_song:BEGIN
 	SET name = name_in,
 	image = image_in,
 	length = length_in,
-	file = file_in
+	file = file_in,
+	id_artist = id_artist_in
 	WHERE id_song = id_song_in;
 
+	/*
 	UPDATE Song_artists
 	SET id_artist = id_artist_in
 	WHERE id_song = id_song_in;
-
+	*/
 	SELECT 'La canción ha sido actualizada exitósamente' AS 'MESSAGE',
 	'SUCCESS' AS 'TYPE';
 END $$
 
 
--- Procedimiento para agregar una canción a un album
-DROP PROCEDURE IF EXISTS AddSongAlbum $$
-CREATE PROCEDURE AddSongAlbum(
-	IN id_song_in INTEGER,
-	IN id_album_in INTEGER
+-- Procedimiento para eliminar una canción
+DROP PROCEDURE IF EXISTS DeleteSong $$
+CREATE PROCEDURE DeleteSong(
+	IN id_song_in INTEGER
 )
-add_song_album:BEGIN
-	IF NOT(correct_song_album(id_song_in, id_album_in)) THEN
-		SELECT 'La canción y el album a asignar deben ser del mismo artista' AS 'MESSAGE',
+delete_song:BEGIN
+	IF NOT exists_song(id_song_in) THEN
+		SELECT 'La canción indicada no existe' AS 'MESSAGE',
 		'ERROR' AS 'TYPE';
-		LEAVE add_song_album;	
+		LEAVE delete_song;
 	END IF;
 
-	UPDATE Songs
-	SET id_album = id_album_in
-	WHERE id_song = id_song_in;
+	DELETE FROM Songs s
+	WHERE s.id_song = id_song_in;
 
-	SELECT 'La canción ha sido asignada al album exitósamente' AS 'MESSAGE',
+	SELECT 'La canción ha sido eliminada exitósamente' AS 'MESSAGE',
 	'SUCCESS' AS 'TYPE';
 END $$
 
+/*********************************************** PROCEDIMIENTOS PARA EL MANEJO DE PLAYLISTS ***********************************************/
 
 -- Procedimiento para crear una playlist
 DROP PROCEDURE IF EXISTS CreatePlaylist $$
@@ -571,6 +670,7 @@ remove_playlist:BEGIN
 	'SUCCESS' AS 'TYPE';
 END $$
 
+/*********************************************** PROCEDIMIENTOS PARA EL MANEJO DE FAVORITOS ***********************************************/
 
 -- Procedimiento para eliminar una canción de favoritos
 DROP PROCEDURE IF EXISTS AddToFavorites $$
@@ -602,6 +702,7 @@ add_to_favorites:BEGIN
 	'SUCCESS' AS 'TYPE';
 END $$
 
+/*********************************************** PROCEDIMIENTOS PARA EL MANEJO DEL HISTORIAL ***********************************************/
 
 -- Procedimiento para agregar una canción al historial
 DROP PROCEDURE IF EXISTS AddToHistory $$
@@ -619,3 +720,223 @@ add_to_history:BEGIN
 	INSERT INTO History
 	VALUES (email_in, id_song_in, NOW());
 END $$
+
+/*********************************************** PROCEDIMIENTOS PARA RECUPERACIÓN DE DATOS ***********************************************/
+-- Top de 5 canciones más reproducidas
+DROP PROCEDURE IF EXISTS TopCanciones $$
+CREATE PROCEDURE TopCanciones (
+	IN email_in VARCHAR(255)
+)
+top_canciones:BEGIN
+	IF NOT email_exists(email_in) THEN
+		SELECT 'El correo que ha ingresado no existe en la base de datos' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE top_canciones;
+	END IF;
+
+	SELECT s.id_song, s.name, s.image, COUNT(*) AS times_played 
+	FROM History h 
+	JOIN Songs s 
+	ON h.id_song =s.id_song 
+	AND h.email = email_in
+	GROUP BY s.id_song
+	ORDER BY times_played DESC 
+	LIMIT 5;
+END $$
+
+-- Top de 3 artistas más escuchados
+DROP PROCEDURE IF EXISTS TopArtistas $$
+CREATE PROCEDURE TopArtistas (
+	IN email_in VARCHAR(255)
+)
+top_artistas:BEGIN
+	IF NOT email_exists(email_in) THEN
+		SELECT 'El correo que ha ingresado no existe en la base de datos' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE top_artistas;
+	END IF;	
+
+	SELECT a.id_artist, a.name, a.image, COUNT(*) AS times_listened 
+	FROM History h 
+	JOIN Songs s 
+	ON h.id_song = s.id_song 
+	AND h.email = email_in
+	JOIN Artists a 
+	ON a.id_artist = s.id_artist
+	GROUP BY a.id_artist 
+	ORDER BY times_listened DESC
+	LIMIT 3;
+END $$
+
+-- Top de 5 albumes más reproducidos
+DROP PROCEDURE IF EXISTS TopAlbumes $$
+CREATE PROCEDURE TopAlbumes (
+	IN email_in VARCHAR(255)
+)
+top_albumes:BEGIN
+	IF NOT email_exists(email_in) THEN
+		SELECT 'El correo que ha ingresado no existe en la base de datos' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE top_albumes;
+	END IF;	
+
+	SELECT a.id_album, a.name, a.description, a.image, COUNT(*) AS times_played
+	FROM History h 
+	JOIN Songs s 
+	ON h.id_song  = s.id_song 
+	AND h.email = email_in
+	JOIN Albums a 
+	ON s.id_album = a.id_album
+	GROUP BY a.id_album 
+	ORDER BY times_played DESC 
+	LIMIT 5;
+END $$
+
+-- Procedimiento para recuperar datos de una canción especifica
+DROP PROCEDURE IF EXISTS GetSong $$
+CREATE PROCEDURE GetSong(
+	IN id_song_in INTEGER,
+	IN email_in VARCHAR(255)
+)
+get_song:BEGIN
+	IF NOT email_exists(email_in) THEN
+		SELECT 'El correo que ha ingresado no existe en la base de datos' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE get_song;
+	END IF;	
+	
+	IF NOT exists_song(id_song_in) THEN
+		SELECT 'La canción indicada no existe' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE get_song;
+	END IF;	
+
+	SELECT s.id_song AS id,
+	s.name,
+	a.name AS singer,
+	s.image AS cover,
+	s.file AS musicSrc,
+	song_in_favorites(id_song_in, email_in) AS inFav
+	FROM Songs s 
+	JOIN Artists a 
+	ON s.id_artist = a.id_artist 
+	AND s.id_song = id_song_in;
+END $$
+
+-- Procedimiento para recuperar un listado de canciones de un artista
+DROP PROCEDURE IF EXISTS GetArtistSongs $$
+CREATE PROCEDURE GetArtistSongs(
+	IN id_artist_in INTEGER
+)
+get_artist_songs:BEGIN
+	DECLARE artist_name VARCHAR(150);
+	SELECT a.name INTO artist_name 
+	FROM Artists a 
+	WHERE a.id_artist = id_artist_in;
+
+	IF (artist_name = '' OR artist_name IS NULL) THEN 
+		SELECT 'El artista que ha seleccionado no existe' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE get_artist_songs;
+	END IF;
+
+	SELECT s.id_song AS id,
+	s.name,
+	s.image AS cover,
+	s.file AS musicSrc
+	FROM Songs s 
+	WHERE s.id_artist = id_artist_in;
+END $$
+
+-- Procedimiento para recuperar un listado de canciones de un album
+DROP PROCEDURE IF EXISTS GetAlbumSongs $$
+CREATE PROCEDURE GetAlbumSongs (
+	IN id_album_in INTEGER
+)
+get_album_songs:BEGIN
+	IF NOT exists_album(id_album_in) THEN
+		SELECT 'El album indicado no existe' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE get_album_songs;
+	END IF;	
+
+	SELECT s.id_song AS id,
+	s.name,
+	s.image AS cover,
+	s.file AS musicSrc
+	FROM Songs s 
+	JOIN Albums a 
+	ON s.id_album = a.id_album 
+	AND a.id_album = id_album_in;
+END $$
+
+-- Procedimiento para recuperar un listao de canciones de una playlist
+DROP PROCEDURE IF EXISTS GetPlaylistSongs $$
+CREATE PROCEDURE GetPlaylistSongs (
+	IN id_playlist_in INTEGER
+)
+get_playlist_songs:BEGIN
+	IF NOT exists_playlist(id_playlist_in) THEN
+		SELECT 'La playlist indicada no existe' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE get_playlist_songs;
+	END IF;
+
+	SELECT s.id_song AS id,
+	s.name,
+	s.image AS cover,
+	s.file AS musicSrc
+	FROM Songs s 
+	JOIN Playlists_details pd 
+	ON s.id_song = pd.id_song 
+	AND pd.id_playlist = id_playlist_in;
+END $$
+
+-- Procedimiento para retornar el listado de todas las canciones en la base de datos
+DROP PROCEDURE IF EXISTS GetAllSongs $$
+CREATE PROCEDURE GetAllSongs()
+get_all_songs:BEGIN
+	SELECT s.id_song AS id,
+	s.name,
+	s.image AS cover,
+	s.file AS musicSrc,
+	a.name AS artist,
+	a2.name AS album
+	FROM Songs s 
+	JOIN Artists a 
+	ON s.id_artist = a.id_artist 
+	LEFT JOIN Albums a2
+	on s.id_album = a2.id_album;
+END $$
+
+-- Procedimiento para retornar el listado de todos los artistas en la base de datos
+DROP PROCEDURE IF EXISTS GetAllArtists $$
+CREATE PROCEDURE GetAllArtists()
+get_all_artists:BEGIN
+	SELECT a.id_artist AS id,
+	a.name,
+	a.image AS cover
+	FROM Artists a;
+END $$
+
+-- Procedimiento para retornar el listado de todas las playlist de un usuario
+DROP PROCEDURE IF EXISTS GetUserPlaylists $$
+CREATE PROCEDURE GetUserPlaylists(
+	IN email_in VARCHAR(255)
+)
+get_user_playlists:BEGIN
+	IF NOT email_exists(email_in) THEN
+		SELECT 'El correo que ha ingresado no existe en la base de datos' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE get_user_playlists;
+	END IF;	
+
+	SELECT p.id_playlist AS id,
+	p.name,
+	p.description 
+	FROM Playlists p 
+	WHERE p.email = email_in;
+END $$
+
+
+
