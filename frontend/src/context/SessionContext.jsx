@@ -7,41 +7,69 @@ export const sesionContext = createContext();
 
 export function SesionProvider({ children }) {
 
-    const registro = async (data) => {
-        const mensaje = await registrar(data);
-        return mensaje[0] ?? {};
-    };    
-
-    const login = async (data) => {
-      const mensaje = await inicioSesion(data);
-
-      // if (!isNaN(newSesion[0].MENSAJE)) {
-      //   // Es número, por lo tanto es rol
-      //   // Actualizamos el usuario
-      //   const newUser = {
-      //     id: data.get("email"),
-      //     token: roles[newSesion[0].MENSAJE],
-      //   };
-      //   setUser(newUser);
-      //   window.sessionStorage.setItem("user", JSON.stringify(newUser));
-      //   if (newUser.rol == "Administrador") return "/Administrador/Solicitudes";
-      //   if (newUser.rol == "Repartidor") return "/Repartidor/MisPedidos";
-      //   if (newUser.rol == "Empresa") return "/Empresa/CatalogoEmpresa";
-      //   if (newUser.rol == "Cliente") return "/Empresas";
-      // }
-      // Si es un mensaje string entonces es error
-      return mensaje;
+  const [user, setUser] = useState(() => {
+    const sesion = window.localStorage.getItem("user");
+    if (sesion != null) {
+      return JSON.parse(sesion);
+    }
+    return {
+      id: "",
+      token: "",
+      type: 0
     };
+  });
 
+  const registro = async (data) => {
+      const mensaje_registro = await registrar(data);
+      console.log(mensaje_registro)
 
+      if(mensaje_registro.TYPE != "SUCCESS"){
+        return mensaje_registro
+      } 
 
-    return (
-        <sesionContext.Provider
-          value={{ registro, login }}
-        >
-          {children}
-        </sesionContext.Provider>
-    );
+      const mensaje_login = await inicioSesion({
+        email: data.get("email"),
+        password: data.get("password"),
+      });
+      console.log(mensaje_login)
+
+      return mensaje_registro;
+  };    
+
+  const login = async (data) => {
+    const mensaje = await inicioSesion(data);
+
+    if(mensaje.TYPE != "SUCCESS"){
+      return mensaje
+    } 
+
+    const newUser = {
+      id: data.email,
+      token: mensaje.TOKEN,
+      type: mensaje.MESSAGE
+    };
+    setUser(newUser);
+    window.localStorage.setItem("user", JSON.stringify(newUser));
+
+    return mensaje;
+  };
+
+  const logout = () => {
+    setUser({
+      id: "",
+      token: "",
+      type: 0
+    });
+    window.localStorage.removeItem("user");
+  };
+
+  return (
+      <sesionContext.Provider
+        value={{ user, registro, login, logout }}
+      >
+        {children}
+      </sesionContext.Provider>
+  );
 
 }
 

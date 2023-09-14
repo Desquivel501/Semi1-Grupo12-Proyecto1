@@ -43,25 +43,25 @@ export default function Signup() {
 
     console.log(mensaje)
 
-    // if (mensaje.TIPO == "EXITO") {
-    //   Swal.fire({
-    //     icon: 'success',
-    //     title: 'Creado',
-    //     text: mensaje.MENSAJE,
-    //   }).then((result) => {
-    //     if (result.isConfirmed) {
-    //       navigate("/");
-    //     }
-    //   })
-    // } else {
-    //   Swal.fire({
-    //     icon: 'error',
-    //     title: 'Oops...',
-    //     text: mensaje.MENSAJE,
-    //   })
-    // }
-
-    // event.target.reset();
+    if(mensaje.TYPE == "SUCCESS"){
+      Swal.fire({
+        icon: 'success',
+        title: 'Creado',
+        text: mensaje.MESSAGE,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/");
+        }
+      })
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: mensaje.MESSAGE,
+      })
+    }
+    
+    event.target.reset();
   };
 
   const customTheme = createTheme({

@@ -3,6 +3,7 @@ import "react-jinke-music-player/assets/index.css";
 import './styles.css'
 import song_list from "../../assets/song_list";
 import { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 
 
 const options = {
@@ -17,6 +18,8 @@ const options = {
 };
 
 export default function Player() {
+
+  let location = useLocation();
 
   const ref = useRef();
 
@@ -82,14 +85,17 @@ export default function Player() {
 
   return (
     <div ref={ref}>
-      <ReactJkMusicPlayer className="player"
-        style={{zIndex:1300}}
-        {...state.playerOptions}
-        showMediaSession
-        quietUpdate={false}
-        locale={{ playListsText: "Test" }}
-        onAudioPlay={onAudioPlay}
-      />
+      {
+        location.pathname != "/Login" && location.pathname != "/Signup" &&
+        <ReactJkMusicPlayer className="player"
+          style={{zIndex:1300}}
+          {...state.playerOptions}
+          // showMediaSession
+          quietUpdate={false}
+          locale={{ playListsText: "Test" }}
+          onAudioPlay={onAudioPlay}
+        />
+      }
     </div>
   );
 }

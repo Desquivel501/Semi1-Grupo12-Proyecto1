@@ -60,6 +60,12 @@ const artist_list = [
         cover:
           'https://i.scdn.co/image/ab6761610000e5ebec01c52d6030a1574070e308',
     },
+    {
+        id:11,
+        name: 'Paramore',
+        cover:
+          'https://yt3.googleusercontent.com/6h7jtHllfkTVAqg50Q7JzluSEVUHonqAWRFg-_cSgbBAftd0UeZqcbOlA2weR3kAdH79-lmGww=s900-c-k-c0x00ffffff-no-rj',
+    },
     
   ];
 

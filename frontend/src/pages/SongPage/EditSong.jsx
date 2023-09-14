@@ -10,6 +10,7 @@ import Select from '@mui/material/Select';
 import { styled } from '@mui/material/styles';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { sendFormData } from '../../api/api';
 
 import song_list from '../../assets/song_list';
 import artist_list from '../../assets/artist_list';
@@ -85,8 +86,8 @@ export default function EditSong(props) {
     const [color, setColor] = useState('#626262');
     const [song, setSong] = useState({
         id: 0,
-        name: 'Test',
-        singer: 'Test 2',
+        name: '',
+        singer: '',
         cover:
           'https://soundstream-semi1-g12.s3.us-east-2.amazonaws.com/no_album.jpg',
         musicSrc: '',
@@ -103,17 +104,14 @@ export default function EditSong(props) {
 
     useEffect(() => {
         console.log(id)
-        for(var i = 0; i < song_list.length; i++){
-            console.log(song_list[i].id + " " + id)
-            if(song_list[i].id == id){
-                console.log(song_list[i])
-                setSong(song_list[i])
-                setPreview(song_list[i].cover)
-                setNewSong(song_list[i].musicSrc)
-                break;
-            }
+        if(edit){
+            const song = song_list.find( song => song.id == id);
+            setSong(song)
+            setPreview(song.cover)
+            setNewSong(song.musicSrc)
+            setDuration(song.duration)
         }
-        setCount(count + 1);
+        setCount(count + 1) 
      
     },[]);
 
@@ -121,11 +119,59 @@ export default function EditSong(props) {
         setSong({...song, singer: event.target.value});
     };
 
-    const handleSubmit  = (event) => {
+    const onSelectFile = (e) => {
+        if (!e.target.files || e.target.files.length === 0) {
+            setSelectedFile(image);
+            return;
+        }
+        setSelectedFile(e.target.files[0]);
+    };
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        data.append('id', song.id);
+        (edit ? data.append('id', song.id) : null)
+        data.append('artist', 11)
+
+        if(song.musicSrc === ''){
+            Swal.fire({
+                color: '#fff',
+                background: '#1f1f1f',
+                icon: 'error',
+                title: 'Oops...',
+                text: "No se ha seleccionado una cancion.",
+            })
+            return
+        }
+        
+        if(data.get('source').size == 0){
+            data.delete('source')
+        }
+
+        if(song.cover === ''){
+            Swal.fire({
+                color: '#fff',
+                background: '#1f1f1f',
+                icon: 'error',
+                title: 'Oops...',
+                text: "No se ha seleccionado una imagen.",
+            })
+            return
+        }
+
+        if(data.get('cover').size == 0){
+            data.delete('cover')
+        }
+
         console.log(data)
+
+        sendFormData({
+            endpoint: edit ? '/api/songs/newSong' : '/api/songs/newSong',
+            data: data,
+        }).then((response) => {
+            console.log(response)
+        })
+        .catch((err) => console.log(err));
     }
 
     function selectColor(str) {
@@ -299,18 +345,43 @@ export default function EditSong(props) {
                                 Artista
                             </Typography> 
 
-                            <Typography
-                                variant="h3"
-                                component="h3"
-                                align="left"
-                                sx={{
-                                    fontFamily: "monospace",
-                                    fontWeight: 700,
-                                    color: "#fff",
-                                }}
-                                >
-                                {song.singer}
-                            </Typography>
+                            {
+                                edit ?
+                                <Typography
+                                    variant="h3"
+                                    component="h3"
+                                    align="left"
+                                    sx={{
+                                        fontFamily: "monospace",
+                                        fontWeight: 700,
+                                        color: "#fff",
+                                    }}
+                                    >
+                                    {song.singer}
+                                </Typography>
+                                :
+                                <FormControl fullWidth>
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        align='left'
+                                        value={song.singer}
+                                        onChange={(e) => setSong({...song, singer: e.target.value})}
+                                        sx={{
+                                            fontFamily: "monospace",
+                                            fontWeight: 700,
+                                            color: "#fff",
+                                            fontSize: "2.5rem",
+                                        }}
+                                    >
+                                        {artist_list.map((artist) => (
+                                            <MenuItem key={artist.id} value={artist.name}>{artist.name}</MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+
+
+                            }
 
                             <Typography
                                 variant="h6"
@@ -412,7 +483,8 @@ export default function EditSong(props) {
                                 },
                             }} 
                         >
-                            Guardar Cambios
+                            {edit ? "Guardar Cambios" : "Crear Canción"}
+                            
                         </Button>
                         
                     </Grid>
@@ -432,7 +504,7 @@ export default function EditSong(props) {
                                     <source src={newSong} type="audio/mpeg"/>
                                     Your browser does not support the audio element.
                                 </audio>
-                                <input type="file" name="song" accept=".mp3" 
+                                <input type="file" name="source" accept=".mp3" 
                                     onChange= {(e) => {
                                         setNewSong(URL.createObjectURL(e.target.files[0]))
                                         setCount(count + 1)
@@ -456,7 +528,7 @@ export default function EditSong(props) {
                                     Cancelar
                                 </Button>
                                 
-                                <Button className="button my-3" onClick={() => {setSong({...song, musicSrc: newSong}) ;setCount(count + 1)}} data-mdb-dismiss="modal"
+                                <Button className="button my-3" onClick={() => {setSong({...song, musicSrc: newSong}); setCount(count + 1)}} data-mdb-dismiss="modal"
                                     sx={{
                                         background:"#717171",
                                         color: '#fff',
@@ -485,9 +557,11 @@ export default function EditSong(props) {
                         <div className="modal-body" style={{display:'flex', flexDirection:'column', justifyContent:'flex-end', alignItems:'center'}}>
                             <img src={preview}
                                 alt="Avatar" className="img-fluid my-5" style={{ width: '200px' }} />
-                             <input type="file" name="image" onChange= {(e) => {
-                                setPreview(URL.createObjectURL(e.target.files[0]))
-                             }} />
+                             <input type="file" name="cover" accept='.png, .jpg, .jpeg'
+                                onChange= {(e) => {
+                                    setPreview(URL.createObjectURL(e.target.files[0]))
+                                }} 
+                             />
                         </div>
 
                         <div className="modal-footer">
