@@ -78,6 +78,71 @@ register:BEGIN
 	'SUCCESS' AS 'TYPE';
 END $$
 
+
+-- Procedimiento para actualizar los usuarios 
+DROP PROCEDURE IF EXISTS UpdateUser $$
+CREATE PROCEDURE UpdateUser(
+	IN email_in VARCHAR(255),
+	IN new_email_in VARCHAR(255),
+	IN firstname_in VARCHAR(150),
+	IN lastname_in VARCHAR(150),
+	IN photo_in VARCHAR(255),
+	IN password_in VARCHAR(255),
+	IN birthdate_in DATETIME
+)
+update_user:BEGIN
+	IF NOT email_exists(email_in) THEN
+		SELECT 'El correo que ha enviado no existe' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE update_user;
+	END IF;	
+
+	IF email_in <> new_email_in THEN
+		IF email_exists(new_email_in) THEN
+			SELECT 'El correo que ha ingresado ya se encuentra registrado' AS 'MESSAGE',
+			'ERROR' AS 'TYPE';
+			LEAVE update_user;
+		END IF;
+	
+		IF NOT email_format(new_email_in) THEN
+			SELECT 'El correo que ha ingresado no tiene un formato válido' AS 'MESSAGE',
+			'ERROR' AS 'TYPE';
+			LEAVE update_user;
+		END IF;
+	END IF;
+
+	IF firstname_in = '' OR lastname_in = '' OR firstname_in IS NULL OR lastname_in IS NULL THEN 
+		SELECT 'Los nombres no pueden estar en blanco' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE update_user;
+	END IF;
+
+	IF photo_in = '' OR photo_in IS NULL THEN 
+		SELECT u.photo INTO photo_in
+		FROM Users u 
+		WHERE u.email = email_in;
+	END IF;
+
+	IF password_in = '' OR password_in IS NULL THEN 
+		SELECT 'Se debe agregar una contraseña para la cuenta' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE update_user;
+	END IF;
+
+	UPDATE Users u
+	SET u.email = new_email_in,
+	u.firstname = firstname_in,
+	u.lastname = lastname_in,
+	u.photo = photo_in,
+	u.password = password_in,
+	u.birthdate = birthdate_in
+	WHERE u.email = email_in;
+
+	SELECT 'Los datos han sido actualizados exitosamente' AS 'MESSAGE',
+	'SUCCESS' AS 'TYPE';
+END $$
+
+
 /*********************************************** PROCEDIMIENTOS PARA EL MANEJO DE ARTISTAS ***********************************************/
 
 -- Procedimiento para la creación de un artista
@@ -134,16 +199,16 @@ update_artist:BEGIN
 		LEAVE update_artist;
 	END IF;
 
-	IF image_in = '' OR image_in IS NULL THEN 
-		SELECT 'Se debe agregar una fotografía de usuario' AS 'MESSAGE',
-		'ERROR' AS 'TYPE';
-		LEAVE update_artist;
-	END IF;
-
 	IF artist_exists(name_in) AND (name_in != actual_name) THEN
 		SELECT 'Este nombre de artista ya se encuentra en uso' AS 'MESSAGE',
 		'ERROR' AS 'TYPE';
 		LEAVE update_artist;
+	END IF;
+
+	IF image_in = '' OR image_in IS NULL THEN 
+		SELECT a.image INTO image_in
+		FROM Artists a 
+		WHERE a.id_artist = id_artist_in;
 	END IF;
 
 	UPDATE Artists
@@ -257,12 +322,6 @@ update_album:BEGIN
 		LEAVE update_album;
 	END IF;
 
-	IF image_in = '' OR image_in IS NULL THEN
-		SELECT 'Se debe asignar una imagen al album' AS 'MESSAGE',
-		'ERROR' AS 'TYPE';
-		LEAVE update_album;
-	END IF;	
-
 	IF (artist_name = '' OR artist_name IS NULL) THEN 
 		SELECT 'El artista que ha seleccionado no existe' AS 'MESSAGE',
 		'ERROR' AS 'TYPE';
@@ -273,6 +332,12 @@ update_album:BEGIN
 		SELECT 'El artista que ha ingresado ya posee una canción/colaboración con el nombre indicado' AS 'MESSAGE',
 		'ERROR' AS 'TYPE';
 		LEAVE update_album;
+	END IF;	
+
+	IF image_in = '' OR image_in IS NULL THEN
+		SELECT a.image INTO image_in
+		FROM Albums a 
+		WHERE a.id_album = id_album_in;
 	END IF;	
 
 	UPDATE Albums
@@ -458,28 +523,28 @@ update_song:BEGIN
 		LEAVE update_song;
 	END IF;
 
-	IF image_in = '' OR image_in IS NULL THEN
-		SELECT 'Se debe asignar una imagen a la canción' AS 'MESSAGE',
-		'ERROR' AS 'TYPE';
-		LEAVE update_song;
-	END IF;	
-
 	IF length_in < 0 THEN
 		SELECT 'La duración de la canción no es válida' AS 'MESSAGE',
 		'ERROR' AS 'TYPE';
 		LEAVE update_song;
 	END IF;
 
-	IF file_in = '' OR file_in IS NULL THEN
-		SELECT 'Se debe asignar un archivo de audio a la canción' AS 'MESSAGE',
-		'ERROR' AS 'TYPE';
-		LEAVE update_song;
-	END IF;	
-
 	IF song_name_exists(id_artist_in, name_in) AND name_in != song_name THEN
 		SELECT 'El artista que ha ingresado ya posee una canción/colaboración con el nombre indicado' AS 'MESSAGE',
 		'ERROR' AS 'TYPE';
 		LEAVE update_song;
+	END IF;	
+
+	IF image_in = '' OR image_in IS NULL THEN
+		SELECT s.image INTO image_in
+		FROM Songs s 
+		WHERE s.id_song = id_song_in;
+	END IF;	
+
+	IF file_in = '' OR file_in IS NULL THEN
+		SELECT s.file  INTO file_in
+		FROM Songs s 
+		WHERE s.id_song = id_song_in;
 	END IF;	
 
 	UPDATE Songs
@@ -554,12 +619,63 @@ create_playlist:BEGIN
 		LEAVE create_playlist;
 	END IF;
 
-
 	INSERT INTO Playlists (name, description, image, email)
 	VALUES (name_in, description_in, image_in, email_in);
 
 	SELECT 'La playlist ha sido creada exitósamente' AS 'MESSAGE',
 	'SUCCESS' AS 'TYPE';
+END $$
+
+
+-- Procedimiento para actualizar una playlist
+DROP PROCEDURE IF EXISTS UpdatePlaylist $$
+CREATE PROCEDURE UpdatePlaylist(
+	IN id_playlist_in INTEGER,
+	IN name_in VARCHAR(150),
+	IN description_in VARCHAR(255),
+	IN image_in VARCHAR(255),
+	IN email_in VARCHAR(255)
+)
+update_playlist:BEGIN
+	DECLARE prev_name VARCHAR(150);
+	SELECT p.name INTO prev_name
+	FROM Playlists p 
+	WHERE p.id_playlist = id_playlist_in;
+
+	IF NOT exists_playlist(id_playlist_in) THEN
+		SELECT 'La playlist indicada no existe' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE update_playlist;
+	END IF;
+
+	IF name_in = '' OR name_in IS NULL THEN
+		SELECT 'El nombre de la playlist no puede estar vacío' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE update_playlist;
+	END IF;
+
+	IF prev_name <> name_in THEN
+		IF playlist_name_exists(email_in, name_in) THEN
+			SELECT 'Ya existe una playlist con el nombre indicado' AS 'MESSAGE',
+			'ERROR' AS 'TYPE';
+			LEAVE update_playlist;
+		END IF;
+	END IF;
+
+	IF image_in = '' OR image_in IS NULL THEN
+		SELECT p.image INTO image_in
+		FROM Playlists p 
+		WHERE p.id_playlist = id_playlist_in;
+	END IF;	
+
+	UPDATE Playlists
+	SET name = name_in,
+	description = description_in,
+	image = image_in
+	WHERE id_playlist = id_playlist_in;
+
+	SELECT 'La playlist ha sido actualizada exitósamente' AS 'MESSAGE',
+	'SUCCESS' AS 'TYPE';	
 END $$
 
 
@@ -707,18 +823,21 @@ END $$
 -- Procedimiento para agregar una canción al historial
 DROP PROCEDURE IF EXISTS AddToHistory $$
 CREATE PROCEDURE AddToHistory(
-	IN id_song_in INTEGER,
+	IN file_in VARCHAR(255),
 	IN email_in VARCHAR(255)
 )
 add_to_history:BEGIN
-	IF NOT exists_song(id_song_in) THEN
+	DECLARE id_song INTEGER;
+	SELECT get_song_id(file_in) INTO id_song;
+
+	IF NOT exists_song(id_song) THEN
 		SELECT 'La canción indicada no existe' AS 'MESSAGE',
 		'ERROR' AS 'TYPE';
 		LEAVE add_to_history;
 	END IF;
 
 	INSERT INTO History
-	VALUES (email_in, id_song_in, NOW());
+	VALUES (email_in, id_song, NOW());
 END $$
 
 /*********************************************** PROCEDIMIENTOS PARA RECUPERACIÓN DE DATOS ***********************************************/
