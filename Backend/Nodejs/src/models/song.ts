@@ -71,8 +71,27 @@ export class SongModel {
 
   static editSong({ data }: { data: any }) {
   }
-  static deleteSong({ id }: { id: number }) {
+
+  static deleteSong(
+    { id }: { id: number },
+    callback: (response: any, ok: Boolean) => void,
+  ) {
+    try {
+      pool.query("CALL DeleteSong(?)", [
+        id,
+      ], (err, result) => {
+        if (err) throw err;
+        if (result[0][0].TYPE == "ERROR") callback(result[0][0], false);
+        else {
+          callback(result[0][0], true);
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      callback(error, false);
+    }
   }
+
   static addToFavorite({ userId, id }: { userId: number; id: number }) {
   }
 }

@@ -113,6 +113,7 @@ export class AlbumModel {
 
   static editAlbum({ data }: { data: any }) {
   }
+
   static deleteAlbum(
     { id }: { id: number },
     callback: (response: any, ok: Boolean) => void,

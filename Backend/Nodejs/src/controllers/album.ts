@@ -55,6 +55,7 @@ export class AlbumController {
   static editAlbum(req: Request, res: Response) {
     res.json({ message: "Album edited" });
   }
+
   static deleteAlbum(req: Request, res: Response) {
     const { id } = req.params;
     if (!id) return res.status(401).json({ MESSAGE: "Falta el id" });

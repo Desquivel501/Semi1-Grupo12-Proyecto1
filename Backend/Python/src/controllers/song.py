@@ -29,3 +29,8 @@ class SongController:
     def get_songs():
         response = SongModel.get_songs()
         return response[0], (200 if response[1] else 400)
+
+    @staticmethod
+    def delete_song(id):
+        response = SongModel.delete_song(id)
+        return response[0], (200 if response[1] else 400)
