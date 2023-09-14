@@ -36,9 +36,9 @@ export class SongModel {
   ) {
     try {
       pool.query(
-        `SELECT s.name as name,a.name as singer,s.image as cover, s.file as musicSrc FROM Songs s  
-          JOIN Song_artists sa ON s.id_song=sa.id_song
-          JOIN Artists a ON sa.id_artist=a.id_artist
+        `SELECT s.id_song as 'id', s.name, s.image as 'cover', s.\`length\` as 'duration', s.file as 'musicSrc', a.name as 'singer'
+          FROM PR1.Songs s
+          JOIN PR1.Artists a ON a.id_artist = s.id_artist
           WHERE s.id_song=?`,
         [id],
         (error, result, fields) => {
@@ -55,9 +55,10 @@ export class SongModel {
   static getSongs(callback: (response: any, ok: Boolean) => void) {
     try {
       pool.query(
-        `SELECT s.name as name,a.name as singer,s.image as cover, s.file as musicSrc FROM Songs s  
-          JOIN Song_artists sa ON s.id_song=sa.id_song
-          JOIN Artists a ON sa.id_artist=a.id_artist`,
+        `SELECT s.id_song as 'id', s.name, s.image as 'cover', s.\`length\` as 'duration', s.file as 'musicSrc', a.name as 'singer'
+        FROM PR1.Songs s
+        JOIN PR1.Artists a ON a.id_artist = s.id_artist ;
+        `,
         (error, result, fields) => {
           if (error) throw error;
           callback(result, true);
