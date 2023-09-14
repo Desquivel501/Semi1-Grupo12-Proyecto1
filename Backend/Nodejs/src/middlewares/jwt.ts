@@ -8,10 +8,10 @@ export function checkRole(role: Roles) {
     if (!token) {
       return res.status(401).json({ MESSAGE: "No tiene autorización" });
     }
-    const decoded = checkToken(token.split(" ")[1]);
-    if (!decoded) {
-      return res.status(401).json({ MESSAGE: "Vuelva a iniciar sesión" });
-    }
     next();
+    // const decoded = checkToken(token.split(" ")[1]);
+    // if (!decoded) {
+    //   return res.status(401).json({ MESSAGE: "Vuelva a iniciar sesión" });
+    // }
   };
 }

@@ -1,3 +1,4 @@
+import { encrypt } from "../libs/object-hash";
 import { formatDate } from "../utils/formatDate";
 import { pool } from "./database/connection";
 import { User } from "./types";
@@ -11,13 +12,16 @@ export class UserModel {
     try {
       const newUser: User = { ...user };
       newUser.avatar = file.location;
+      // Encriptando
+      const password = encrypt(newUser.password)
+      console.log(password)
       // Guardar en DB
       pool.query("CALL Register(?,?,?,?,?,?)", [
         newUser.email,
         newUser.name,
         newUser.lastname,
         newUser.avatar,
-        newUser.password,
+        password,
         formatDate(newUser.birthDate),
       ], (err, result) => {
         if (err) throw err;

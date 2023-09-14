@@ -1,12 +1,15 @@
+import { encrypt } from "../libs/object-hash";
 import { pool } from "./database/connection";
 import { Credentials } from "./types";
 
 export class AuthModel {
   static login(credentials: Credentials, callback: Function) {
     try {
+      const password = encrypt(credentials.password) 
+      console.log(password)
       pool.query(
         "CALL Login(?,?)",
-        [credentials.email, credentials.password],
+        [credentials.email, password],
         (err, result) => {
           if (err) throw err;
           if (result[0][0].TYPE == "ERROR") callback(result[0][0], false);
