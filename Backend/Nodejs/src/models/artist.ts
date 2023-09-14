@@ -58,8 +58,22 @@ export class ArtistModel {
     }
   }
 
+  static getSongs({ id }: { id: number }, callback: Function) {
+    try {
+      pool.query("CALL GetArtistSongs(?)", [
+        id,
+      ], (err, result) => {
+        if (err) throw err;
+        callback(result[0], true);
+      });
+    } catch (error) {
+      callback(error, false);
+    }
+  }
+
   static editArtist({ data }: { data: any }) {
   }
+
   static deleteArtist({ id }: { id: number }, callback: Function) {
     try {
       pool.query("CALL DeleteArtist(?)", [

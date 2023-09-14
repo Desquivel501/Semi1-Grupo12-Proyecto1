@@ -28,7 +28,11 @@ class ArtistController:
         return response[0], (200 if response[1] else 400)
 
     @staticmethod
+    def get_songs(id):
+        response = ArtistModel.get_songs(id)
+        return response[0], (200 if response[1] else 400)
+
+    @staticmethod
     def delete_artist(id):
         response = ArtistModel.delete_artist(id)
         return response[0], (200 if response[1] else 400)
-
