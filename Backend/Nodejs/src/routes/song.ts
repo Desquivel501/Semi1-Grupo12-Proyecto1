@@ -17,4 +17,4 @@ songRouter.post(
   SongController.createSong,
 );
 songRouter.patch("/:id");
-songRouter.delete("/:id");
+songRouter.delete("/:id",SongController.deleteSong);

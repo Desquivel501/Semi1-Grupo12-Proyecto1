@@ -30,11 +30,16 @@ export class SongController {
     });
   }
 
-
   static editSong(req: Request, res: Response) {
     res.json({ message: "Song edited" });
   }
+
   static deleteSong(req: Request, res: Response) {
-    res.json({ message: "Song deleted" });
+    const { id } = req.params;
+    if (!id) return res.status(401).json({ MESSAGE: "Falta el id" });
+    const id_album = parseInt(id);
+    SongModel.deleteSong({ id: id_album }, (response, ok) => {
+      res.status(ok ? 200 : 400).json(response);
+    });
   }
 }

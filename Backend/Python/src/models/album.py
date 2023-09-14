@@ -108,10 +108,28 @@ class AlbumModel:
             # Query
             cursor.callproc(
                 "AddSongAlbum",
-                (
-                    int(id_album),
-                    int(id_song)
-                ),
+                (int(id_album), int(id_song)),
+            )
+            for result in cursor.stored_results():
+                result = dict(zip(result.column_names, result.fetchone()))
+                if result["TYPE"] == "ERROR":
+                    return result, False
+                else:
+                    return result, True
+        except Exception as e:
+            return str(e), False
+        finally:
+            cursor.close()
+
+    @staticmethod
+    def delete_album(id_album):
+        try:
+            db = getCnx()  # Obtiene una conexión desde la función
+            cursor = db.cursor(buffered=True)
+            # Query
+            cursor.callproc(
+                "DeleteAlbum",
+                (int(id_album),),
             )
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))

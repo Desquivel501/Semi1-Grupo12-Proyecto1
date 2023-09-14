@@ -36,9 +36,8 @@ export class ArtistController {
     const { id } = req.params;
     if (!id) return res.status(401).json({ message: "Falta el id" });
     const id_artist = parseInt(id);
-    const response = ArtistModel.deleteArtist({ id: id_artist });
-    res.status(response.ok ? 200 : 400).json({
-      response,
+    ArtistModel.deleteArtist({ id: id_artist }, (response: any, ok: Boolean) => {
+      res.status(ok ? 200 : 400).json(response);
     });
   }
 }
