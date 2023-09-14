@@ -41,3 +41,8 @@ class AlbumController:
         id_song = body["id_song"]
         response = AlbumModel.add_song(id_album, id_song)
         return response[0], (200 if response[1] else 400)
+
+    @staticmethod
+    def delete_album(id):
+        response = AlbumModel.delete_album(id)
+        return response[0], (200 if response[1] else 400)
