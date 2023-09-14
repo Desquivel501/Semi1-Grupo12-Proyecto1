@@ -26,7 +26,7 @@ export type Playlist = {
   name: string;
   description: string;
   cover: string;
-  songs: Song[];
+  email:string;
 };
 export type Album = {
   artist: number;
