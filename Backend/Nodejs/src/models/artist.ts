@@ -60,19 +60,19 @@ export class ArtistModel {
 
   static editArtist({ data }: { data: any }) {
   }
-  static deleteArtist({ id }: { id: number }) {
+  static deleteArtist({ id }: { id: number }, callback: Function) {
     try {
-      const res = pool.query(
-        `DELETE FROM Artist WHERE id_artist=${id}`,
-        (error, result, fields) => {
-          if (error) throw error;
-          return result;
-        },
-      );
-      return { res, ok: true };
+      pool.query("CALL DeleteArtist(?)", [
+        id,
+      ], (err, result) => {
+        if (err) throw err;
+        if (result[0][0].TYPE == "ERROR") callback(result[0][0], false);
+        else {
+          callback(result[0][0], true);
+        }
+      });
     } catch (error) {
-      console.log(error);
-      return { error, ok: false };
+      callback(error, false);
     }
   }
 }

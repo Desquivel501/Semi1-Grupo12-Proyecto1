@@ -71,3 +71,24 @@ class ArtistModel:
             return str(e), False
         finally:
             cursor.close()
+
+    @staticmethod
+    def delete_artist(id):
+        try:
+            db = getCnx()  # Obtiene una conexión desde la función
+            cursor = db.cursor(buffered=True)
+            # Query
+            cursor.callproc(
+                "DeleteArtist",
+                (id,),
+            )
+            for result in cursor.stored_results():
+                result = dict(zip(result.column_names, result.fetchone()))
+                if result["TYPE"] == "ERROR":
+                    return result, False
+                else:
+                    return result, True
+        except Exception as e:
+            return str(e), False
+        finally:
+            cursor.close()
