@@ -73,6 +73,27 @@ class ArtistModel:
             cursor.close()
 
     @staticmethod
+    def get_songs(artist):
+        try:
+            db = getCnx()  # Obtiene una conexión desde la función
+            cursor = db.cursor(buffered=True)
+            # Query
+            cursor.callproc(
+                "GetArtistSongs",
+                (artist,),
+            )
+            data = []
+            for result in cursor.stored_results():
+                for song in result.fetchall():
+                    result = dict(zip(("id", "name", "cover", "musicSrc"), song))
+                    data.append(result)
+            return data, True
+        except Exception as e:
+            return str(e), False
+        finally:
+            cursor.close()
+
+    @staticmethod
     def delete_artist(id):
         try:
             db = getCnx()  # Obtiene una conexión desde la función
