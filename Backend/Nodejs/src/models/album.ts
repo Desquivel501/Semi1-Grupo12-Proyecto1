@@ -54,7 +54,7 @@ export class AlbumModel {
   ) {
     try {
       pool.query(
-        `SELECT a.id_album AS id, a.name,a.image AS cover ,ar.name AS signer FROM Albums a
+        `SELECT a.id_album AS id, a.name,a.image AS cover ,ar.name AS singer FROM Albums a
         JOIN Artists ar ON a.id_artist=ar.id_artist`,
         (err, result) => {
           if (err) throw err;
