@@ -12,7 +12,7 @@ CALL CreateArtist('NF', 'fsfasdfasdf', '1991-03-30') $$
 
 
 /*ACTUALIZANDO ARTISTAS...*/
-CALL UpdateArtist(1, 'Emin3m', 'fsfasdfasdf', '1972-10-17') $$
+CALL UpdateArtist(1, 'Eminem', '', '1972-10-17') $$
 
 
 /*CREANDO ALBUM...*/
@@ -20,7 +20,8 @@ CALL CreateAlbum('Music to be murdered by', 'Music to be murdered by side B', 's
 CALL CreateAlbum('Clouds', 'Clouds', 'sfasdfasf', 2) $$
 
 /*ACTUALIZANDO ALBUM...*/
-CALL UpdateAlbum(1, 'Music to be murdered by', 'Music to be murdered by side A', 'aaaaaaaaaaaaaaa', 1) $$
+CALL UpdateAlbum(1, 'Music to be murdered by', 'Music to be murdered by side A', NULL, 1) $$
+CALL UpdateAlbum(:id_album_in, :name_in, :description_in, :image_in, :id_artist_in) 
 
 /*CREANDO CANCIONES...*/
 CALL CreateSong('Marsh', 'asdfasfasd', 200, 1, 'afdsafdsafds') $$
@@ -31,7 +32,8 @@ CALL CreateSong('Just like you', 'asdfasfasd', 251, 2, 'afdsafdsafds') $$
 CALL CreateSong('Drifting', 'asdfasfasd', 200, 2, 'afdsafdsafds') $$
 
 /*ACTUALIZANDO CANCIONES*/
-CALL UpdateSong(4, 'The Search', 'adfasdaf', 242, 2, 'sfasdfsafda') $$
+CALL UpdateSong(3, 'Never Love Again', '', 243, 1, 'aaaaaaaaaaaa') $$
+CALL UpdateSong(:id_song_in, :name_in, :image_in, :length_in, :id_artist_in, :file_in) 
 
 /*AGREGANDO CANCIONES A ALBUM*/
 CALL AddSongAlbum(1, 1) $$
@@ -75,27 +77,7 @@ CALL AddToFavorites(4, 'montenegroandres2001@gmail.com') $$
 CALL AddToFavorites(5, 'montenegroandres2001@gmail.com') $$
 
 /*AGREGANDO AL HISTORIAL*/
-CALL AddToHistory(1, 'montenegroandres2001@gmail.com') $$ 
-CALL AddToHistory(1, 'montenegroandres2001@gmail.com') $$ 
-CALL AddToHistory(7, 'montenegroandres2001@gmail.com') $$ 
-CALL AddToHistory(8, 'montenegroandres2001@gmail.com') $$ 
-CALL AddToHistory(9, 'montenegroandres2001@gmail.com') $$ 
-CALL AddToHistory(9, 'montenegroandres2001@gmail.com') $$ 
-CALL AddToHistory(9, 'montenegroandres2001@gmail.com') $$ 
-CALL AddToHistory(9, 'montenegroandres2001@gmail.com') $$ 
-CALL AddToHistory(2, 'montenegroandres2001@gmail.com') $$ 
-CALL AddToHistory(2, 'montenegroandres2001@gmail.com') $$ 
-CALL AddToHistory(3, 'montenegroandres2001@gmail.com') $$ 
-CALL AddToHistory(7, 'montenegroandres2001@gmail.com') $$ 
-CALL AddToHistory(3, 'montenegroandres2001@gmail.com') $$ 
-CALL AddToHistory(2, 'montenegroandres2001@gmail.com') $$ 
-CALL AddToHistory(3, 'a@b.com') $$ 
-CALL AddToHistory(3, 'a@b.com') $$ 
-CALL AddToHistory(3, 'a@b.com') $$ 
-CALL AddToHistory(3, 'a@b.com') $$ 
-CALL AddToHistory(3, 'a@b.com') $$ 
-CALL AddToHistory(1, 'a@b.com') $$ 
-CALL AddToHistory(8, 'a@b.com') $$
+CALL AddToHistory('https://multimediasemi1-g12.s3.us-east-2.amazonaws.com/Canciones/1694634100241songAvenged%20Sevenfold%20-%20Hail%20to%20the%20King.mp3', 'a@b.com') $$
 
 /*ELIMINANDO ARTISTA*/
 CALL DeleteArtist(2) $$ 
@@ -135,6 +117,12 @@ CALL GetAllArtists()
 
 CALL GetUserPlaylists('a@b.com')
 
+/*Actualizando usuario*/
+CALL UpdateUser('testUpdate@mail.com', 'testUpdate@mail.com', 'firstname1', 'lastname1', 'edsfaeaf', 'password12', '2001-08-28') 
+CALL UpdateUser(:email_in, :new_email_in, :firstname_in, :lastname_in, :photo_in, :password_in, :birthdate_in) 
+
+CALL UpdatePlaylist(2, 'Hip Hop Mix 2', 'Test 2', '', 'a@b.com') 
+
 SELECT * FROM Songs s $$
 SELECT * FROM Song_artists sa $$
 SELECT * FROM Playlists p $$
@@ -143,3 +131,4 @@ SELECT * FROM Artists a $$
 SELECT * FROM Favorites f $$
 SELECT * FROM Albums a2 $$
 SELECT * FROM History h $$
+SELECT * FROM Users u 

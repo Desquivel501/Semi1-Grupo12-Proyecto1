@@ -64,9 +64,9 @@ CREATE TABLE Playlists (
 	name VARCHAR(150),
 	description VARCHAR(255),
 	image VARCHAR(255),
-	email VARCHAR(255),
+	email VARCHAR(255), /*Cambiar*/
 	PRIMARY KEY(id_playlist),
-	FOREIGN KEY(email) REFERENCES Users(email) ON DELETE CASCADE
+	FOREIGN KEY(email) REFERENCES Users(email) ON ON DELETE CASCADE ON UPDATE CASCADE
 ) $$
 
 CREATE TABLE Playlists_details (
@@ -78,17 +78,17 @@ CREATE TABLE Playlists_details (
 ) $$
 
 CREATE TABLE Favorites (
-	email VARCHAR(255),
+	email VARCHAR(255) /*Cambiar*/,
 	id_song INTEGER,
 	UNIQUE(email, id_song),
-	FOREIGN KEY(email) REFERENCES Users(email) ON DELETE CASCADE,
+	FOREIGN KEY(email) REFERENCES Users(email) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY(id_song) REFERENCES Songs(id_song) ON DELETE CASCADE
 ) $$
 
 CREATE TABLE History (
-	email VARCHAR(255),
+	email VARCHAR(255)/*Cambiar*/,
 	id_song INTEGER,
 	date DATETIME,
-	FOREIGN KEY(email) REFERENCES Users(email) ON DELETE CASCADE
+	FOREIGN KEY(email) REFERENCES Users(email) ON DELETE CASCADE ON UPDATE CASCADE
 	-- FOREIGN KEY(id_song) REFERENCES Songs(id_song) ON DELETE CASCADE
 ) $$

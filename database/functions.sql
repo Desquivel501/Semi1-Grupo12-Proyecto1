@@ -261,3 +261,17 @@ BEGIN
 		RETURN(in_fav);		
 END $$
 
+-- Obtener id de una canción en base a su link de S3
+DROP FUNCTION IF EXISTS get_song_id $$
+CREATE FUNCTION get_song_id (
+	file_in VARCHAR(255)
+)
+RETURNS INTEGER
+DETERMINISTIC
+BEGIN
+		DECLARE id_song_out INTEGER;
+		SELECT s.id_song INTO id_song_out
+		FROM Songs s 
+		WHERE s.file = file_in;
+		RETURN(id_song_out);
+END $$
