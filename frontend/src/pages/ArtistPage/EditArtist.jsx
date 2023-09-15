@@ -23,6 +23,8 @@ import song_list from '../../assets/song_list';
 import album_list from '../../assets/album_list';
 import artist_list from '../../assets/artist_list';
 
+import { getData } from '../../api/api';
+
 const theme = createTheme({
     typography: {
         first: {
@@ -116,7 +118,7 @@ export default function EditArtist(props) {
     const [count, setCount] = useState(0);
     const [artist, setArtist] = useState({
         id: 0,
-        name: 'Test',
+        name: '',
         cover:
             'https://soundstream-semi1-g12.s3.us-east-2.amazonaws.com/no_album.jpg',
     });
@@ -128,13 +130,28 @@ export default function EditArtist(props) {
 
 
     useEffect(() => {
-        for(var i = 0; i < artist_list.length; i++){
-            if(artist_list[i].id == id){
-                setArtist(artist_list[i])
-                setPreview(artist_list[i].cover)
-                break;
-            }
-        }
+        // for(var i = 0; i < artist_list.length; i++){
+        //     if(artist_list[i].id == id){
+        //         setArtist(artist_list[i])
+        //         setPreview(artist_list[i].cover)
+        //         break;
+        //     }
+        // }
+
+        let endpoint = '/api/artists';
+        getData({endpoint})
+        .then(data => {
+            data.find((item) => {
+                if(item.id == id){
+                    setArtist(item)
+                    setPreview(item[i].cover)
+                    return;
+                }
+            })
+        })
+        .catch(err => console.log(err))
+
+
         setCount(count + 1);
     },[]);
 
@@ -356,7 +373,7 @@ export default function EditArtist(props) {
                             },
                         }} 
                     >
-                        Guardar Cambios
+                        {edit ? "Guardar Cambios" : "Crear Artista"}
                     </Button>
                     
                 </Grid>

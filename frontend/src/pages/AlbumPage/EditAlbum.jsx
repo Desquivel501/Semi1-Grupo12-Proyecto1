@@ -8,7 +8,8 @@ import {
 } from 'react-router-dom'
 import { ColorExtractor } from 'react-color-extractor'
 
-import { ButtonGroup, Typography, Box, Container, Grid, Button, Paper, CssBaseline, Divider, IconButton, TextField } from '@mui/material';
+import { ButtonGroup, Typography, Box, Container, Grid, Button, Paper, CssBaseline, Divider, IconButton, TextField, InputLabel, FormControl, MenuItem } from '@mui/material';
+import Select from '@mui/material/Select';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import { styled } from '@mui/material/styles';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -28,6 +29,8 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import song_list from '../../assets/song_list';
 import album_list from '../../assets/album_list';
 import artist_list from '../../assets/artist_list';
+
+import { getData } from '../../api/api';
 
 const theme = createTheme({
     typography: {
@@ -125,21 +128,60 @@ export default function EditAlbum(props) {
     const [count, setCount] = useState(0);
     const [album, setAlbum] = useState({
         id: 0,
-        name: 'Test',
+        name: '',
         cover:
             'https://soundstream-semi1-g12.s3.us-east-2.amazonaws.com/no_album.jpg',
     });
     const [preview, setPreview] = useState(album.cover);
+    const [artistList, setArtistList] = useState([]);
+    const [songList, setSongList] = useState([]);
 
     useEffect(() => {
-        console.log(id)
-        for(var i = 0; i < album_list.length; i++){
-            if(album_list[i].id == id){
-                setAlbum(album_list[i])
-                setPreview(album_list[i].cover)
-                break;
-            }
-        }
+        // console.log(id)
+        // for(var i = 0; i < album_list.length; i++){
+        //     if(album_list[i].id == id){
+        //         setAlbum(album_list[i])
+        //         setPreview(album_list[i].cover)
+        //         break;
+        //     }
+        // }
+
+        let endpoint = '/api/albums';
+        let artist_name = '';
+        getData({endpoint})
+        .then(data => {
+            // setAlbumList(data)
+            console.log(data)
+            data.find((item) => {
+                if(item.id == id){
+                    artist_name = item.singer;
+                    setAlbum({...item, description: ''})
+                    setPreview(item[i].cover)
+                    return;
+                }
+            })
+
+        })
+        .catch(err => console.log(err))
+
+        endpoint = '/api/songs';
+        getData({endpoint})
+        .then(data => {
+            let tempList = []
+            data.find((song) => {
+                console.log(song.singer, artist_name)
+                if(song.singer == artist_name){
+                    tempList.push(song)
+                }
+            })
+            setSongList(tempList)
+        })  
+
+        endpoint = '/api/artists';
+        getData({endpoint})
+        .then(data => setArtistList(data))
+        .catch(err => console.log(err))
+
         setCount(count + 1);
      
     },[]);
@@ -347,39 +389,66 @@ export default function EditAlbum(props) {
                                         fontSize: "2.5rem",
                                     }, 
                                     borderColor: '#fff' }}
-                            />
+                            />  
 
+
+                            <Typography
+                                variant="h5"
+                                component="h5"
+                                align="left"
+                                sx={{
+                                    mt:2,
+                                    fontFamily: "monospace",
+                                    fontWeight: 700,
+                                    color: "#fff",
+                                }}
+                                >
+                                Artist
+                            </Typography>
+
+                            
                             {
-                                !platlist &&
-                                <>
-                                    <Typography
-                                        variant="h5"
-                                        component="h5"
-                                        align="left"
+                                edit ?
+                                <Typography
+                                    variant="h3"
+                                    component="h3"
+                                    align="left"
+                                    sx={{
+                                        fontFamily: "monospace",
+                                        fontWeight: 700,
+                                        color: "#fff",
+                                    }}
+                                    >
+                                    {album.singer}
+                                </Typography>
+                                :
+                                <FormControl fullWidth>
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        align='left'
+                                        value={album.singer}
+                                        onChange={(e) => setAlbum({...album, singer: e.target.value})}
                                         sx={{
-                                            mt:2,
                                             fontFamily: "monospace",
                                             fontWeight: 700,
                                             color: "#fff",
+                                            fontSize: "2.5rem",
                                         }}
-                                        >
-                                        Artista
-                                    </Typography> 
+                                    >
+                                        {artistList.map((artist) => (
+                                            <MenuItem key={artist.id} value={artist.name}>{artist.name}</MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
 
-                                    <Typography
-                                        variant="h3"
-                                        component="h3"
-                                        align="left"
-                                        sx={{
-                                            fontFamily: "monospace",
-                                            fontWeight: 700,
-                                            color: "#fff",
-                                        }}
-                                        >
-                                        {album.singer}
-                                    </Typography>
-                                </>
+
                             }
+
+
+
+
+
 
                             {
                                 platlist &&
@@ -424,7 +493,7 @@ export default function EditAlbum(props) {
                                         },
                                     }} 
                                 >
-                                    Guardar Cambios
+                                    {edit ? "Guardar Cambios" : "Crear Album"}
                                 </Button>
                             </Grid>
 
@@ -468,10 +537,6 @@ export default function EditAlbum(props) {
                             #
                             </Typography>
                         </Grid>
-
-                        
-
-                        
                         
                         <Typography
                             variant="h6"
@@ -542,8 +607,8 @@ export default function EditAlbum(props) {
                     <Divider sx={{borderColor:'#fff', my:2}}/>
 
 
-                    {rows.map((row, i) => (
-                        <Grid item xs={12} align='left' display='flex' key={i+1}
+                    {songList.map((item, i) => (
+                        <Grid item xs={12} align='left' display='flex' key={item.id}
                             sx={{
                                 pl:2, 
                                 cursor: 'pointer',
@@ -617,7 +682,7 @@ export default function EditAlbum(props) {
                                         py:1.5
                                     }}
                                     >
-                                    {row.title}
+                                    {item.name}
                                 </Typography>
                                 
                             </Grid>

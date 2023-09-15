@@ -1,9 +1,16 @@
 import React, { Component } from 'react';
 import { ColorExtractor } from 'react-color-extractor'
 import './Perfil.css';
-import { Button, TextField, CssBaseline } from "@mui/material";
+import { Button, TextField, CssBaseline, Typography } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { alpha, styled } from '@mui/material/styles';
+
+import Swal from 'sweetalert2'
+import { useContext } from "react";
+import { sesionContext } from "../../context/SessionContext";
+import { useState, useEffect } from 'react';
+
+import { getDataAuth } from '../../api/api';
 
 
 const CssTextField = styled(TextField)({
@@ -31,81 +38,112 @@ const CssTextField = styled(TextField)({
   });
 
 
-export default class Perfil extends Component {
+export default function Perfil() {
 
-    miCampo = React.createRef();
-    fr = new FileReader();
+    const miCampo = React.createRef();
+    const fr = new FileReader();
 
-    state = {
+    const [state, setState] = useState({
         nombre: '', //aca se guarda el nuevo nombre
         nombretemp: 'Kevin', // aca se guarda el nombre que se recibe desde la base de datos 
         apellido: '', // aca se guarda el nuevo apellido 
         apellidotemp: 'Garcia', // aca se guarda el apellido que se recibe desde la base de datos 
         tipo_usuario: 'Administrador', // aca se guarda el tipo que se recibe desde la base de datos 
         correo: 'demo@correo.com', // aca se guarda el correo que se recibe desde la base de datos 
-        foto: "https://t4.ftcdn.net/jpg/05/63/85/35/360_F_563853540_ULfiVXqhEzaNgPrIvr0QQV8ibBnhDUP6.jpg", // aca se guarda la foto que se recibe desde la base de datos 
+        foto: "https://static.wikia.nocookie.net/pokemon-pasta/images/4/4f/Likeaboss.jpg/revision/latest?cb=20130402202456", // aca se guarda la foto que se recibe desde la base de datos 
         contrasena: '',
         nueva_contrasena: '',
         verificar_contrasena: '',
         preview: "https://t4.ftcdn.net/jpg/05/63/85/35/360_F_563853540_ULfiVXqhEzaNgPrIvr0QQV8ibBnhDUP6.jpg",
-        color: '#fff'
-    }
+        color: ''
+    })
+    const [count, setCount] = useState(0);
 
-    inputChangedHandler1 = (e) => {
+    useEffect(() => {
+        const endpoint = `/api/users/${window.localStorage.getItem("id")}`;
+        getDataAuth({endpoint})
+        .then(data => {
+            setState({
+                ...state, 
+                nombre: data.firstname,
+                nombretemp:  data.firstname, 
+                apellido: data.lastname,
+                apellidotemp: data.lastname, 
+                tipo_usuario: (data.role == 1 ? 'Administrador' : 'Usuario'), 
+                correo: data.email, 
+                foto: data.photo,
+                contrasena: data.password,
+            })
+        })
+        .catch(err => console.log(err))
+        setCount(count + 1);
+    }, []);
+
+
+
+    const inputChangedHandler1 = (e) => {
         //cuando ingresa el nombre en el input
-        this.setState({ nombre: e.target.value })
+        setState({ ...state, nombre: e.target.value })
 
     }
 
-    inputChangedHandler2 = (e) => {
+    const inputChangedHandler2 = (e) => {
         //cuando ingresa el apellido en el input
-        this.setState({ apellido: e.target.value })
+        setState({...state, apellido: e.target.value })
 
     }
 
-    inputChangedHandler3 = (e) => {
+    const inputChangedHandler3 = (e) => {
         //cuando ingresa la contraseña actual, aca se debe encriptar contraseña para validar en el backend 
-        this.setState({contrasena: e.target.value})
+        setState({...state, contrasena: e.target.value})
     }
 
-    inputChangedHandlernuevaContrasena = (e) => {
+    const inputChangedHandlernuevaContrasena = (e) => {
         //cuando ingresa la nueva constraseña, aca se debe encriptar contrasena en el backend debe hacer la validadcion
-        this.setState({nueva_contrasena: e.target.value})
+        setState({...state, nueva_contrasena: e.target.value})
     }
 
-    inputChangedHandlerverificarContrasena = (e) => {
+    const inputChangedHandlerverificarContrasena = (e) => {
         //cuando ingresa otra vez la nueva contraseña, aca se debe encriptar contrasena en el backend debe hacer validacion
-        this.setState({verificar_contrasena: e.target.value})
+        setState({...state, verificar_contrasena: e.target.value})
     }
 
-    onChange =(e) => {
+    const onChange =(e) => {
         // nueva foto 
-        this.setState({preview : URL.createObjectURL(e.target.files[0])})  
+        setState({...state, preview : URL.createObjectURL(e.target.files[0])})  
     }
 
-    guardarfoto = (e) =>{
-        this.setState({foto : this.state.preview})
-        // this.setState({preview : ''})
+    const guardarfoto = (e) =>{
+        setState({...state, foto : state.preview})
+        // setState({preview : ''})
     }
 
-    actualizar_datos = (e) =>{
+    const actualizar_datos = (e) =>{
         //campos que se enviara a la base de datos para actualizar informacion 
         // state.nombre, state.apellidos, state.foto
+        if(state.contrasena === state.verificar_contrasena){
+            console.log("contraseñas iguales")
+            console.log({
+                nombre: state.nombretemp,
+                apellido: state.apellidotemp,
+                foto: state.foto,
+            })
+        }
     }
 
-    actuazlizar_contraseña = (e) => {
+    const actuazlizar_contraseña = (e) => {
         // campos que se enviara a la base de datos para actualizar contraseña, alla debe hacer las validaciones con las contraseñans encriptadas 
         // state.contrasena, state.verificar_contrasena, state.verificar_contrasena
     }
 
-    close_contrasena  = (e) => {
-        this.setState({contrasena: '', nueva_contrasena: '', verificar_contrasena: ''})
+    const close_contrasena  = (e) => {
+        setState({...state, contrasena: '', nueva_contrasena: '', verificar_contrasena: ''})
     }
 
-    selectColor(str) {
+    function selectColor(str) {
 
         if(str === undefined || str === null || str === ''){
-            this.setState({ color: '#787878' })
+            setState({ ...state, color: '#787878' })
             return;
         };
 
@@ -116,13 +154,13 @@ export default class Perfil extends Component {
         g = parseInt("0x"+str.substring(3,5));
         b = parseInt("0x"+str.substring(5,7));
         if(r < whiteLimit || b < whiteLimit || g < whiteLimit) {
-            this.setState({ color: str })
+            setState({ ...state, color: str })
             return;
         } 
-        this.setState({ color: '#787878' })
+        setState({ ...state, color: '#787878' })
     }
 
-    changeColor(color, amount) {
+    function changeColor(color, amount) {
         const clamp = (val) => Math.min(Math.max(val, 0), 0xFF)
         const fill = (str) => ('00' + str).slice(-2)
     
@@ -133,177 +171,209 @@ export default class Perfil extends Component {
         return '#' + fill(red.toString(16)) + fill(green.toString(16)) + fill(blue.toString(16))
     }
 
-    
-    render() {
-        return (
 
-            <>
-            {/* <h1>Mi Perfil</h1> */}
-            <section className="vh-170">
-                <div className="container pb-3 h-80" style={{maxWidth:'100%'}}>
-                    <div className="row d-flex justify-content-center align-items-center h-50">
-                        <div className="col col-lg-12 mb-4 mb-lg-0">
-                            <div className="card mb-3" style={{ borderRadius: '.5rem', backgroundColor:'#1f1f1f'}}>
-                                <div className="row g-0" style={{ justifyContent:'center' }}>
-                                   
-                                    <div className="col-md-12 text-center text-white pb-4"
-                                        style={{ borderTopLeftRadius: '.5rem', borderBottomLeftRadius: '.5rem', backgroundColor:this.state.color }}>
-                                        <img src={this.state.foto}
-                                            alt="Avatar" className="img-fluid my-5" 
-                                            style={{ width: '400px', border:1, borderColor:'#000',
-                                                    boxShadow: '5px 5px 10px #000000',
-                                                    margin: '4em', 
-                                                    borderRadius: '50%',
-                                            }} 
-                                        />
-                                        <ColorExtractor
-                                            src={this.state.foto}
-                                            getColors={colors => this.selectColor(colors[0])}
-                                        />   
-                                        <h3 style={{color:'#fff'}}>Perfil</h3>
-                                        <h1>{this.state.nombretemp+' '+this.state.apellidotemp}</h1>
-                                        <h4>{this.state.tipo_usuario}</h4>
+    return (
 
-                                    </div>
-                                    <div className="col-md-10">
-                                        <div className="row d-flex p-4">
-                                            <div className="row pt-1 pb-1">
-                                                <h3>Actualizar mis datos</h3>
-                                            </div>
-                                            <hr className="mt-0 mb-4" />
-                                            <div className="row pt-1" style={{justifyContent:'center'}}>
-                                                <div className="col-5 mb-3">
-                                                    <h5>Nombre</h5>
+        <>
+        {/* <h1>Mi Perfil</h1> */}
+        <section className="vh-170">
+            <div className="container pb-3 h-80" style={{maxWidth:'100%'}}>
+                <div className="row d-flex justify-content-center align-items-center h-50">
+                    <div className="col col-lg-12 mb-4 mb-lg-0">
+                        <div className="card mb-3" style={{ borderRadius: '.5rem', backgroundColor:'#1f1f1f'}}>
+                            <div className="row g-0" style={{ justifyContent:'center' }}>
+                                
+                                <div className="col-md-12 text-center text-white pb-4"
+                                    style={{ borderTopLeftRadius: '.5rem', borderBottomLeftRadius: '.5rem', backgroundColor:state.color }}>
+                                    <img src={state.foto}
+                                        alt="Avatar" className="img-fluid my-5" 
+                                        style={{ width: '400px', border:1, borderColor:'#000',
+                                                boxShadow: '5px 5px 10px #000000',
+                                                margin: '4em', 
+                                                borderRadius: '50%',
+                                        }} 
+                                    />
 
-                                                    {/* <input type="text" className="form-control" value={this.state.nombre} onChange={this.inputChangedHandler1} name="Nombre" placeholder="Nombre" /> */}
+                                    <ColorExtractor
+                                        key={count}
+                                        src={state.foto}
+                                        getColors={colors => {
+                                            console.log(colors)
+                                            selectColor(colors[0])
+                                        }}
+                                    />   
 
-                                                    <CssTextField
-                                                        margin="normal"
-                                                        fullWidth
-                                                        id="name"
-                                                        name="name"
-                                                        sx={{ input: { color: '#fff' }, borderColor: '#fff' }}
-                                                    />
+                                    <h3 style={{color:'#fff'}}>Perfil</h3>
+                                    <h1>{state.nombre+' '+state.apellido}</h1>
+                                    <h4>{state.tipo_usuario}</h4>
 
-                                                </div>
-                                                <div className="col-5 mb-3">
-                                                    <h5>Apellido</h5>
-                                                    {/* <input type="text" className="form-control" value={this.state.apellido} onChange={this.inputChangedHandler2} name="Apellido" placeholder="Apellido" /> */}
-                                                    <CssTextField
-                                                        margin="normal"
-                                                        fullWidth
-                                                        id="lastname"
-                                                        name="lastname"
-                                                        sx={{ input: { color: '#fff' }, borderColor: '#fff' }}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <hr className="mt-0 mb-4" />
-                                            <div className="row pt-1" style={{justifyContent:'center'}}>
-                                                <div className="col-7 mb-3">
-                                                    <h5>Correo</h5>
-                                                    <p className="text-muted">{this.state.correo}</p>
-                                                </div>
-                                                <hr className="mt-0 mb-4" />
-                                                <div className="col-7 mb-3">
-                                                    <h5>Actualizar Contraseña</h5>
-                                                    <Button className="button my-3" data-mdb-toggle="modal" data-mdb-target="#exampleModal2" 
-                                                        sx={{
-                                                            background:this.state.color,
-                                                            color: '#fff',
-                                                            "&:hover": {
-                                                                background: this.changeColor(this.state.color, -30),
-                                                            }
-                                                        }}
-                                                    >
-                                                        Actualizar
-                                                    </Button>
-                                                </div>
-                                                <hr className="mt-0 mb-4" />
-                                                <div className="col-7 mb-3">
-                                                    <h5>Actualizar Foto de Perfil</h5>
-                                                    <Button className="button my-3" data-mdb-toggle="modal" data-mdb-target="#exampleModal"
-                                                        sx={{
-                                                            background:this.state.color,
-                                                            color: '#fff',
-                                                            "&:hover": {
-                                                                background: this.changeColor(this.state.color, -30),
-                                                            }
-                                                        }}
-                                                    >
-                                                        Cambiar
-                                                    </Button>
-                                                </div>
-                                                <hr className="mt-0 mb-4" />
-                                                <div className="col-7 mb-3">
-                                                    <Button className="button my-3"
-                                                        sx={{
-                                                            background:this.state.color,
-                                                            color: '#fff',
-                                                            "&:hover": {
-                                                                background: this.changeColor(this.state.color, -30),
-                                                            }
-                                                        }}
-                                                    >
-                                                        Actualizar Datos
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                            {/* <hr className="mt-0 mb-4" />
-                                            <div className="d-flex justify-content-start">
-                                                <a className="button" data-mdb-toggle="modal" data-mdb-target="#exampleModal">Cambiar Foto</a>
-                                                <a className="button">Actualizar</a>
-                                            </div> */}
+                                </div>
+                                <div className="col-md-10">
+                                    <div className="row d-flex p-4">
+                                        <div className="row pt-1 pb-1">
+                                            <h3>Actualizar mis datos</h3>
                                         </div>
+                                        <hr className="mt-0 mb-4" />
+                                        <div className="row pt-1" style={{justifyContent:'center'}}>
+                                            <div className="col-5 mb-3">
+                                                <h5>Nombre</h5>
+
+                                                {/* <input type="text" className="form-control" value={state.nombre} onChange={inputChangedHandler1} name="Nombre" placeholder="Nombre" /> */}
+
+                                                <CssTextField
+                                                    margin="normal"
+                                                    fullWidth
+                                                    id="name"
+                                                    name="name"
+                                                    value={state.nombretemp}
+                                                    onChange={(e) => setState({...state, nombretemp: e.target.value})}
+                                                    sx={{ input: { color: '#fff' }, borderColor: '#fff' }}
+                                                />
+
+                                            </div>
+                                            <div className="col-5 mb-3">
+                                                <h5>Apellido</h5>
+                                                {/* <input type="text" className="form-control" value={state.apellido} onChange={inputChangedHandler2} name="Apellido" placeholder="Apellido" /> */}
+                                                <CssTextField
+                                                    margin="normal"
+                                                    fullWidth
+                                                    id="lastname"
+                                                    name="lastname"
+                                                    value={state.apellidotemp}
+                                                    onChange={(e) => setState({...state, apellidotemp : e.target.value})}
+                                                    sx={{ input: { color: '#fff' }, borderColor: '#fff' }}
+                                                />
+                                            </div>
+                                        </div>
+                                        <hr className="mt-0 mb-4" />
+                                        <div className="row pt-1" style={{justifyContent:'center'}}>
+                                            <div className="col-7 mb-3">
+                                                <h5>Correo</h5>
+                                                <p className="text-muted">{state.correo}</p>
+                                            </div>
+{/* 
+                                            <hr className="mt-0 mb-4" />
+                                            <div className="col-7 mb-3">
+                                                <h5>Actualizar Contraseña</h5>
+                                                <Button className="button my-3" data-mdb-toggle="modal" data-mdb-target="#exampleModal2" 
+                                                    sx={{
+                                                        background:state.color,
+                                                        color: '#fff',
+                                                        "&:hover": {
+                                                            background: changeColor(state.color, -30),
+                                                        }
+                                                    }}
+                                                >
+                                                    Actualizar
+                                                </Button>
+                                            </div> */}
+
+                                            <hr className="mt-0 mb-4" />
+                                            <div className="col-7 mb-3">
+                                                <h5>Actualizar Foto de Perfil</h5>
+                                                <Button className="button my-3" data-mdb-toggle="modal" data-mdb-target="#replacePictureModal"
+                                                    sx={{
+                                                        background:state.color,
+                                                        color: '#fff',
+                                                        "&:hover": {
+                                                            background: changeColor(state.color, -30),
+                                                        }
+                                                    }}
+                                                >
+                                                    Cambiar
+                                                </Button>
+                                            </div>
+                                            <hr className="mt-0 mb-4" />
+                                            <div className="col-7 mb-3">
+                                                <Button 
+                                                
+                                                data-mdb-toggle="modal" data-mdb-target="#confirmModal"
+                                                    className="button my-3"
+                                                    sx={{
+                                                        mx:1,
+                                                        background:state.color,
+                                                        color: '#fff',
+                                                        "&:hover": {
+                                                            background: changeColor(state.color, -30),
+                                                        }
+                                                    }}
+                                                >
+                                                    Actualizar Datos
+                                                </Button>
+
+                                                <Button className="button my-3"
+                                                    sx={{
+                                                        mx:1,
+                                                        background:'#9d0000',
+                                                        color: '#fff',
+                                                        "&:hover": {
+                                                            background: "#b03232",
+                                                        }
+                                                    }}
+                                                >
+                                                    Cerrar Sesión
+                                                </Button>
+
+                                            </div>
+                                        </div>
+                                        {/* <hr className="mt-0 mb-4" />
+                                        <div className="d-flex justify-content-start">
+                                            <a className="button" data-mdb-toggle="modal" data-mdb-target="#replacePictureModal">Cambiar Foto</a>
+                                            <a className="button">Actualizar</a>
+                                        </div> */}
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
-            
-            <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            </div>
+        </section>
+        
+ 
+
+
+        <div className="modal fade" id="replacePictureModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content" style={{background:"#1f1f1f"}}>
                         <div className="modal-header">
-                            <h5 className="modal-title" id="exampleModalLabel">Cambiar Foto de perfil</h5>
+                            <h5 className="modal-title" id="exampleModalLabel">Cambiar Fotografia</h5>
                             <button type="button" className="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div className="modal-body">
-                            <img src={this.state.preview}
+                        <div className="modal-body" style={{display:'flex', flexDirection:'column', justifyContent:'flex-end', alignItems:'center'}}>
+                            <img src={state.preview}
                                 alt="Avatar" className="img-fluid my-5" style={{ width: '200px' }} />
-                             <input type="file" name="myImage" onChange= {this.onChange} />
+                             <input type="file" name="cover" accept='.png, .jpg, .jpeg'
+                                onChange= {(e) => {
+                                    setState({...state, preview : URL.createObjectURL(e.target.files[0])})
+                                }} 
+                             />
                         </div>
 
-                        <div className="modal-body">
-                           
-                        </div>
-                        
                         <div className="modal-footer">
-                           
-                            {/* <button type="button" className="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary" onClick={this.guardarfoto} data-mdb-dismiss="modal">Save changes</button> */}
 
                             <Button className="button my-3" data-mdb-dismiss="modal"
+                                onClick={() => {
+                                    setPreview(song.cover)
+                                }}
                                 sx={{
                                     mr: 3,
-                                    background:"#fff",
-                                    color: '#000',
+                                    background:"#9d0000",
+                                    color: '#fff',
                                     "&:hover": {
-                                        background: this.changeColor(this.state.color, 40),
+                                        background: '#b03232'
                                     }
                                 }}
                             >
                                 Cancelar
                             </Button>
                             
-                            <Button className="button my-3" onClick={this.guardarfoto} data-mdb-dismiss="modal"
+                            <Button className="button my-3" onClick={() => setState({...state, foto: state.preview})} data-mdb-dismiss="modal"
                                 sx={{
-                                    background:this.state.color,
+                                    background:"#717171",
                                     color: '#fff',
                                     "&:hover": {
-                                        background: this.changeColor(this.state.color, -30),
+                                        background: '#9a9a9a'
                                     }
                                 }}
                             >
@@ -317,100 +387,75 @@ export default class Perfil extends Component {
             </div>
 
 
-            <div className="modal fade" id="exampleModal2" tabIndex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
-                <div className="modal-dialog">
-                    <div className="modal-content" style={{background:"#1f1f1f"}}>
-                        <div className="modal-header">
-                            <h5 className="modal-title" id="exampleModalLabel">Cambiar contraseña</h5>
-                            <button type="button" className="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div className="modal-body">
-                            <form>
-                                {/* <div className="form-outline mb-4">
-                                    <input type="password" id="contraseña_Actual" className="form-control" value={this.state.contrasena} onChange={this.inputChangedHandler3}/>
-                                    <label className="form-label" htmlFor="contraseña_Actual">Ingrese la contraseña actual</label>
-                                </div>
-                                <div className="form-outline mb-4">
-                                    <input type="password" id="contraseña_nuevo" value={this.state.nueva_contrasena} onChange={this.inputChangedHandlernuevaContrasena} className="form-control" />
-                                    <label className="form-label" htmlFor="contraseña_nuevo">Ingrese la nueva contraseña</label>
-                                </div>
-                                <div className="form-outline mb-4">
-                                    <input type="password" id="contraseña_comprobar" value={this.state.verificar_contrasena} onChange={this.inputChangedHandlerverificarContrasena} className="form-control" />
-                                    <label className="form-label" htmlFor="contraseña_comprobar">Confirmar nueva constraseña</label>
-                                </div> */}
+        <div className="modal fade" id="confirmModal" tabIndex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+            <div className="modal-dialog">
+                <div className="modal-content" style={{background:"#1f1f1f"}}>
+                    <div className="modal-header">
+                        <h5 className="modal-title" id="exampleModalLabel">Ingresar contraseña</h5>
+                        <button type="button" className="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div className="modal-body">
+                        
+                        <Typography variant="details" noWrap component="div"  align="left" alignSelf={'left'}
+                            sx={{ border:0, pb:1, color: '#fff'}}
+                        >
+                            Confirme su contraseña para guardar los cambios
+                        </Typography>
 
-                                <CssTextField
-                                    margin="normal"
-                                    fullWidth
-                                    required
-                                    id="actual"
-                                    name="actual"
-                                    label='Ingrese la contraseña actual'
-                                    sx={{ input: { color: '#fff' }, borderColor: '#fff' }}
-                                />
-                                <CssTextField
-                                    margin="normal"
-                                    fullWidth
-                                    required
-                                    id="new"
-                                    name="new"
-                                    label='Ingrese la nueva contraseña'
-                                    sx={{ input: { color: '#fff' }, borderColor: '#fff' }}
-                                />
-                                <CssTextField
-                                    margin="normal"
-                                    fullWidth
-                                    required
-                                    id="new2"
-                                    name="new2"
-                                    label='Confirmar nueva constraseña'
-                                    sx={{ input: { color: '#fff' }, borderColor: '#fff' }}
-                                />
+                        <form>
 
+                            <CssTextField
+                                margin="normal"
+                                fullWidth
+                                autoComplete='off'
+                                required
+                                id="actual"
+                                name="actual"
+                                type='password'
+                                value={state.verificar_contrasena}
+                                onChange={(e) => setState({...state, verificar_contrasena: e.target.value})}
+                                sx={{ input: { color: '#fff' }, borderColor: '#fff' }}
+                            />
 
-                            </form>
+                        </form>
 
-                        </div>
+                    </div>
 
-                        <div className="modal-footer">
+                    <div className="modal-footer">
 
-                            {/* <button type="button" className="btn btn-secondary" data-mdb-dismiss="modal" onClick={this.close_contrasena}>Close</button>
-                            <button type="button" className="btn btn-primary" onClick={this.actuazlizar_contraseña} data-mdb-dismiss="modal">Actualizar</button> */}
-
-                            
-                            <Button className="button my-3" data-mdb-dismiss="modal" onClick={this.close_contrasena}
-                                sx={{
-                                    mr: 3,
-                                    background:"#fff",
-                                    color: '#000',
-                                    "&:hover": {
-                                        background: this.changeColor(this.state.color, 40),
-                                    }
-                                }}
-                            >
-                                Cancelar
-                            </Button>
-                            
-                            <Button className="button my-3" onClick={this.actuazlizar_contraseña} data-mdb-dismiss="modal"
-                                sx={{
-                                    background:this.state.color,
-                                    color: '#fff',
-                                    "&:hover": {
-                                        background: this.changeColor(this.state.color, -30),
-                                    }
-                                }}
-                            >
-                                Actualizar
-                            </Button>
+                        <Button className="button my-3" data-mdb-dismiss="modal" onClick={close_contrasena}
+                            sx={{
+                                mr: 3,
+                                background:"#fff",
+                                color: '#000',
+                                "&:hover": {
+                                    background: changeColor(state.color, 40),
+                                }
+                            }}
+                        >
+                            Cancelar
+                        </Button>
+                        
+                        <Button className="button my-3" onClick={actualizar_datos} data-mdb-dismiss="modal"
+                            sx={{
+                                background:state.color,
+                                color: '#fff',
+                                "&:hover": {
+                                    background: changeColor(state.color, -30),
+                                }
+                            }}
+                        >
+                            Actualizar
+                        </Button>
 
 
-                        </div>
                     </div>
                 </div>
-            </div></>
+            </div>
+        </div></>
 
 
 
-        )
-    }
+    )
+    
 }

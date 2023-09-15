@@ -26,6 +26,8 @@ import song_list from '../../assets/song_list';
 import album_list from '../../assets/album_list';
 import artist_list from '../../assets/artist_list';
 
+import { getData } from '../../api/api';
+
 const theme = createTheme({
     typography: {
         first: {
@@ -86,8 +88,10 @@ const rows = [
 export default function AlbumPage(props) {
 
     const {
-        platlist = false,
-        admin = true,
+        playlist = false,
+        favoritos = false,
+        radio = false,
+        admin = (localStorage.getItem('type') == 1),
     } = props;
 
     const { id } = useParams();
@@ -100,19 +104,111 @@ export default function AlbumPage(props) {
         name: 'Test',
         cover:
             'https://soundstream-semi1-g12.s3.us-east-2.amazonaws.com/no_album.jpg',
+        description: '',
+        singer: ''
     });
+    const [songList, setSongList] = useState([]);
 
     useEffect(() => {
-        console.log(id)
-        for(var i = 0; i < album_list.length; i++){
-            if(album_list[i].id == id){
-                setAlbum(album_list[i])
-                break;
-            }
+        if(favoritos){
+            setAlbum({
+                id: 0,
+                name: 'Favoritos',
+                cover:
+                    'https://soundstream-semi1-g12.s3.us-east-2.amazonaws.com/favorites.png',
+                description: 'Las canciones que te gustan.',
+                singer: ''
+            })
+            setSongList(song_list)
+
+        } else if(playlist){
+            setAlbum({
+                id: 0,
+                name: 'Playlist',
+                cover:
+                    'https://soundstream-semi1-g12.s3.us-east-2.amazonaws.com/no_album.jpg',
+                description: 'Lopem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies aliquam, nisl nisl ultricies nisl, nec ultricies nisl nisl nec nisl.',
+                singer: ''
+            })
+            setSongList(song_list)
+        } else if(radio){
+            setAlbum({
+                id: 0,
+                name: 'Radio',
+                cover:
+                    'https://soundstream-semi1-g12.s3.us-east-2.amazonaws.com/radio.png',
+                description: 'Escucha todas nuestras canciones.',
+                singer: ''
+            })
+            let endpoint = '/api/songs';
+            getData({endpoint})
+            .then(data => {
+                console.log(data)
+                setSongList(data)
+            })
+            .catch(err => console.log(err))
+
+        }else{
+            // console.log(id)
+            // for(var i = 0; i < album_list.length; i++){
+            //     if(album_list[i].id == id){
+            //         setAlbum({...album_list[i], description: ''})
+            //         break;
+            //     }
+            // }
+
+            let endpoint = '/api/albums';
+            let artist = '';
+            getData({endpoint})
+            .then(data => {
+                // setAlbumList(data)
+                data.find((item) => {
+                    if(item.id == id){
+                        setAlbum({...item, description: ''})
+                        artist = item.singer;
+                        return;
+                    }
+                })
+
+            })
+            .catch(err => console.log(err))
+
+            endpoint = '/api/songs';
+            getData({endpoint})
+            .then(data => {
+                let tempList = []
+                data.find((song) => {
+                    console.log(song.singer, artist)
+                    if(song.singer == artist){
+                        tempList.push(song)
+                    }
+                })
+                setSongList(tempList)
+            })  
+
         }
         setCount(count + 1);
-     
     },[]);
+
+
+    const handlePlay = (id) => {
+
+        const song = songList.find((song) => song.id === id)
+        console.log(song)
+        const queue = {
+          song_list: [song],
+          lastUpdate: Date.now()
+        }
+        window.sessionStorage.setItem("queue",JSON.stringify(queue));
+    }
+
+    const handlePlayAll = () => {
+        const queue = {
+          song_list: songList,
+          lastUpdate: Date.now()
+        }
+        window.sessionStorage.setItem("queue",JSON.stringify(queue));
+    }
 
 
 
@@ -162,11 +258,7 @@ export default function AlbumPage(props) {
       <>
          <Box
             component="main"
-            display="flex"
             width="100%"
-            height={window.innerHeight - 130}
-            justify="flex-end"
-            alignItems="top"
             sx={{
                 flexGrow: 1,
                 border:0,
@@ -254,7 +346,7 @@ export default function AlbumPage(props) {
                                     color: "#fff",
                                 }}
                                 >
-                                {platlist ? 'Playlist' : 'Album'}
+                                {playlist ? 'Playlist' : favoritos ? '' : radio ? '' : 'Album'  }
                             </Typography>
 
                             <Typography
@@ -271,7 +363,7 @@ export default function AlbumPage(props) {
                             </Typography>
                             
                             {
-                                !platlist &&
+                                !(playlist || radio) &&
                                 <Typography
                                     variant="h4"
                                     component="h4"
@@ -286,8 +378,8 @@ export default function AlbumPage(props) {
                                 </Typography>
                             }
 
-                            {
-                                platlist &&
+                            {/* {
+                                playlist &&
                                 <Typography
                                     variant="h6"
                                     component="h6"
@@ -298,13 +390,27 @@ export default function AlbumPage(props) {
                                         color: "#fff",
                                     }}
                                     >
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer pulvinar nibh vel enim gravida sodales. Aliquam erat volutpat. Fusce eget est ante. Morbi vitae ante quis lacus imperdiet tristique id vel orci. Aliquam congue purus libero, eget pellentesque odio efficitur a. Duis tincidunt cursus finibus. Sed egestas erat id elit finibus mollis. 
+                                    {album.description}
                                 </Typography>
-                            }
+                            } */}
+
+                            <Typography
+                                variant="h6"
+                                component="h6"
+                                align="left"
+                                sx={{
+                                    fontFamily: "monospace",
+                                    fontWeight: 700,
+                                    color: "#fff",
+                                }}
+                                >
+                                {album.description}
+                            </Typography>
 
                             <Grid item xs={12} md={12} lg={12} align='left' sx={{pt:2}} >
 
-                                <IconButton aria-label="delete" 
+                                <IconButton aria-label="play_all"
+                                    onClick={handlePlayAll}
                                     sx={{
                                         color:'#fff', 
                                         backgroundColor: "#1f1f1f",
@@ -338,82 +444,25 @@ export default function AlbumPage(props) {
 
                 <Grid item xs={12} md={12} lg={12} align='left' sx={{pb:2}} >
 
-                    <Grid item xs={12} md={12} lg={12} align='left' display="-webkit-box" sx={{ pl:2}} justify="flex-end"
+                    <Grid item xs={12} md={12} lg={12} align='left' display='flex'  sx={{ pl:2}} justify="flex-end"
                         alignItems="center">
 
-                        <IconButton
-                            sx={{ color: 'rgba(76, 175, 80, 0)', backgroundColor: 'rgba(76, 175, 80, 0)'}} 
+                        <Grid
+                            item
+                            xs={.5}
                         >
-                            <PlayArrowIcon />
-                        </IconButton> 
-
-                        <Typography
-                            variant="h6"
-                            component="h6"
-                            align="left"
-                            sx={{
-                                fontFamily: "monospace",
-                                fontWeight: 700,
-                                color: "#fff",
-                                pl:2,
-                                pr:1,
-                                py:1.5
-                            }}
+                            <IconButton
+                                sx={{ color: 'rgba(76, 175, 80, 0)', backgroundColor: 'rgba(76, 175, 80, 0)'}} 
                             >
-                           #
-                        </Typography>
-                        
-                        <Typography
-                            variant="h6"
-                            component="h6"
-                            align="left"
-                            sx={{
-                                fontFamily: "monospace",
-                                fontWeight: 700,
-                                color: "#fff",
-                                pl:2,
-                                py:1.5
-                            }}
-                            >
-                            Title
-                        </Typography>
-                    </Grid>
-
-                    <Divider sx={{borderColor:'#fff', mb:2}}/>
-
-                    {rows.map((row, i) => (
-                        <Grid item xs={12} md={12} lg={12} align='left' display="-webkit-box" key={i+1}
-                            sx={{
-                                pl:2, 
-                                cursor: 'pointer',
-                                "&:hover": {
-                                    backgroundColor: changeColor(color, -20),
-                                },
-                                borderRadius: 4,
-                            }} 
-                            justify="flex-end"
-                            alignItems="center"
-                            onMouseEnter={() => handleMouseEnter(i+1)}
-                            onMouseLeave={handleMouseLeave}
-                        >
-
-                            <IconButton key={i+1}
-                                
-                                sx={{
-                                    color:'#fff', 
-                                    backgroundColor: "#1f1f1f",
-                                    border:0,
-                                    "&:hover": {
-                                        backgroundColor: "#353535",
-                                        borderColor: '#1f1f1f',
-                                    },
-                                }} 
-                            >
-                                
-                                {isHovered == (i+1) ? <PlayArrowIcon /> : <MusicNoteIcon />}
+                                <PlayArrowIcon />
                             </IconButton> 
+                        </Grid>
 
-                            <Typography
+                        <Grid
+                            item
+                            xs={.5}
+                        >
+                           <Typography
                                 variant="h6"
                                 component="h6"
                                 align="left"
@@ -423,12 +472,17 @@ export default function AlbumPage(props) {
                                     color: "#fff",
                                     pl:2,
                                     pr:1,
-                                    py:1.5,
+                                    py:1.5
                                 }}
                                 >
-                                {i+1}
+                            #
                             </Typography>
-                            
+                        </Grid>
+
+                        <Grid
+                            item
+                            xs={4.5}
+                        >
                             <Typography
                                 variant="h6"
                                 component="h6"
@@ -441,11 +495,143 @@ export default function AlbumPage(props) {
                                     py:1.5
                                 }}
                                 >
-                                {row.title}
+                                Titulo
                             </Typography>
+                        </Grid>
 
+                        {
+                            (playlist || radio || favoritos) &&
+                            <Grid
+                                item
+                                xs={4.5}
+                            >
+                            <Typography
+                                    variant="h6"
+                                    component="h6"
+                                    align="left"
+                                    sx={{
+                                        fontFamily: "monospace",
+                                        fontWeight: 700,
+                                        color: "#fff",
+                                        pl:2,
+                                        pr:1,
+                                        py:1.5
+                                    }}
+                                    >
+                                Artista
+                                </Typography>
+                            </Grid>
+                        }
+       
+                    </Grid>
+
+                    <Divider sx={{borderColor:'#fff', mb:2}}/>
+
+                    {songList.map((item, i) => (
+                        <Grid item xs={12} align='left' display='flex' key={item.id}
+                            sx={{
+                                pl:2, 
+                                cursor: 'pointer',
+                                "&:hover": {
+                                    backgroundColor: changeColor(color, -20),
+                                },
+                                borderRadius: 4
+                            }} 
+                            justify="flex-end"
+                            alignItems="center"
+                            onMouseEnter={() => handleMouseEnter(i+1)}
+                            onMouseLeave={handleMouseLeave}
+                            onClick={() => handlePlay(item.id)}
+                        >
+                            <Grid
+                                item
+                                xs={.5}
+                            >
+                                <IconButton key={i+1}
+                                    
+                                    sx={{
+                                        color:'#fff', 
+                                        backgroundColor: "#1f1f1f",
+                                        border:0,
+                                        "&:hover": {
+                                            backgroundColor: "#353535",
+                                            borderColor: '#1f1f1f',
+                                        },
+                                    }} 
+                                >
+                                    
+                                    {isHovered == (i+1) ? <PlayArrowIcon /> : <MusicNoteIcon />}
+                                </IconButton> 
+                            </Grid>
+
+                            <Grid
+                                item
+                                xs={.5}
+                            >
+                                <Typography
+                                    variant="h6"
+                                    component="h6"
+                                    align="left"
+                                    sx={{
+                                        fontFamily: "monospace",
+                                        fontWeight: 700,
+                                        color: "#fff",
+                                        pl:2,
+                                        pr:1,
+                                        py:1.5,
+                                    }}
+                                    >
+                                    {i+1}
+                                </Typography>
+
+                            </Grid>
                             
+                            <Grid
+                                item
+                                xs={4.5}
+                            >
+                                <Typography
+                                    width='90%'
+                                    variant="h6"
+                                    component="h6"
+                                    align="left"
+                                    sx={{
+                                        fontFamily: "monospace",
+                                        fontWeight: 700,
+                                        color: "#fff",
+                                        pl:2,
+                                        py:1.5
+                                    }}
+                                    >
+                                    {item.name}
+                                </Typography>
+                                
+                            </Grid>
 
+                            {
+                                (playlist || radio || favoritos) &&
+                                <Grid
+                                    item
+                                    xs={4.5}
+                                >
+                                    <Typography
+                                        width='90%'
+                                        variant="h6"
+                                        component="h6"
+                                        align="left"
+                                        sx={{
+                                            fontFamily: "monospace",
+                                            fontWeight: 700,
+                                            color: "#fff",
+                                            pl:2,
+                                            py:1.5
+                                        }}
+                                        >
+                                        {item.singer}
+                                    </Typography>
+                                    
+                                </Grid>
+                            }
                         </Grid>
                         
                     ))}

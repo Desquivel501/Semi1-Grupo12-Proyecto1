@@ -12,6 +12,12 @@ import song_list from '../../assets/song_list';
 import album_list from '../../assets/album_list';
 import artist_list from '../../assets/artist_list';
 
+import { useState, useEffect } from 'react';
+import { useContext } from 'react';
+import { sesionContext } from '../../context/SessionContext';
+
+import { getData } from '../../api/api';
+
 const theme = createTheme({
     typography: {
         first: {
@@ -50,6 +56,27 @@ const theme = createTheme({
 
 export default function StartPage() {
 
+    const [songList, setSongList] = useState([]);
+    const [albumList, setAlbumList] = useState([]);
+    const [artistList, setArtistList] = useState([]);
+
+    useEffect(() => {
+        let endpoint = '/api/songs';
+        getData({endpoint})
+        .then(data => setSongList(data))
+        .catch(err => console.log(err))
+
+        endpoint = '/api/artists';
+        getData({endpoint})
+        .then(data => setArtistList(data))
+        .catch(err => console.log(err))
+
+        endpoint = '/api/albums';
+        getData({endpoint})
+        .then(data => setAlbumList(data))
+        .catch(err => console.log(err))
+    }, []);
+
     return (
       <>
          <Box
@@ -75,9 +102,9 @@ export default function StartPage() {
                 alignItems="top"
                 justifyContent="left"
             > 
-                <Section title="Canciones" items={song_list} type={"song"}/>
-                <Section title="Albumes" items={album_list} type={"album"}/>
-                <Section title="Artistas" items={artist_list} type={"artist"}/>
+                <Section title="Canciones" items={songList} type={"song"}/>
+                <Section title="Albumes" items={albumList} type={"album"}/>
+                <Section title="Artistas" items={artistList} type={"artist"}/>
 
             </Grid>
 

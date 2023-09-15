@@ -8,9 +8,16 @@ export const sesionContext = createContext();
 export function SesionProvider({ children }) {
 
   const [user, setUser] = useState(() => {
-    const sesion = window.localStorage.getItem("user");
-    if (sesion != null) {
-      return JSON.parse(sesion);
+    const id = window.localStorage.getItem("id");
+    const token = window.localStorage.getItem("token");
+    const type = window.localStorage.getItem("type");
+    
+    if (id != null && token != null && type != null) {
+      return {
+        id: id,
+        token: token,
+        type: type
+      };
     }
     return {
       id: "",
@@ -49,7 +56,10 @@ export function SesionProvider({ children }) {
       type: mensaje.MESSAGE
     };
     setUser(newUser);
-    window.localStorage.setItem("user", JSON.stringify(newUser));
+    window.localStorage.setItem("id", newUser.id);
+    window.localStorage.setItem("token", newUser.token);
+    window.localStorage.setItem("type", newUser.type);
+
 
     return mensaje;
   };
@@ -60,7 +70,9 @@ export function SesionProvider({ children }) {
       token: "",
       type: 0
     });
-    window.localStorage.removeItem("user");
+    window.localStorage.removeItem("id");
+    window.localStorage.removeItem("token");
+    window.localStorage.removeItem("type");
   };
 
   return (

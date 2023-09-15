@@ -7,6 +7,7 @@ import LocalPizzaIcon from '@mui/icons-material/LocalPizza';
 import LockIcon from '@mui/icons-material/Lock';
 import { SongCard } from '../../components/SongCard/SongCard';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import { useNavigate } from 'react-router-dom';
 
 const theme = createTheme({
     typography: {
@@ -51,6 +52,9 @@ export const Section = (props) => {
       type
     } = props;
 
+    const navigate = useNavigate();
+
+
     return (
         <Grid 
             item xs={12} 
@@ -79,7 +83,9 @@ export const Section = (props) => {
                     sx={{ width: "100%" }}
                 >
                     <Typography variant="details_text" noWrap component="div"  align="right" alignSelf={'right'}
-                        sx={{ border:0, pb:1, pr:3, color: '#fff'}}>
+                        sx={{ border:0, pb:1, pr:3, color: '#fff'}}
+                        onClick={() => navigate(type == "song" ? "/Songs" : type == "artist" ? "/Artist" : "/Albums")}
+                        >
                         Ver Todo
                     </Typography>
                 </Grid>
@@ -87,9 +93,9 @@ export const Section = (props) => {
                 <Grid 
                     item xs={12} 
                     sx={{ width: "100%", overflowX: 'auto', display: 'flex', flexDirection: 'row'}}
-                    { ...
-                        window.innerWidth < 1500 ? {} : {justifyContent:'space-around'}
-                    }
+                    // { ...
+                    //     window.innerWidth < 1500 ? {} : {justifyContent:'space-around'}
+                    // }
                     // justifyContent={window.innerWidth < 1080 ? 'left' : 'space-around'}
                 >
                     {items.map((item, i) => {

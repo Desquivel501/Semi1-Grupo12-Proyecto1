@@ -21,19 +21,6 @@ import GetAll from './pages/SearchPage/GetAll';
 
 function App() {
   const [count, setCount] = useState(0)
-
-  const [user, setUser] = useState(() => {
-    const sesion = window.localStorage.getItem("user");
-    if (sesion != null) {
-      return JSON.parse(sesion);
-    }
-    return {
-      id: "",
-      token: "",
-      type: 0
-    };
-  });
-
   return (
     <SesionProvider>
     <BrowserRouter>
@@ -50,12 +37,17 @@ function App() {
             <Route path={"/"} element={<StartPage />} />
             <Route path={"/Search"} element={<SearchPage />} />
             <Route path={"/Song/:id"} element={<SongPage />} />
-            <Route path={"/Songs"} element={<GetAll type="song" title={true} crud={true}/>} />
+            <Route path={"/Songs"} element={<GetAll type="song" title={true} crud={false}/>} />
             <Route path={"/Artist/:id"} element={<ArtistPage />} />
-            <Route path={"/Artist"} element={<GetAll type="artists" title={true} crud={true}/>} />
+            <Route path={"/Artist"} element={<GetAll type="artist" title={true} crud={false}/>} />
             <Route path={"/Album/:id"} element={<AlbumPage />} />
-            <Route path={"/Albums"} element={<GetAll type="albums" title={true} crud={true}/>} />
+            <Route path={"/Albums"} element={<GetAll type="album" title={true} crud={false}/>} />
             <Route path={"/Profile"} element={<Perfil />} />
+
+            <Route path={"/Radio"} element={<AlbumPage radio={true}/>} />
+            <Route path={"/Favoritos"} element={<AlbumPage favoritos={true}/>} />
+
+
           </Route>
 
           <Route element={<ControlType />}>
@@ -69,6 +61,8 @@ function App() {
 
             <Route path={"/New"}>
               <Route path={"Song"} element={<EditSong edit={false}/>} />
+              <Route path={"Album"} element={<EditAlbum edit={false}/>} />
+              <Route path={"Artist"} element={<EditArtist edit={false}/>} />
             </Route>
 
           </Route>

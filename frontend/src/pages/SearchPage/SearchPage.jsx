@@ -93,8 +93,8 @@ export default function SearchPage(props) {
         crud = false,
     } = props;
 
-    const [isHovered, setIsHovered] = useState(0);
-    const [color, setColor] = useState('#626262');
+    const navigate = useNavigate();
+
     const [search, setSearch] = useState('');
     const [sent, setSent] = useState('');
 
@@ -107,8 +107,6 @@ export default function SearchPage(props) {
     const [active, setActive] = useState('song');
 
     const [cont, setCont] = useState(0);
-
-    const navigate = useNavigate();
 
     const handleSearch = (text) => {
         setSearch(text)
@@ -129,9 +127,7 @@ export default function SearchPage(props) {
         setCont(cont+1)
     }
 
-
     useEffect(() => {
-
         const updateSearch = () => {
             if(sent != search){
                 if(search != "" && search != undefined && search != null){

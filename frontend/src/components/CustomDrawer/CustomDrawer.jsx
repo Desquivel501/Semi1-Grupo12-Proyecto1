@@ -32,6 +32,9 @@ import EqualizerIcon from '@mui/icons-material/Equalizer';
 import RadioIcon from '@mui/icons-material/Radio';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { sesionContext } from "../../context/SessionContext";
 
 const drawerWidth = 300;
 
@@ -81,8 +84,11 @@ const theme = createTheme({
 export default function CustomDrawer() {
 
     let location = useLocation();
+    const navigate = useNavigate();
 
     const [open, setOpen] = useState(false);
+
+    const { user } = useContext(sesionContext);
 
     const handleClick = () => {
         setOpen(!open);
@@ -140,7 +146,7 @@ export default function CustomDrawer() {
 
                                 <List>
                                     <ListItem key="inicio">
-                                        <ListItemButton component={Link} to="/">
+                                        <ListItemButton onClick={() => navigate("/")}>
                                             <ListItemIcon>
                                                 <HomeIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
                                             </ListItemIcon>
@@ -150,7 +156,7 @@ export default function CustomDrawer() {
                                     </ListItem>
 
                                     <ListItem key="buscar">
-                                        <ListItemButton component={Link} to="/Search">
+                                        <ListItemButton onClick={() => navigate("/Search")}>
                                             <ListItemIcon>
                                                 <SearchIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
                                             </ListItemIcon>
@@ -174,7 +180,7 @@ export default function CustomDrawer() {
                                     <Collapse in={open} timeout="auto" unmountOnExit>
                                         <List component="div" sx={{ border:0, pl:3 }}>
 
-                                            <ListItemButton sx={{ pl: 4 }} component={Link} to="/Album">
+                                            <ListItemButton sx={{ pl: 4 }} onClick={() => navigate("/Album")}>
                                                 <ListItemIcon>
                                                 <AddCircleIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
                                                 </ListItemIcon>
@@ -182,28 +188,28 @@ export default function CustomDrawer() {
                                                     primaryTypographyProps={list_text}/>
                                             </ListItemButton>
 
-                                            <ListItemButton sx={{ pl: 4 }} component={Link} to="/Album">
+                                            <ListItemButton sx={{ pl: 4 }} onClick={() => navigate("/Album")}>
                                                 <ListItemIcon>
                                                 <FeaturedPlayListIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
                                                 </ListItemIcon>
                                                 <ListItemText primary="Playlist #1" sx={{ color: '#fff', }}
                                                     primaryTypographyProps={list_text}/>
                                             </ListItemButton>
-                                            <ListItemButton sx={{ pl: 4 }}>
+                                            <ListItemButton sx={{ pl: 4 }} onClick={() => navigate("/Album")}>
                                                 <ListItemIcon>
                                                 <FeaturedPlayListIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
                                                 </ListItemIcon>
                                                 <ListItemText primary="Playlist #2" sx={{ color: '#fff',}}
                                                     primaryTypographyProps={list_text}/>
                                             </ListItemButton>
-                                            <ListItemButton sx={{ pl: 4 }}>
+                                            <ListItemButton sx={{ pl: 4 }} onClick={() => navigate("/Album")}>
                                                 <ListItemIcon>
                                                 <FeaturedPlayListIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
                                                 </ListItemIcon>
                                                 <ListItemText primary="Playlist #3" sx={{ color: '#fff',}}
                                                     primaryTypographyProps={list_text}/>
                                             </ListItemButton>
-                                            <ListItemButton sx={{ pl: 4 }}>
+                                            <ListItemButton sx={{ pl: 4 }} onClick={() => navigate("/Album")}>
                                                 <ListItemIcon>
                                                 <FeaturedPlayListIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
                                                 </ListItemIcon>
@@ -216,7 +222,7 @@ export default function CustomDrawer() {
 
                                     <ListItem key="perfil">
                                         <ListItemButton   
-                                        component={Link} to="/Profile"   
+                                        onClick={() => navigate("/Profile")}
                                         >
                                             <ListItemIcon>
                                                 <PersonIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
@@ -228,7 +234,7 @@ export default function CustomDrawer() {
 
                                     <ListItem key="favoritos">
                                         <ListItemButton   
-                                        // component={Link} to="/Profile"   
+                                            onClick={() => navigate("/Favoritos")}
                                         >
                                             <ListItemIcon>
                                                 <FavoriteIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
@@ -251,8 +257,8 @@ export default function CustomDrawer() {
                                     </ListItem>
 
                                     <ListItem key="radio">
-                                        <ListItemButton   
-                                        // component={Link} to="/Profile"   
+                                        <ListItemButton     
+                                        onClick={() => { navigate("/Radio") }}
                                         >
                                             <ListItemIcon>
                                                 <RadioIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
@@ -262,17 +268,20 @@ export default function CustomDrawer() {
                                         </ListItemButton>
                                     </ListItem>
 
-                                    <ListItem key="admin">
-                                        <ListItemButton   
-                                            component={Link} to="/Admin"   
-                                        >
-                                            <ListItemIcon>
-                                                <SupervisorAccountIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
-                                            </ListItemIcon>
-                                            <ListItemText primary="Administrador" sx={{ color: '#fff',}}
-                                                primaryTypographyProps={list_text}/>
-                                        </ListItemButton>
-                                    </ListItem>
+                                    {
+                                        user.type == 1 &&
+                                        <ListItem key="admin">
+                                            <ListItemButton   
+                                                onClick={() => navigate("/Admin")}  
+                                            >
+                                                <ListItemIcon>
+                                                    <SupervisorAccountIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
+                                                </ListItemIcon>
+                                                <ListItemText primary="Administrador" sx={{ color: '#fff',}}
+                                                    primaryTypographyProps={list_text}/>
+                                            </ListItemButton>
+                                        </ListItem>
+                                    }
 
 
 
