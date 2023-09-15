@@ -15,6 +15,9 @@ import { sendFormData } from '../../api/api';
 import song_list from '../../assets/song_list';
 import artist_list from '../../assets/artist_list';
 
+import { getData } from '../../api/api';
+import Swal from 'sweetalert2';
+
 const theme = createTheme({
     typography: {
         first: {
@@ -98,22 +101,39 @@ export default function EditSong(props) {
     const [newSong, setNewSong] = useState('');
     const [preview, setPreview] = useState(song.cover);
     const [duration, setDuration] = useState(0);
-
+    const [artistList, setArtistList] = useState([]);
     const [file, setFile] = useState(null);
 
 
     useEffect(() => {
         console.log(id)
+
+        let endpoint = '/api/songs';
         if(edit){
-            const song = song_list.find( song => song.id == id);
-            setSong(song)
-            setPreview(song.cover)
-            setNewSong(song.musicSrc)
-            setDuration(song.duration)
+            getData({endpoint})
+            .then(data => {
+                for(var i = 0; i < data.length; i++){
+                    console.log(data[i].id + " " + id)
+                    if(data[i].id == id){
+                        console.log(data[i])
+                        setSong(data[i])
+                        break;
+                    }
+                }
+            })
+            .catch(err => console.log(err))
         }
-        setCount(count + 1) 
+        
+
+        endpoint = '/api/artists';
+        getData({endpoint})
+        .then(data => setArtistList(data))
+        .catch(err => console.log(err))
+
+        setCount(count + 1);
      
     },[]);
+
 
     const handleChange = (event) => {
         setSong({...song, singer: event.target.value});
@@ -131,7 +151,7 @@ export default function EditSong(props) {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         (edit ? data.append('id', song.id) : null)
-        data.append('artist', 11)
+        data.append('artist', artistList.find((artist) => artist.name === song.singer).id)
 
         if(song.musicSrc === ''){
             Swal.fire({
@@ -140,6 +160,7 @@ export default function EditSong(props) {
                 icon: 'error',
                 title: 'Oops...',
                 text: "No se ha seleccionado una cancion.",
+                showConfirmButton: true,
             })
             return
         }
@@ -155,6 +176,7 @@ export default function EditSong(props) {
                 icon: 'error',
                 title: 'Oops...',
                 text: "No se ha seleccionado una imagen.",
+                showConfirmButton: true,
             })
             return
         }
@@ -170,6 +192,28 @@ export default function EditSong(props) {
             data: data,
         }).then((response) => {
             console.log(response)
+            if(response.TYPE == "SUCCESS"){
+                Swal.fire({
+                    color: '#fff',
+                    background: '#1f1f1f',
+                    icon: 'success',
+                    title: 'Cancion creada exitosamente.',
+                    showConfirmButton: true,
+                    timer: 1500
+                }).then(() => {
+                    navigate(-1)
+                })
+                
+            } else {
+                Swal.fire({
+                    color: '#fff',
+                    background: '#1f1f1f',
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: response.MESSAGE,
+                    showConfirmButton: true,
+                })
+            }
         })
         .catch((err) => console.log(err));
     }
@@ -374,7 +418,7 @@ export default function EditSong(props) {
                                             fontSize: "2.5rem",
                                         }}
                                     >
-                                        {artist_list.map((artist) => (
+                                        {artistList.map((artist) => (
                                             <MenuItem key={artist.id} value={artist.name}>{artist.name}</MenuItem>
                                         ))}
                                     </Select>

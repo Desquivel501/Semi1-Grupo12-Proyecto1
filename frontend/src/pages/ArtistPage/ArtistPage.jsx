@@ -23,6 +23,8 @@ import song_list from '../../assets/song_list';
 import album_list from '../../assets/album_list';
 import artist_list from '../../assets/artist_list';
 
+import { getData } from '../../api/api';
+
 const theme = createTheme({
     typography: {
         first: {
@@ -87,6 +89,8 @@ export default function ArtistPage(props) {
     } = props;
 
     const { id } = useParams();
+    
+    const navigate = useNavigate();
 
     const [isHovered, setIsHovered] = useState(0);
     const [color, setColor] = useState('#626262');
@@ -98,22 +102,59 @@ export default function ArtistPage(props) {
             'https://soundstream-semi1-g12.s3.us-east-2.amazonaws.com/no_album.jpg',
     });
 
+    const [songList, setSongList] = useState([]);
+
 
     useEffect(() => {
-        console.log(id)
-        for(var i = 0; i < artist_list.length; i++){
-            console.log(song_list[i].id + " " + id)
-            if(artist_list[i].id == id){
-                console.log(artist_list[i])
-                setArtist(artist_list[i])
-                break;
-            }
-        }
+
+        let artist_name = ""
+        let endpoint = '/api/artists';
+        getData({endpoint})
+        .then(data => {
+            data.find((artist) => {
+                if(artist.id == id){
+                    setArtist(artist)
+                    artist_name = artist.name
+                    return;
+                }
+            })
+        })
+        .catch(err => console.log(err))
+
+        endpoint = '/api/songs';
+        getData({endpoint})
+        .then(data => {
+            let tempList = []
+            data.find((song) => {
+                console.log(song.singer, artist_name)
+                if(song.singer == artist_name){
+                    tempList.push(song)
+                }
+            })
+            setSongList(tempList)
+        })
         setCount(count + 1);
-     
     },[]);
 
-    
+
+    const handlePlay = (id) => {
+
+        const song = songList.find((song) => song.id === id)
+        console.log(song)
+        const queue = {
+          song_list: [song],
+          lastUpdate: Date.now()
+        }
+        window.sessionStorage.setItem("queue",JSON.stringify(queue));
+    }
+
+    const handlePlayAll = () => {
+        const queue = {
+          song_list: songList,
+          lastUpdate: Date.now()
+        }
+        window.sessionStorage.setItem("queue",JSON.stringify(queue));
+    }
 
     const handleMouseEnter = (n) => {
         setIsHovered(n);
@@ -123,7 +164,6 @@ export default function ArtistPage(props) {
         setIsHovered(0);
       };
 
-    const navigate = useNavigate();
 
     
     function selectColor(str) {
@@ -270,7 +310,8 @@ export default function ArtistPage(props) {
 
                             <Grid item xs={12} md={12} lg={12} align='left' sx={{pt:2}} >
 
-                                <IconButton aria-label="delete" 
+                                <IconButton aria-label="play-all" 
+                                    onClick={handlePlayAll}
                                     sx={{
                                         color:'#fff', 
                                         backgroundColor: "#1f1f1f",
@@ -300,82 +341,25 @@ export default function ArtistPage(props) {
 
                 <Grid item xs={12} md={12} lg={12} align='left' sx={{pb:2}} >
 
-                    <Grid item xs={12} md={12} lg={12} align='left' display="-webkit-box" sx={{ pl:2}} justify="flex-end"
+                    <Grid item xs={12} md={12} lg={12} align='left' display='flex'  sx={{ pl:2}} justify="flex-end"
                         alignItems="center">
 
-                        <IconButton
-                            sx={{ color: 'rgba(76, 175, 80, 0)', backgroundColor: 'rgba(76, 175, 80, 0)'}} 
+                        <Grid
+                            item
+                            xs={.5}
                         >
-                            <PlayArrowIcon />
-                        </IconButton> 
-
-                        <Typography
-                            variant="h6"
-                            component="h6"
-                            align="left"
-                            sx={{
-                                fontFamily: "monospace",
-                                fontWeight: 700,
-                                color: "#fff",
-                                pl:2,
-                                pr:1,
-                                py:1.5
-                            }}
+                            <IconButton
+                                sx={{ color: 'rgba(76, 175, 80, 0)', backgroundColor: 'rgba(76, 175, 80, 0)'}} 
                             >
-                           #
-                        </Typography>
-                        
-                        <Typography
-                            variant="h6"
-                            component="h6"
-                            align="left"
-                            sx={{
-                                fontFamily: "monospace",
-                                fontWeight: 700,
-                                color: "#fff",
-                                pl:2,
-                                py:1.5
-                            }}
-                            >
-                            Title
-                        </Typography>
-                    </Grid>
-
-                    <Divider sx={{borderColor:'#fff', mb:2}}/>
-
-                    {rows.map((row, i) => (
-                        <Grid item xs={12} md={12} lg={12} align='left' display="-webkit-box" key={i+1}
-                            sx={{
-                                pl:2, 
-                                cursor: 'pointer',
-                                "&:hover": {
-                                    backgroundColor: changeColor(color, -20),
-                                },
-                                borderRadius: 4,
-                            }} 
-                            justify="flex-end"
-                            alignItems="center"
-                            onMouseEnter={() => handleMouseEnter(i+1)}
-                            onMouseLeave={handleMouseLeave}
-                        >
-
-                            <IconButton key={i+1}
-                                
-                                sx={{
-                                    color:'#fff', 
-                                    backgroundColor: "#1f1f1f",
-                                    border:0,
-                                    "&:hover": {
-                                        backgroundColor: "#353535",
-                                        borderColor: '#1f1f1f',
-                                    },
-                                }} 
-                            >
-                                
-                                {isHovered == (i+1) ? <PlayArrowIcon /> : <MusicNoteIcon />}
+                                <PlayArrowIcon />
                             </IconButton> 
+                        </Grid>
 
-                            <Typography
+                        <Grid
+                            item
+                            xs={.5}
+                        >
+                           <Typography
                                 variant="h6"
                                 component="h6"
                                 align="left"
@@ -385,12 +369,17 @@ export default function ArtistPage(props) {
                                     color: "#fff",
                                     pl:2,
                                     pr:1,
-                                    py:1.5,
+                                    py:1.5
                                 }}
                                 >
-                                {i+1}
+                            #
                             </Typography>
-                            
+                        </Grid>
+
+                        <Grid
+                            item
+                            xs={7}
+                        >
                             <Typography
                                 variant="h6"
                                 component="h6"
@@ -403,9 +392,94 @@ export default function ArtistPage(props) {
                                     py:1.5
                                 }}
                                 >
-                                {row.title}
+                                Titulo
                             </Typography>
+                        </Grid>
+       
+                    </Grid>
 
+                    <Divider sx={{borderColor:'#fff', mb:2}}/>
+
+                    {songList.map((item, i) => (
+                        <Grid item xs={12} align='left' display='flex' key={item.id}
+                            sx={{
+                                pl:2, 
+                                cursor: 'pointer',
+                                "&:hover": {
+                                    backgroundColor: changeColor(color, -20),
+                                },
+                                borderRadius: 4
+                            }} 
+                            justify="flex-end"
+                            alignItems="center"
+                            onMouseEnter={() => handleMouseEnter(i+1)}
+                            onMouseLeave={handleMouseLeave}
+                            onClick={() => handlePlay(item.id)}
+                        >
+                            <Grid
+                                item
+                                xs={.5}
+                            >
+                                <IconButton key={i+1}
+                                    
+                                    sx={{
+                                        color:'#fff', 
+                                        backgroundColor: "#1f1f1f",
+                                        border:0,
+                                        "&:hover": {
+                                            backgroundColor: "#353535",
+                                            borderColor: '#1f1f1f',
+                                        },
+                                    }} 
+                                >
+                                    
+                                    {isHovered == (i+1) ? <PlayArrowIcon /> : <MusicNoteIcon />}
+                                </IconButton> 
+                            </Grid>
+
+                            <Grid
+                                item
+                                xs={.5}
+                            >
+                                <Typography
+                                    variant="h6"
+                                    component="h6"
+                                    align="left"
+                                    sx={{
+                                        fontFamily: "monospace",
+                                        fontWeight: 700,
+                                        color: "#fff",
+                                        pl:2,
+                                        pr:1,
+                                        py:1.5,
+                                    }}
+                                    >
+                                    {i+1}
+                                </Typography>
+
+                            </Grid>
+                            
+                            <Grid
+                                item
+                                xs={7}
+                            >
+                                <Typography
+                                    width='90%'
+                                    variant="h6"
+                                    component="h6"
+                                    align="left"
+                                    sx={{
+                                        fontFamily: "monospace",
+                                        fontWeight: 700,
+                                        color: "#fff",
+                                        pl:2,
+                                        py:1.5
+                                    }}
+                                    >
+                                    {item.name}
+                                </Typography>
+                                
+                            </Grid>
                         </Grid>
                         
                     ))}

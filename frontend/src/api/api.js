@@ -37,3 +37,20 @@ export function sendFormData({ endpoint, data }) {
     .then((res) => res.json())
     .catch((err) => console.log(err));
 }
+
+
+export function getData({ endpoint }) {
+  return fetch(`${API}${endpoint}`)
+    .then((res) => res.json())
+    .catch((er) => console.log(er));
+}
+
+export function getDataAuth({ endpoint }) {
+  return fetch(`${API}${endpoint}`, {
+    headers: {
+      "Authorization": `Bearer ${window.localStorage.getItem("token")}`,
+    },
+  })
+    .then((res) => res.json())
+    .catch((er) => console.log(er));
+}

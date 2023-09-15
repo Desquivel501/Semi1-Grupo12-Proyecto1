@@ -25,6 +25,8 @@ import song_list from '../../assets/song_list';
 import album_list from '../../assets/album_list';
 import artist_list from '../../assets/artist_list';
 
+import { getData } from '../../api/api';
+
 const theme = createTheme({
     typography: {
         first: {
@@ -68,13 +70,14 @@ export default function SongPage(props) {
 
     const navigate = useNavigate();
     const { id } = useParams();
-
+    
+    const [songList, setSongList] = useState([]);
     const [color, setColor] = useState('#626262');
     const [favorite, setFavorite] = useState(false);
     const [song, setSong] = useState({
         id: 0,
-        name: 'Test',
-        singer: 'Test 2',
+        name: '',
+        singer: '',
         cover:
           'https://soundstream-semi1-g12.s3.us-east-2.amazonaws.com/no_album.jpg',
         musicSrc: '',
@@ -85,14 +88,19 @@ export default function SongPage(props) {
 
     useEffect(() => {
         console.log(id)
-        for(var i = 0; i < song_list.length; i++){
-            console.log(song_list[i].id + " " + id)
-            if(song_list[i].id == id){
-                console.log(song_list[i])
-                setSong(song_list[i])
-                break;
+        let endpoint = '/api/songs';
+        getData({endpoint})
+        .then(data => {
+            for(var i = 0; i < data.length; i++){
+                console.log(data[i].id + " " + id)
+                if(data[i].id == id){
+                    console.log(data[i])
+                    setSong(data[i])
+                    break;
+                }
             }
-        }
+        })
+        .catch(err => console.log(err))
         setCount(count + 1);
      
     },[]);
