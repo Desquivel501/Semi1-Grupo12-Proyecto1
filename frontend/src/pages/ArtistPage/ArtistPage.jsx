@@ -107,31 +107,16 @@ export default function ArtistPage(props) {
 
     useEffect(() => {
 
-        let artist_name = ""
-        let endpoint = '/api/artists';
+        let endpoint = `/api/artists/${id}`;
         getData({endpoint})
         .then(data => {
-            data.find((artist) => {
-                if(artist.id == id){
-                    setArtist(artist)
-                    artist_name = artist.name
-                    return;
-                }
-            })
+            setArtist(data)
         })
-        .catch(err => console.log(err))
 
-        endpoint = '/api/songs';
+        endpoint = `/api/artists/${id}/songs`;
         getData({endpoint})
         .then(data => {
-            let tempList = []
-            data.find((song) => {
-                console.log(song.singer, artist_name)
-                if(song.singer == artist_name){
-                    tempList.push(song)
-                }
-            })
-            setSongList(tempList)
+            setSongList(data)
         })
         setCount(count + 1);
     },[]);

@@ -38,6 +38,19 @@ export function sendFormData({ endpoint, data }) {
     .catch((err) => console.log(err));
 }
 
+export function sendJsonData({ endpoint, data }) {
+  return fetch(`${API}${endpoint}`, {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+      "Access-Control-Allow-Origin_Origin": "*",
+      "Content-Type": "application/json",
+    },
+  })
+  .then((res) => res.json())
+  .catch((err) => console.log(err));
+}
+
 
 export function getData({ endpoint }) {
   return fetch(`${API}${endpoint}`)

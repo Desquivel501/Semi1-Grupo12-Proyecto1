@@ -18,6 +18,8 @@ import { useSesion } from './hooks/useSession';
 import EditAlbum from './pages/AlbumPage/EditAlbum';
 import { ControlLogin, ControlType } from './components/Control/Control';
 import GetAll from './pages/SearchPage/GetAll';
+import NewAlbum from './pages/AlbumPage/NewAlbum';
+import EditPlaylist from './pages/AlbumPage/EditPlaylist';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -44,6 +46,9 @@ function App() {
             <Route path={"/Albums"} element={<GetAll type="album" title={true} crud={false}/>} />
             <Route path={"/Profile"} element={<Perfil />} />
 
+            <Route path={"/Playlist/:id"} element={<AlbumPage playlist={true}/>} />
+            <Route path={"/Edits/Playlist/:id"} element={<EditPlaylist />} />
+
             <Route path={"/Radio"} element={<AlbumPage radio={true}/>} />
             <Route path={"/Favoritos"} element={<AlbumPage favoritos={true}/>} />
 
@@ -53,16 +58,17 @@ function App() {
           <Route element={<ControlType />}>
             <Route path={"/Admin"} element={<SearchPage crud={true}/>} />
             <Route path={"/Edit"}>
-              <Route path={"Song/:id"} element={<EditSong />} />
-              <Route path={"Artist/:id"} element={<EditArtist />} />
+              <Route path={"Song/:id"} element={<EditSong edit={true}/>} />
+              <Route path={"Artist/:id"} element={<EditArtist edit={true}/>} />
               <Route path={"Album/:id"} element={<EditAlbum />} />
-              <Route path={"Playlist/:id"} element={<AlbumPage />} />
+              
             </Route>
 
             <Route path={"/New"}>
               <Route path={"Song"} element={<EditSong edit={false}/>} />
-              <Route path={"Album"} element={<EditAlbum edit={false}/>} />
+              <Route path={"Album"} element={<NewAlbum/>} />
               <Route path={"Artist"} element={<EditArtist edit={false}/>} />
+              <Route path={"Playlist"} element={<NewAlbum playlist={true}/>} />
             </Route>
 
           </Route>
