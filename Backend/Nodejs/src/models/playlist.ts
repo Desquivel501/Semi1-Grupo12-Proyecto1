@@ -10,6 +10,7 @@ export class PlaylistModel {
     try {
       const newPlaylist = { ...playlist };
       newPlaylist.cover = cover.location;
+      console.log(newPlaylist);
       pool.query("CALL CreatePlaylist(?,?,?,?)", [
         newPlaylist.name,
         newPlaylist.description,
@@ -45,6 +46,27 @@ export class PlaylistModel {
     }
   }
 
+  static getPlaylist(
+    { id }: { id: string },
+    callback: (response: any, ok: Boolean) => void,
+  ) {
+    try {
+      pool.query(
+        `SELECT id_playlist AS id, name, description, image AS cover, email
+        FROM PR1.Playlists
+        WHERE id_playlist=?`,
+        id,
+        (err, result) => {
+          if (err) throw err;
+          callback(result[0], true);
+        },
+      );
+    } catch (error) {
+      console.log(error);
+      callback(error, false);
+    }
+  }
+
   static getSongs(
     { id }: { id: string },
     callback: (response: any, ok: Boolean) => void,
@@ -61,6 +83,27 @@ export class PlaylistModel {
       callback(error, false);
     }
   }
+
+
+  static getSongsNotInPlaylist(
+    { id }: { id: string },
+    callback: (response: any, ok: Boolean) => void,
+  ) {
+    try {
+      pool.query("CALL GetSongsNotInPlaylist(?)", [
+        id,
+      ], (err, result) => {
+        if (err) throw err;
+        callback(result[0], true);
+      });
+    } catch (error) {
+      console.log(error);
+      callback(error, false);
+    }
+  }
+
+
+
 
   static addSong(
     playlist: number,

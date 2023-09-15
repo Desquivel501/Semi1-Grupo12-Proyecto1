@@ -73,14 +73,11 @@ export class AlbumModel {
   ) {
     try {
       pool.query(
-        `SELECT s.name, ar.name as singer, s.image AS cover, s.file AS musicSrc FROM Albums_details ad
-        JOIN Songs s ON ad.id_song=s.id_song
-        JOIN Artists ar ON s.id_artist=ar.id_artist
-        WHERE ad.id_album=?`,
+        `CALL GetAlbumSongs(?)`,
         id,
         (err, result) => {
           if (err) throw err;
-          callback(result, true);
+          callback(result[0], true);
         },
       );
     } catch (error) {
@@ -96,8 +93,8 @@ export class AlbumModel {
   ) {
     try {
       pool.query("CALL AddSongAlbum(?,?)", [
-        id_album,
         id_song,
+        id_album,
       ], (err, result) => {
         if (err) throw err;
         if (result[0][0].TYPE == "ERROR") callback(result[0][0], false);

@@ -1004,8 +1004,10 @@ get_playlist_songs:BEGIN
 	SELECT s.id_song AS id,
 	s.name,
 	s.image AS cover,
-	s.file AS musicSrc
+	s.file AS musicSrc,
+	a.name AS artist,
 	FROM Songs s 
+	JOIN Artists a ON s.id_artist = a.id_artist 
 	JOIN Playlists_details pd 
 	ON s.id_song = pd.id_song 
 	AND pd.id_playlist = id_playlist_in;
@@ -1057,5 +1059,56 @@ get_user_playlists:BEGIN
 	WHERE p.email = email_in;
 END $$
 
+-- Procedimiento para retornar el listado de todas las canciones de un artista que no estan en un album
+DROP PROCEDURE IF EXISTS GetArtistSongsNotInAlbum $$
+CREATE PROCEDURE GetArtistSongsNotInAlbum(
+	IN id_artist_in INTEGER
+)
+get_artist_songs:BEGIN
+	DECLARE artist_name VARCHAR(150);
+	SELECT a.name INTO artist_name 
+	FROM Artists a 
+	WHERE a.id_artist = id_artist_in;
+
+	IF (artist_name = '' OR artist_name IS NULL) THEN 
+		SELECT 'El artista que ha seleccionado no existe' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE get_artist_songs;
+	END IF;
+
+	SELECT s.id_song AS id,
+	s.name,
+	s.image AS cover,
+	s.file AS musicSrc,
+	s.id_album AS album
+	FROM Songs s 
+	WHERE s.id_artist = id_artist_in AND s.id_album IS NULL;
+END $$
 
 
+-- Procedimiento para retornar el listado de todas las canciones de un artista que no esten en la playlist
+DROP PROCEDURE IF EXISTS GetSongsNotInPlaylist $$
+CREATE PROCEDURE GetSongsNotInPlaylist (
+	IN id_playlist_in INTEGER
+)
+get_playlist_songs:BEGIN
+	IF NOT exists_playlist(id_playlist_in) THEN
+		SELECT 'La playlist indicada no existe' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE get_playlist_songs;
+	END IF;
+
+	SELECT  s.id_song AS id,
+	s.name,
+	s.image AS cover,
+	s.file AS musicSrc,
+	a.name AS singer
+    FROM Songs s
+    JOIN Artists a ON a.id_artist = s.id_artist 
+    WHERE s.id_song NOT IN (
+        SELECT pd.id_song 
+        FROM Playlists_details pd
+        WHERE pd.id_playlist = id_playlist_in
+    );
+   
+END $$

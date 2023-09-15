@@ -71,6 +71,19 @@ export class ArtistModel {
     }
   }
 
+  static getSongsNotInAlbum({ id }: { id: number }, callback: Function) {
+    try {
+      pool.query("CALL GetArtistSongsNotInAlbum(?)", [
+        id,
+      ], (err, result) => {
+        if (err) throw err;
+        callback(result[0], true);
+      });
+    } catch (error) {
+      callback(error, false);
+    }
+  }
+
   static editArtist({ data }: { data: any }) {
   }
 

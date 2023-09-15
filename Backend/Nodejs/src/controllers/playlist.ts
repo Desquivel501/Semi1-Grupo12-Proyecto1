@@ -30,12 +30,33 @@ export class PlaylistController {
     );
   }
 
+
+  static getPlaylist(req: Request, res: Response) {
+    const { id } = req.params
+    if (!id) return res.status(401).json({ message: "Falta el id de la playlist" });
+    
+    PlaylistModel.getPlaylist({ id }, (response: any, ok: Boolean) => {
+        res.status(ok ? 200 : 400).json(response);
+      },);
+  }
+
+
   static getSongs(req: Request, res: Response) {
     const { id } = req.params;
     if (!id) {
       return res.status(401).json({ message: "Falta el id de la playlist" });
     }
     PlaylistModel.getSongs({ id }, (response: any, ok: Boolean) => {
+      res.status(ok ? 200 : 400).json(response);
+    });
+  }
+  
+  static getSongsNotInPlaylist(req: Request, res: Response) {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(401).json({ message: "Falta el id de la playlist" });
+    }
+    PlaylistModel.getSongsNotInPlaylist({ id }, (response: any, ok: Boolean) => {
       res.status(ok ? 200 : 400).json(response);
     });
   }
