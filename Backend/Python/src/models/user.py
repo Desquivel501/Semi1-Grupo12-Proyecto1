@@ -26,6 +26,7 @@ class UserModel:
                     birth_date,
                 ),
             )
+            db.commit()
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
@@ -51,6 +52,39 @@ class UserModel:
                 return response, True
             else:
                 return {"MESSAGE": "Usuario no encontrado", "TYPE": "ERROR"}, False
+        except Exception as e:
+            return str(e), False
+        finally:
+            cursor.close()
+
+    @staticmethod
+    def edit_user(user, avatar_filename):
+        try:
+            db = getCnx()  # Obtiene una conexión desde la función
+            cursor = db.cursor(buffered=True)
+            birth_date = formatDate(user["birthDate"])
+            # crypto
+            password = encrypt(user["password"])
+            # Query
+            cursor.callproc(
+                "UpdateUser",
+                (
+                    user["email"],
+                    user["newEmail"],
+                    user["name"],
+                    user["lastname"],
+                    avatar_filename,
+                    password,
+                    birth_date,
+                ),
+            )
+            db.commit()
+            for result in cursor.stored_results():
+                result = dict(zip(result.column_names, result.fetchone()))
+                if result["TYPE"] == "ERROR":
+                    return result, False
+                else:
+                    return result, True
         except Exception as e:
             return str(e), False
         finally:
