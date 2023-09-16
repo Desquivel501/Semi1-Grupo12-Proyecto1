@@ -19,6 +19,7 @@ class ArtistModel:
                     birth_date,
                 ),
             )
+            db.commit()
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
@@ -88,6 +89,35 @@ class ArtistModel:
                     result = dict(zip(("id", "name", "cover", "musicSrc"), song))
                     data.append(result)
             return data, True
+        except Exception as e:
+            return str(e), False
+        finally:
+            cursor.close()
+
+    @staticmethod
+    def edit_artist(artist, avatar_filename):
+        try:
+            db = getCnx()  # Obtiene una conexión desde la función
+            cursor = db.cursor(buffered=True)
+            birth_date = formatDate(artist["birthDate"])
+            # crypto
+            # Query
+            cursor.callproc(
+                "UpdateArtist",
+                (
+                    artist["id"],
+                    artist["name"],
+                    avatar_filename,
+                    birth_date,
+                ),
+            )
+            db.commit()
+            for result in cursor.stored_results():
+                result = dict(zip(result.column_names, result.fetchone()))
+                if result["TYPE"] == "ERROR":
+                    return result, False
+                else:
+                    return result, True
         except Exception as e:
             return str(e), False
         finally:

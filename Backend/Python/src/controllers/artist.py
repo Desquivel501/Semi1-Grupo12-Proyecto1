@@ -36,3 +36,16 @@ class ArtistController:
     def delete_artist(id):
         response = ArtistModel.delete_artist(id)
         return response[0], (200 if response[1] else 400)
+
+    def edit_artist():
+        artist = dict(request.form)
+        files = request.files
+        if len(artist) == 0 or len(files) == 0:
+            return {"MESSAGE": "Faltan datos"}, 400
+        for value in artist:
+            if artist[value] == "":
+                return {"MESSAGE": "Faltan datos"}, 400
+        artist["avatar"] = upload_file("artist", files["avatar"])
+        # Guardar en db
+        response = ArtistModel.edit_artist(artist, artist["avatar"])
+        return response[0], (200 if response[1] else 400)
