@@ -133,6 +133,7 @@ class ArtistModel:
                 "DeleteArtist",
                 (id,),
             )
+            db.commit()
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
