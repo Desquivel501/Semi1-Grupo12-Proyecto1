@@ -19,6 +19,7 @@ class SongModel:
                     source_filename,
                 ),
             )
+            db.commit()
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
@@ -85,10 +86,38 @@ class SongModel:
             # Query
             cursor.callproc(
                 "DeleteSong",
+                (int(id_song),),
+            )
+            db.commit()
+            for result in cursor.stored_results():
+                result = dict(zip(result.column_names, result.fetchone()))
+                if result["TYPE"] == "ERROR":
+                    return result, False
+                else:
+                    return result, True
+        except Exception as e:
+            return str(e), False
+        finally:
+            cursor.close()
+
+    @staticmethod
+    def edit_song(song, cover_filename, source_filename):
+        try:
+            db = getCnx()  # Obtiene una conexión desde la función
+            cursor = db.cursor(buffered=True)
+            # Query
+            cursor.callproc(
+                "Updatesong",
                 (
-                    int(id_song),
+                    song["id"],
+                    song["name"],
+                    cover_filename,
+                    song["duration"],
+                    song["artist"],
+                    source_filename,
                 ),
             )
+            db.commit()
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
