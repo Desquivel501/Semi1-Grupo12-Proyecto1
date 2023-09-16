@@ -1,0 +1,11 @@
+user:
+admin
+
+password:
+9PeNbG26e5]2m:!
+
+host:
+semi1-proyecto1-db.cq12kn521iaw.us-east-2.rds.amazonaws.com
+
+puerto:
+3306
