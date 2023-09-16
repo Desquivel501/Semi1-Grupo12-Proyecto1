@@ -46,3 +46,16 @@ class AlbumController:
     def delete_album(id):
         response = AlbumModel.delete_album(id)
         return response[0], (200 if response[1] else 400)
+
+    def edit_album():
+        album = dict(request.form)
+        files = request.files
+        if len(album) == 0 or len(files) == 0:
+            return {"MESSAGE": "Faltan datos"}, 400
+        for value in album:
+            if album[value] == "":
+                return {"MESSAGE": "Faltan datos"}, 400
+        album["cover"] = upload_file("album", files["cover"])
+        # Guardar en db
+        response = AlbumModel.edit_album(album, album["cover"])
+        return response[0], (200 if response[1] else 400)
