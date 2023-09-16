@@ -41,3 +41,6 @@ export type SongFiles = {
 export type UpdateUser = {
   newEmail: string;
 } & User;
+export type UpdateArtist = {
+  id: number;
+} & Artist;

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import { Artist } from "../models/types";
+import { Artist, UpdateArtist } from "../models/types";
 import { ArtistModel } from "../models/artist";
+import { checkKeys } from "../utils/checkKeys";
 
 export class ArtistController {
   static async createArtist(req: Request, res: Response) {
@@ -39,14 +40,28 @@ export class ArtistController {
   }
 
   static editArtist(req: Request, res: Response) {
-    res.json({ message: "Artist edited" });
+    const artist = req.body as UpdateArtist;
+    const file = req.file as Express.MulterS3.File;
+    // Validar datos
+    if (!checkKeys(artist, ["avatar"])) {
+      return res.status(400).json({ message: "Faltan datos" });
+    }
+    // Crear usuario
+    ArtistModel.editArtist(artist, file, (response: string, ok: boolean) => {
+      // Respuesta
+      res.status(ok ? 200 : 400).json(response);
+    });
   }
+
   static deleteArtist(req: Request, res: Response) {
     const { id } = req.params;
     if (!id) return res.status(401).json({ message: "Falta el id" });
     const id_artist = parseInt(id);
-    ArtistModel.deleteArtist({ id: id_artist }, (response: any, ok: Boolean) => {
-      res.status(ok ? 200 : 400).json(response);
-    });
+    ArtistModel.deleteArtist(
+      { id: id_artist },
+      (response: any, ok: Boolean) => {
+        res.status(ok ? 200 : 400).json(response);
+      },
+    );
   }
 }
