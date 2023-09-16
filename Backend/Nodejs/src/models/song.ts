@@ -1,5 +1,5 @@
 import { pool } from "./database/connection";
-import { Song, SongFiles } from "./types";
+import { Song, SongFiles, UpdateSong } from "./types";
 
 export class SongModel {
   static createSong(
@@ -70,8 +70,33 @@ export class SongModel {
     }
   }
 
-  static editSong({ data }: { data: any }) {
+  static editSong(
+    newSong: UpdateSong,
+    file: Express.MulterS3.File,
+    callback: Function,
+  ) {
+    try {
+      newSong.cover = file ? file.location : "";
+      // Encriptando
+      // Guardar en DB
+      pool.query("CALL UpdateSong(?,?,?,?,?,?)", [
+        newSong.id,
+        newSong.name,
+        newSong.cover,
+        newSong.duration,
+        newSong.artist,
+        newSong.source,
+      ], (err, result) => {
+        if (err) throw err;
+        if (result[0][0].TYPE == "ERROR") callback(result[0][0], false);
+        else {
+          callback(result[0][0], true);
+        }
+      });
+    } catch (error) {
+    }
   }
+
 
   static deleteSong(
     { id }: { id: number },
