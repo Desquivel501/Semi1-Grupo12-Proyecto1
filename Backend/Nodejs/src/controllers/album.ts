@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import { Album } from "../models/types";
+import { Album, UpdateAlbum } from "../models/types";
 import { AlbumModel } from "../models/album";
+import { checkKeys } from "../utils/checkKeys";
 
 export class AlbumController {
   static createAlbum(req: Request, res: Response) {
@@ -53,7 +54,17 @@ export class AlbumController {
   }
 
   static editAlbum(req: Request, res: Response) {
-    res.json({ message: "Album edited" });
+    const album = req.body as UpdateAlbum;
+    const file = req.file as Express.MulterS3.File;
+    // Validar datos
+    if (!checkKeys(album, ["cover","email"])) {
+      return res.status(400).json({ message: "Faltan datos" });
+    }
+    // Crear usuario
+    AlbumModel.editAlbum(album, file, (response: string, ok: boolean) => {
+      // Respuesta
+      res.status(ok ? 200 : 400).json(response);
+    });
   }
 
   static deleteAlbum(req: Request, res: Response) {

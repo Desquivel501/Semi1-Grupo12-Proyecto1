@@ -47,3 +47,6 @@ export type UpdateArtist = {
 export type UpdateSong = {
   id: number;
 } & Song;
+export type UpdateAlbum = {
+  id: number;
+} & Album;
