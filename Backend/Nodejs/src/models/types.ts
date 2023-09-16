@@ -5,7 +5,6 @@ export type User = {
   email: string;
   password: string;
   birthDate: string;
-  rol?: "user" | "admin";
 };
 
 export type Artist = {
@@ -26,7 +25,7 @@ export type Playlist = {
   name: string;
   description: string;
   cover: string;
-  email:string;
+  email: string;
 };
 export type Album = {
   artist: number;
@@ -36,6 +35,18 @@ export type Credentials = {
   password: string;
 };
 export type SongFiles = {
-  cover: Express.MulterS3.File[]
-  source: Express.MulterS3.File[]
+  cover: Express.MulterS3.File[];
+  source: Express.MulterS3.File[];
 };
+export type UpdateUser = {
+  newEmail: string;
+} & User;
+export type UpdateArtist = {
+  id: number;
+} & Artist;
+export type UpdateSong = {
+  id: number;
+} & Song;
+export type UpdateAlbum = {
+  id: number;
+} & Album;

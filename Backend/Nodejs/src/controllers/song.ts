@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import { Song, SongFiles } from "../models/types";
+import { Song, SongFiles, UpdateSong } from "../models/types";
 import { SongModel } from "../models/song";
+import { checkKeys } from "../utils/checkKeys";
 
 export class SongController {
   static createSong(req: Request, res: Response) {
@@ -31,7 +32,16 @@ export class SongController {
   }
 
   static editSong(req: Request, res: Response) {
-    res.json({ message: "Song edited" });
+    const song = req.body as UpdateSong;
+    const file = req.file as Express.MulterS3.File;
+    // Validar datos
+    if (!checkKeys(song, ["cover"])) {
+      return res.status(400).json({ message: "Faltan datos" });
+    }
+    SongModel.editSong(song, file, (response: string, ok: boolean) => {
+      // Respuesta
+      res.status(ok ? 200 : 400).json(response);
+    });
   }
 
   static deleteSong(req: Request, res: Response) {

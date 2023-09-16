@@ -10,5 +10,5 @@ artistRouter.get("/", ArtistController.getArtists);
 artistRouter.get("/:id", ArtistController.getArtist);
 artistRouter.get("/:id/songs", ArtistController.getSongs);
 artistRouter.post("/newArtist", uploadArtist.single("avatar"),ArtistController.createArtist);
-artistRouter.patch("/:id", ArtistController.editArtist);
+artistRouter.patch("/", uploadArtist.single("avatar"), ArtistController.editArtist);
 artistRouter.delete("/:id", ArtistController.deleteArtist);

@@ -1,7 +1,7 @@
 import { encrypt } from "../libs/object-hash";
 import { formatDate } from "../utils/formatDate";
 import { pool } from "./database/connection";
-import { User } from "./types";
+import { UpdateUser, User } from "./types";
 
 export class UserModel {
   static createUser(
@@ -13,8 +13,8 @@ export class UserModel {
       const newUser: User = { ...user };
       newUser.avatar = file.location;
       // Encriptando
-      const password = encrypt(newUser.password)
-      console.log(password)
+      const password = encrypt(newUser.password);
+      console.log(password);
       // Guardar en DB
       pool.query("CALL Register(?,?,?,?,?,?)", [
         newUser.email,
@@ -48,6 +48,32 @@ export class UserModel {
     }
   }
 
-  static editUser({ data }: { data: any }) {
+  static editUser(
+    newUser: UpdateUser,
+    file: Express.MulterS3.File,
+    callback: Function,
+  ) {
+    try {
+      newUser.avatar = file?file.location:"";
+      // Encriptando
+      const password = encrypt(newUser.password);
+      // Guardar en DB
+      pool.query("CALL UpdateUser(?,?,?,?,?,?,?)", [
+        newUser.email,
+        newUser.newEmail,
+        newUser.name,
+        newUser.lastname,
+        newUser.avatar,
+        password,
+        formatDate(newUser.birthDate),
+      ], (err, result) => {
+        if (err) throw err;
+        if (result[0][0].TYPE == "ERROR") callback(result[0][0], false);
+        else {
+          callback(result[0][0], true);
+        }
+      });
+    } catch (error) {
+    }
   }
 }

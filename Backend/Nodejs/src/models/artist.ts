@@ -1,6 +1,7 @@
+import { encrypt } from "../libs/object-hash";
 import { formatDate } from "../utils/formatDate";
 import { pool } from "./database/connection";
-import { Artist } from "./types";
+import { Artist, UpdateArtist } from "./types";
 
 export class ArtistModel {
   static async createArtist(
@@ -71,7 +72,29 @@ export class ArtistModel {
     }
   }
 
-  static editArtist({ data }: { data: any }) {
+  static editArtist(
+    newArtist: UpdateArtist,
+    file: Express.MulterS3.File,
+    callback: Function,
+  ) {
+    try {
+      newArtist.avatar = file ? file.location : "";
+      // Encriptando
+      // Guardar en DB
+      pool.query("CALL UpdateArtist(?,?,?,?)", [
+        newArtist.id,
+        newArtist.name,
+        newArtist.avatar,
+        formatDate(newArtist.birthDate),
+      ], (err, result) => {
+        if (err) throw err;
+        if (result[0][0].TYPE == "ERROR") callback(result[0][0], false);
+        else {
+          callback(result[0][0], true);
+        }
+      });
+    } catch (error) {
+    }
   }
 
   static deleteArtist({ id }: { id: number }, callback: Function) {

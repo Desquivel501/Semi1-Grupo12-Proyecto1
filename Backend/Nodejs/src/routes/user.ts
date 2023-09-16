@@ -11,7 +11,7 @@ const upload = multer({ storage: s3Storage({ userType: "user" }) });
 
 userRouter.get("/:id", checkRole(Roles.user), UserController.getUser);
 userRouter.post("/newUser", upload.single("avatar"), UserController.createUser);
-userRouter.patch("/:id", checkRole(Roles.user), UserController.editUser);
+userRouter.patch("/", upload.single("avatar"),  UserController.editUser);
 // playlist
 userRouter.get("/:email/playlists", PlaylistController.getUserPlaylists);
 userRouter.get("/playlists/:id/songs", PlaylistController.getSongs);
