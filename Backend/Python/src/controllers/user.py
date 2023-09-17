@@ -37,3 +37,20 @@ class UserController:
         # Guardar en db
         response = UserModel.edit_user(user, user["avatar"])
         return response[0], (200 if response[1] else 400)
+
+    @staticmethod
+    def add_to_favorite():
+        song = request.json
+        if "email" not in song or "song" not in song:
+            return {"MESSAGE": "Faltan datos"}, 400
+        # Guardar en db
+        response = UserModel.add_to_favorite(song["song"], song["email"])
+        return response[0], (200 if response[1] else 400)
+
+    @staticmethod
+    def get_favorites(email):
+        if email == "":
+            return {"MESSAGE": "Falta el correo"}, 400
+        # Guardar en db
+        response = UserModel.get_favorites(email)
+        return response[0], (200 if response[1] else 400)

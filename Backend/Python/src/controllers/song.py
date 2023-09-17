@@ -46,12 +46,3 @@ class SongController:
         # Guardar en db
         response = SongModel.edit_song(song, cover_location, sourcer_location)
         return response[0], (200 if response[1] else 400)
-
-    @staticmethod
-    def add_to_favorite():
-        song = request.json
-        if "email" not in song or "song" not in song:
-            return {"MESSAGE": "Faltan datos"}, 400
-        # Guardar en db
-        response = SongModel.add_to_favorite(song["song"], song["email"])
-        return response[0], (200 if response[1] else 400)
