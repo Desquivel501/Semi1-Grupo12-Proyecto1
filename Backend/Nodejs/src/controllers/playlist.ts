@@ -7,7 +7,7 @@ export class PlaylistController {
   static createPlaylist(req: Request, res: Response) {
     const playlist = req.body as Playlist;
     const file = req.file as Express.MulterS3.File;
-    if (!playlist || !file) {
+    if (!checkKeys(playlist, ["cover", "description"]) || !file) {
       return res.status(400).json({ MESSAGE: "Faltan parámetros" });
     }
     PlaylistModel.createPlaylist(
@@ -76,13 +76,17 @@ export class PlaylistController {
     const playlist = req.body as UpdatePlaylist;
     const file = req.file as Express.MulterS3.File;
     // Validar datos
-    if (!checkKeys(playlist, ["cover"])) {
+    if (!checkKeys(playlist, ["cover","description"])) {
       return res.status(400).json({ message: "Faltan datos" });
     }
     // Crear usuario
-    PlaylistModel.editPlaylist(playlist, file, (response: string, ok: boolean) => {
-      // Respuesta
-      res.status(ok ? 200 : 400).json(response);
-    });
+    PlaylistModel.editPlaylist(
+      playlist,
+      file,
+      (response: string, ok: boolean) => {
+        // Respuesta
+        res.status(ok ? 200 : 400).json(response);
+      },
+    );
   }
 }

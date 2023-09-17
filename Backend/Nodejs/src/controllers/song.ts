@@ -7,7 +7,10 @@ export class SongController {
   static createSong(req: Request, res: Response) {
     const song = req.body as Song;
     const files = req.files as SongFiles;
-    if (!song || !("cover" in files) || !("source" in files)) {
+    if (
+      checkKeys(song, ["cover", "source"]) || !("cover" in files) ||
+      !("source" in files)
+    ) {
       return res.status(400).json({ MESSAGE: "Faltan parámetros" });
     }
     SongModel.createSong(song, files, (response: any, ok: Boolean) => {

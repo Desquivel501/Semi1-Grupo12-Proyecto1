@@ -7,7 +7,9 @@ export class ArtistController {
   static async createArtist(req: Request, res: Response) {
     const artist: Artist = req.body;
     const file = req.file as Express.MulterS3.File;
-    if (!file) return res.status(401).json({ message: "Faltan datos" });
+    if (checkKeys(artist, ["avatar", "birthDate"]) || !file) {
+      return res.status(401).json({ message: "Faltan datos" });
+    }
     // Crear usuario
     ArtistModel.createArtist(artist, file, (response: any, ok: Boolean) => {
       // Respuesta
