@@ -7,8 +7,9 @@ export class SongController {
   static createSong(req: Request, res: Response) {
     const song = req.body as Song;
     const files = req.files as SongFiles;
+
     if (
-      checkKeys(song, ["cover", "source"]) || !("cover" in files) ||
+      !checkKeys(song, ["cover", "source"]) || !("cover" in files) ||
       !("source" in files)
     ) {
       return res.status(400).json({ MESSAGE: "Faltan parámetros" });
@@ -36,12 +37,9 @@ export class SongController {
 
   static editSong(req: Request, res: Response) {
     const song = req.body as UpdateSong;
-    const file = req.file as Express.MulterS3.File;
-    // Validar datos
-    if (!checkKeys(song, ["cover"])) {
-      return res.status(400).json({ message: "Faltan datos" });
-    }
-    SongModel.editSong(song, file, (response: string, ok: Boolean) => {
+    const files = req.files as SongFiles;
+    
+    SongModel.editSong(song, files, (response: string, ok: Boolean) => {
       // Respuesta
       res.status(ok ? 200 : 400).json(response);
     });

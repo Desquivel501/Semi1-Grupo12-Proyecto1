@@ -93,29 +93,7 @@ const CssTextField = styled(TextField)({
     },
   });
 
-function createData(no, title) {
-    return {no, title };
-  }
-
-var rows = [
-    createData(1,'Prison Song'),
-    createData(2,'Needles'),
-    createData(3,'Deer Dance'),
-    createData(4,'Jet Pilot'),
-    createData(5,'X'),
-    createData(6,'Chop Suey!'),
-    createData(7,'Bounce'),
-    createData(8,'Forest'),
-    createData(9,'ATWA'),
-    createData(10,'Science'),
-    createData(11,'Shimmy'),
-    createData(12,'Toxicity'),
-    createData(13,'Psycho'),
-    createData(14,'Aerials'),
-  ];
-
-
-export default function EditAlbum(props) {
+export default function EditPlaylist(props) {
 
     const {
         playlist = false,
@@ -142,83 +120,37 @@ export default function EditAlbum(props) {
     const [currentSongs, setCurrentSongs] = useState([]);
     const [artistId, setArtistId] = useState(0);
 
-    const [state, setState] = useState(0);
-
     useEffect(() => {
 
-        if(edit){
-            let current_name = ""
-            let artist_id = 0;
-            let endpoint = `/api/albums/${id}`
-            getData({endpoint})
-            .then(data => {
-                current_name = data.singer;
-                setAlbum(data)
-            })
+        let endpoint = `/api/playlists/${id}/data`;
+        getData({endpoint})
+        .then(data => {
+            if(data.email != localStorage.getItem('id')){
+                navigate('/')
+            }
+            setAlbum(data)
+        })
+        
+        endpoint = `/api/playlists/${id}/songs`;
+        getData({endpoint})
+        .then(data => {
+            setCurrentSongs(data)
+        })
 
-            endpoint = `/api/artists`;
-            getData({endpoint})
-            .then(data => {
-                data.find(element => {
-                    if(element.name === current_name){
-                        setArtistId(element.id)
-                        let endpoint = `/api/artists/${element.id}/songs/notInAlbum`;
-                        getData({endpoint})
-                        .then(data => {
-                            setSongList(data)
-                        })
-                        return
-                    }
-                })
-            })
-            
-            endpoint = `/api/albums/${id}/songs`;
-            getData({endpoint})
-            .then(data => {
-                setCurrentSongs(data)
-            })
-
-            setCount(count + 1);
-       }
-
+        endpoint = `/api/playlists/${id}/missing`;
+        getData({endpoint})
+        .then(data => {
+            setSongList(data)
+        })
+        
     },[]);
 
-
-    useEffect(() => {
-
-        if(state > 0){
-            let endpoint = `/api/artists`;
-            getData({endpoint})
-            .then(data => {
-                data.find(element => {
-                    if(element.name === album.singer){
-                        let endpoint = `/api/artists/${element.id}/songs/notInAlbum`;
-                        getData({endpoint})
-                        .then(data => {
-                            setSongList(data)
-                        })
-                        return
-                    }
-                })
-            })
-            
-            endpoint = `/api/albums/${id}/songs`;
-            getData({endpoint})
-            .then(data => {
-                setCurrentSongs(data)
-            })
-
-            setCount(count + 1);
-        }
-
-    },[state]);
 
     const handleSubmit  = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         data.append('id', album.id);
-        data.append('artist', artistId);
-        data.append('description', "");
+        data.append('email', localStorage.getItem('id')); 
 
         if(album.cover === ''){
             Swal.fire({
@@ -238,14 +170,14 @@ export default function EditAlbum(props) {
 
         console.log(data)
 
-        let endpoint = `/api/albums`;
+        let endpoint = `/api/playlists`;
         patchData({endpoint, data})
         .then(data => {
             console.log(data)
             if(data.TYPE === 'SUCCESS'){
                 Swal.fire({
                     icon: 'success',
-                    title: 'Album actualizado exitosamente',
+                    title: 'Playlist actualizada exitosamente',
                     showConfirmButton: false,
                 }).then(() => {
                     navigate(-1)
@@ -256,15 +188,17 @@ export default function EditAlbum(props) {
                     title: 'Oops...',
                     text: data.MESSAGE,
                   })
+                  return;
             }
         })
     }
 
 
+
     const addSong = (id_song) => {
         console.log(id_song)
-        let endpoint = `/api/albums/addSong`;
-        sendJsonData({endpoint, data: {id_album: album.id, id_song: id_song}})
+        let endpoint = `/api/playlists/addSong`;
+        sendJsonData({endpoint, data: {playlist: album.id, song: id_song, email: localStorage.getItem('id')}})
         .then(data => {
             console.log(data)
             if(data.TYPE === 'SUCCESS'){
@@ -273,7 +207,18 @@ export default function EditAlbum(props) {
                     title: 'Cancion agregada exitosamente',
                     showConfirmButton: false,
                 })
-                setState(state + 1)
+                
+                endpoint = `/api/playlists/${id}/songs`;
+                getData({endpoint})
+                .then(data => {
+                    setCurrentSongs(data)
+                })
+
+                endpoint = `/api/playlists/${id}/missing`;
+                getData({endpoint})
+                .then(data => {
+                    setSongList(data)
+                })
 
             }else{
                 Swal.fire({
@@ -281,82 +226,100 @@ export default function EditAlbum(props) {
                     title: 'Oops...',
                     text: data.MESSAGE,
                   })
+                  return;
             }
         })
+
+        setCount(count + 1);
+
     }
 
-    const removeSong = (song_id) => {
-        console.log("Remove: " + id)
+
+    const removeSong = (id_song) => {
         Swal.fire({
             title: '¿Estas seguro?',
-            text: "No podras revertir esta accion!",
+            text: "No podras revertir esta accion",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#9d0000',
             cancelButtonColor: '#717171',
-            confirmButtonText: 'Si, eliminar!',
+            confirmButtonText: 'Si, eliminar',
             cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if(result.isConfirmed){
-                    let endpoint = `/api/albums/removeSong`;
-                    sendJsonData({endpoint, data: {id_album: album.id, id_song: song_id}})
+                    let endpoint = `/api/playlists/removeSong`;
+                    sendJsonData({endpoint, data: {playlist: album.id, song: id_song, email: localStorage.getItem('id')}})
                     .then(data => {
                         console.log(data)
                         if(data.TYPE === 'SUCCESS'){
                             Swal.fire({
                                 icon: 'success',
-                                title: 'Cancion eliminada del album exitosamente',
+                                title: 'Cancion eliminada exitosamente',
                                 showConfirmButton: false,
                             })
-                            setState(state + 1)
+                            
+                            endpoint = `/api/playlists/${id}/songs`;
+                            getData({endpoint})
+                            .then(data => {
+                                setCurrentSongs(data)
+                            })
+            
+                            endpoint = `/api/playlists/${id}/missing`;
+                            getData({endpoint})
+                            .then(data => {
+                                setSongList(data)
+                            })
+            
                         }else{
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Oops...',
                                 text: data.MESSAGE,
                             })
+                            return;
                         }
                     })
-                }
-        })
+               } 
+               
+            })
     }
 
     const onDelete = () => {
         Swal.fire({
             title: '¿Estas seguro?',
-            text: "No podras revertir esta accion!",
+            text: "No podras revertir esta accion",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#9d0000',
             cancelButtonColor: '#717171',
-            confirmButtonText: 'Si, eliminar!',
+            confirmButtonText: 'Si, eliminar',
             cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if(result.isConfirmed){
-                    console.log("Delete: " + id)
-                    let endpoint = `/api/albums/${id}`;
-                    deleteData({endpoint})
+                    let endpoint = `/api/playlists/removePlaylist`;
+                    sendJsonData({endpoint, data: {email: localStorage.getItem('id'), playlist: id}})
                     .then(data => {
                         console.log(data)
                         if(data.TYPE === 'SUCCESS'){
                             Swal.fire({
                                 icon: 'success',
-                                title: 'Album eliminado exitosamente',
+                                title: 'Playlist eliminada exitosamente',
                                 showConfirmButton: false,
                             }).then(() => {
                                 navigate(-2)
                             })
-                            
+
                         }else{
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Oops...',
                                 text: data.MESSAGE,
                             })
+                            return;
                         }
                     })
                 }
-        })
+            })
     }
 
 
@@ -403,8 +366,6 @@ export default function EditAlbum(props) {
     }
 
     
-    
-
 
     return (
       <>
@@ -517,7 +478,7 @@ export default function EditAlbum(props) {
                                     color: "#fff",
                                 }}
                                 >
-                                {playlist ? 'Playlist' : 'Album'}
+                                Playlist
                             </Typography>
 
 
@@ -540,86 +501,37 @@ export default function EditAlbum(props) {
                             />  
 
 
-                            {
-                                playlist ?  
-                                <>
-                                    <Typography
-                                        variant="h5"
-                                        component="h5"
-                                        align="left"
-                                        sx={{
-                                            mt:2,
-                                            fontFamily: "monospace",
-                                            fontWeight: 700,
-                                            color: "#fff",
-                                        }}
-                                        >
-                                        Descripcion
-                                    </Typography>
+                            <Typography
+                                variant="h5"
+                                component="h5"
+                                align="left"
+                                sx={{
+                                    mt:2,
+                                    fontFamily: "monospace",
+                                    fontWeight: 700,
+                                    color: "#fff",
+                                }}
+                                >
+                                Descripcion
+                            </Typography>
 
-                                    <CssTextField
-                                        margin="normal"
-                                        required
-                                        fullWidth
-                                        id="name"
-                                        name="name"
-                                        value={album.description}
-                                        onChange={(e) => setAlbum({...album, description: e.target.value})}
-                                        sx={{ 
-                                            input: { 
-                                                color: '#fff',
-                                                fontFamily: "monospace",
-                                                fontWeight: 700,
-                                                fontSize: "2.5rem",
-                                            }, 
-                                            borderColor: '#fff' }}
-                                    />
-
-                                    {/* <Typography
-                                        variant="h6"
-                                        component="h6"
-                                        align="left"
-                                        sx={{
-                                            fontFamily: "monospace",
-                                            fontWeight: 700,
-                                            color: "#fff",
-                                        }}
-                                        >
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer pulvinar nibh vel enim gravida sodales. Aliquam erat volutpat. Fusce eget est ante. Morbi vitae ante quis lacus imperdiet tristique id vel orci. Aliquam congue purus libero, eget pellentesque odio efficitur a. Duis tincidunt cursus finibus. Sed egestas erat id elit finibus mollis. 
-                                    </Typography> */}
-                                </>
-                                :
-
-                                <>
-                                    <Typography
-                                        variant="h5"
-                                        component="h5"
-                                        align="left"
-                                        sx={{
-                                            mt:2,
-                                            fontFamily: "monospace",
-                                            fontWeight: 700,
-                                            color: "#fff",
-                                        }}
-                                        >
-                                        Artist
-                                    </Typography>
-
-                                    <Typography
-                                        variant="h3"
-                                        component="h3"
-                                        align="left"
-                                        sx={{
-                                            fontFamily: "monospace",
-                                            fontWeight: 700,
-                                            color: "#fff",
-                                        }}
-                                        >
-                                        {album.singer}
-                                    </Typography>
-                                </>
-
-                            }
+                            <CssTextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="description"
+                                name="description"
+                                value={album.description}
+                                onChange={(e) => setAlbum({...album, description: e.target.value})}
+                                sx={{ 
+                                    input: { 
+                                        color: '#fff',
+                                        fontFamily: "monospace",
+                                        fontWeight: 700,
+                                        fontSize: "2.5rem",
+                                    }, 
+                                    borderColor: '#fff' }}
+                            />
 
                             <Grid
                                 container
@@ -628,8 +540,8 @@ export default function EditAlbum(props) {
                                 justifyContent="right"
                             >
                                 <Button 
-                                    onClick={() => edit ? onDelete() : navigate(-1)}
                                     align='right'
+                                    onClick={() => edit ? onDelete() : navigate(-1)}
                                     sx={{
                                         backgroundColor:'#9d0000', color:'#fff', borderRadius: "20px", fontSize: '0.9rem', fontWeight: 700, px:2, mx:1,
                                         "&:hover": {
@@ -972,6 +884,7 @@ export default function EditAlbum(props) {
                                     data-mdb-dismiss="modal"
                                     onClick={() => {
                                         addSong(item.id)
+
                                     }}
                                     sx={{
                                         // pl:2,
@@ -1010,7 +923,8 @@ export default function EditAlbum(props) {
                                         alignItems="top"
                                         justifyContent="right"
                                     >
-                                        <IconButton
+                                        <IconButton key={"remove"+ i+1}
+                                            onClick={() => removeSong(row.no)}
                                             sx={{
                                                 color:'#fff', 
                                                 backgroundColor: "#38761d",

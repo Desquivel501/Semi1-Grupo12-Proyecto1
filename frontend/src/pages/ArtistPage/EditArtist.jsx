@@ -23,7 +23,8 @@ import song_list from '../../assets/song_list';
 import album_list from '../../assets/album_list';
 import artist_list from '../../assets/artist_list';
 
-import { getData } from '../../api/api';
+import { getData, patchData, sendFormData, deleteData } from '../../api/api';
+import Swal from 'sweetalert2';
 
 const theme = createTheme({
     typography: {
@@ -124,36 +125,140 @@ export default function EditArtist(props) {
     });
     const [preview, setPreview] = useState('https://soundstream-semi1-g12.s3.us-east-2.amazonaws.com/no_album.jpg',);
 
-    // const [name, setName] = useState('Test');
-    // const [birthDate, setBirthDate] = useState('2021-10-10');
-    // const [picture, setPicture] = useState('https://soundstream-semi1-g12.s3.us-east-2.amazonaws.com/no_album.jpg');
-
 
     useEffect(() => {
-        // for(var i = 0; i < artist_list.length; i++){
-        //     if(artist_list[i].id == id){
-        //         setArtist(artist_list[i])
-        //         setPreview(artist_list[i].cover)
-        //         break;
-        //     }
-        // }
+        if(edit){
+            let endpoint = `/api/artists/${id}`;
+            getData({endpoint})
+            .then(data => {
+                setArtist(data)
+                setPreview(data.cover)
+            })
+            .catch(err => console.log(err))
 
-        let endpoint = '/api/artists';
-        getData({endpoint})
-        .then(data => {
-            data.find((item) => {
-                if(item.id == id){
-                    setArtist(item)
-                    setPreview(item[i].cover)
-                    return;
+            setCount(count + 1);
+        }
+    },[]);
+
+    const handleSubmit  = (event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        edit ? data.append('id', artist.id) : null;
+
+        if(artist.cover === ''){
+            Swal.fire({
+                color: '#fff',
+                background: '#1f1f1f',
+                icon: 'error',
+                title: 'Oops...',
+                text: "No se ha seleccionado una imagen.",
+                showConfirmButton: true,
+            })
+            return
+        }
+
+        if(data.get('avatar').size == 0){
+            data.set('avatar', '')
+        }
+
+        console.log(data)
+
+        if(edit){
+            let endpoint = `/api/artists`;
+            patchData({endpoint, data})
+            .then(data => {
+
+                if(data.TYPE === 'SUCCESS'){
+                    Swal.fire({
+                        color: '#fff',
+                        background: '#1f1f1f',
+                        icon: 'success',
+                        title: 'Artista actualizado exitosamente',
+                        showConfirmButton: false,
+                    }).then(() => navigate(-1))
+                }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: data.MESSAGE,
+                      })
                 }
             })
+            .catch(err => console.log(err))
+
+        } else {
+            if(data.get('avatar') === ''){
+                Swal.fire({
+                    color: '#fff',
+                    background: '#1f1f1f',
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: "No se ha seleccionado una imagen.",
+                    showConfirmButton: true,
+                })
+                return
+            }
+
+            let endpoint = '/api/artists/newArtist';
+            sendFormData({endpoint, data})
+            .then(data => {
+                console.log(data)
+                if(data.TYPE === 'SUCCESS'){
+                    Swal.fire({
+                        color: '#fff',
+                        background: '#1f1f1f',
+                        icon: 'success',
+                        title: 'Artista creado exitosamente',
+                        showConfirmButton: false,
+                    }).them(() => navigate(-1))
+                }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: data.MESSAGE,
+                      })
+                }
+            })
+            .catch(err => console.log(err))
+        }
+    };
+
+    const onDelete = () => {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "No podrás revertir esta acción.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#9d0000',
+            cancelButtonColor: '#717171',
+            confirmButtonText: 'Eliminar',
+            cancelButtonText: 'Cancelar',
+            }).then((result) => {
+            if (result.isConfirmed) {
+                let endpoint = `/api/artists/${id}`;
+                deleteData({endpoint})
+                .then(data => {
+                    if(data.TYPE === 'SUCCESS'){
+                        Swal.fire({
+                            color: '#fff',
+                            background: '#1f1f1f',
+                            icon: 'success',
+                            title: 'Artista eliminado exitosamente',
+                            showConfirmButton: false,
+                        }).then(() => navigate(-2))
+                    }else{
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: data.MESSAGE,
+                          })
+                    }
+                })
+                .catch(err => console.log(err))
+            }
         })
-        .catch(err => console.log(err))
+    }
 
-
-        setCount(count + 1);
-    },[]);
 
 
     function selectColor(str) {
@@ -176,13 +281,7 @@ export default function EditArtist(props) {
         setColor('#626262') 
     }
 
-    const handleSubmit  = (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        data.append('id', artist.id);
-        console.log(data)
-    }
-
+    
 
     return (
       <>
@@ -354,6 +453,7 @@ export default function EditArtist(props) {
                     <Button 
                         id='1'
                         align='right'
+                        onClick={() => edit ? onDelete() : navigate(-1)}
                         sx={{backgroundColor:'#9d0000', color:'#fff', borderRadius: "20px", fontSize: '0.9rem', fontWeight: 700, mt:4, px:2, mx:1,
                             "&:hover": {
                                 backgroundColor: "#b03232",
@@ -390,7 +490,7 @@ export default function EditArtist(props) {
                         <div className="modal-body" style={{display:'flex', flexDirection:'column', justifyContent:'flex-end', alignItems:'center'}}>
                             <img src={preview}
                                 alt="Avatar" className="img-fluid my-5" style={{ width: '200px' }} />
-                             <input type="file" name="myImage" onChange= {(e) => setPreview(URL.createObjectURL(e.target.files[0]))} />
+                             <input type="file" name="avatar" onChange= {(e) => setPreview(URL.createObjectURL(e.target.files[0]))} />
                         </div>
 
                         <div className="modal-body">

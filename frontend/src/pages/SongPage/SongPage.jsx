@@ -281,7 +281,7 @@ export default function SongPage(props) {
                                     color: "#fff",
                                 }}
                                 >
-                                Duracion: 4:58
+                                Duracion: {song.duration}
                             </Typography>
                             
 

@@ -38,6 +38,19 @@ export function sendFormData({ endpoint, data }) {
     .catch((err) => console.log(err));
 }
 
+export function sendJsonData({ endpoint, data }) {
+  return fetch(`${API}${endpoint}`, {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+      "Access-Control-Allow-Origin_Origin": "*",
+      "Content-Type": "application/json",
+    },
+  })
+  .then((res) => res.json())
+  .catch((err) => console.log(err));
+}
+
 
 export function getData({ endpoint }) {
   return fetch(`${API}${endpoint}`)
@@ -53,4 +66,27 @@ export function getDataAuth({ endpoint }) {
   })
     .then((res) => res.json())
     .catch((er) => console.log(er));
+}
+
+export function patchData({ endpoint, data }) {
+    return fetch(`${API}${endpoint}`, {
+      method: "PATCH",
+      body: data,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
+    })
+      .then((res) => res.json())
+      .catch((err) => console.log(err));
+  }
+
+export function deleteData({ endpoint }) {
+  return fetch(`${API}${endpoint}`, {
+    method: "DELETE",
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
+  })
+    .then((res) => res.json())
+    .catch((err) => console.log(err));
 }

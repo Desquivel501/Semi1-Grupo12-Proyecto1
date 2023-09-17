@@ -108,6 +108,29 @@ export class AlbumModel {
     }
   }
 
+
+  static removeSong(
+    id_album: number,
+    id_song: number,
+    callback: (response: any, ok: Boolean) => void,
+  ) {
+    try {
+      pool.query("CALL RemoveSongAlbum(?,?)", [
+        id_song,
+        id_album,
+      ], (err, result) => {
+        if (err) throw err;
+        if (result[0][0].TYPE == "ERROR") callback(result[0][0], false);
+        else {
+          callback(result[0][0], true);
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      callback(error, false);
+    }
+  }
+
   static editAlbum(
     newAlbum : UpdateAlbum,
     file: Express.MulterS3.File,

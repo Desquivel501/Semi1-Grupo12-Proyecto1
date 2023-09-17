@@ -10,12 +10,11 @@ import Select from '@mui/material/Select';
 import { styled } from '@mui/material/styles';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { sendFormData } from '../../api/api';
 
 import song_list from '../../assets/song_list';
 import artist_list from '../../assets/artist_list';
 
-import { getData } from '../../api/api';
+import { getData, sendFormData, patchData, deleteData } from '../../api/api';
 import Swal from 'sweetalert2';
 
 const theme = createTheme({
@@ -182,40 +181,118 @@ export default function EditSong(props) {
         }
 
         if(data.get('cover').size == 0){
-            data.delete('cover')
+            data.set('cover', '')
         }
 
         console.log(data)
 
-        sendFormData({
-            endpoint: edit ? '/api/songs/newSong' : '/api/songs/newSong',
-            data: data,
-        }).then((response) => {
-            console.log(response)
-            if(response.TYPE == "SUCCESS"){
-                Swal.fire({
-                    color: '#fff',
-                    background: '#1f1f1f',
-                    icon: 'success',
-                    title: 'Cancion creada exitosamente.',
-                    showConfirmButton: true,
-                    timer: 1500
-                }).then(() => {
-                    navigate(-1)
+        if(!edit){
+            sendFormData({
+                endpoint: '/api/songs/newSong',
+                data: data,
+            }).then((response) => {
+                console.log(response)
+                if(response.TYPE == "SUCCESS"){
+                    Swal.fire({
+                        color: '#fff',
+                        background: '#1f1f1f',
+                        icon: 'success',
+                        title: 'Cancion creada exitosamente.',
+                        showConfirmButton: true,
+                        timer: 1500
+                    }).then(() => {
+                        navigate(-1)
+                    })
+                    
+                } else {
+                    Swal.fire({
+                        color: '#fff',
+                        background: '#1f1f1f',
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: response.MESSAGE,
+                        showConfirmButton: true,
+                    })
+                }
+            })
+            .catch((err) => console.log(err));
+        } else {
+            patchData({
+                endpoint: '/api/songs',
+                data: data,
+            }).then((response) => {
+                console.log(response)
+                if(response.TYPE == "SUCCESS"){
+                    Swal.fire({
+                        color: '#fff',
+                        background: '#1f1f1f',
+                        icon: 'success',
+                        title: 'Cancion actualizada exitosamente.',
+                        showConfirmButton: true,
+                        timer: 1500
+                    }).then(() => {
+                        navigate(-1)
+                    })
+                    
+                } else {
+                    Swal.fire({
+                        color: '#fff',
+                        background: '#1f1f1f',
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: response.MESSAGE,
+                        showConfirmButton: true,
+                    })
+                }
+            })
+            .catch((err) => console.log(err));
+        }
+    }
+
+    const onDelete = (id) => {
+        Swal.fire({
+            title: '¿Estas seguro?',
+            text: "No podras revertir esta accion.",
+            icon: 'warning',
+            showCancelButton: true,
+            color: '#fff',
+            background: '#1f1f1f',
+            confirmButtonColor: '#9d0000',
+            cancelButtonColor: '#717171',
+            confirmButtonText: 'Si, eliminar',
+            cancelButtonText: 'Cancelar'
+            }).then((result) => {
+            if (result.isConfirmed) {
+                console.log('Eliminado: ' + id)
+
+                let endpoint = `/api/songs/${id}`;
+                deleteData({endpoint})
+                .then(data => {
+                    console.log(data)
+                    if(data.TYPE == "SUCCESS"){
+                        Swal.fire({
+                            color: '#fff',
+                            background: '#1f1f1f',
+                            icon: 'success',
+                            title: 'Cancion eliminada exitosamente.',
+                            showConfirmButton: true,
+                        }).then(() => {
+                            navigate(-2)
+                        })
+                    } else {
+                        Swal.fire({
+                            color: '#fff',
+                            background: '#1f1f1f',
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: data.MESSAGE,
+                            showConfirmButton: true,
+                        })
+                    }
                 })
-                
-            } else {
-                Swal.fire({
-                    color: '#fff',
-                    background: '#1f1f1f',
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: response.MESSAGE,
-                    showConfirmButton: true,
-                })
+                .catch(err => console.log(err))
             }
         })
-        .catch((err) => console.log(err));
     }
 
     function selectColor(str) {
@@ -506,6 +583,7 @@ export default function EditSong(props) {
                     >
                         <Button 
                             align='right'
+                            onClick={() => edit ? onDelete(song.id) : navigate(-1)}
                             sx={{
                                 backgroundColor:'#9d0000', color:'#fff', borderRadius: "20px", fontSize: '0.9rem', fontWeight: 700, mt:4, px:2, mx:1,
                                 "&:hover": {

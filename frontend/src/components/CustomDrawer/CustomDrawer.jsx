@@ -36,6 +36,8 @@ import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { sesionContext } from "../../context/SessionContext";
 
+import { getData } from "../../api/api";
+
 const drawerWidth = 300;
 
 const theme = createTheme({
@@ -87,12 +89,20 @@ export default function CustomDrawer() {
     const navigate = useNavigate();
 
     const [open, setOpen] = useState(false);
+    const [playlists, setPlaylists] = useState([]);
 
     const { user } = useContext(sesionContext);
 
     const handleClick = () => {
         setOpen(!open);
     };
+
+    useEffect(() => {
+        let endpoint = `/api/playlists/${user.id}`;
+        getData({endpoint})
+        .then(data => setPlaylists(data))
+        .catch(err => console.log(err))
+    }, [])
 
     return (
         <>
@@ -180,7 +190,8 @@ export default function CustomDrawer() {
                                     <Collapse in={open} timeout="auto" unmountOnExit>
                                         <List component="div" sx={{ border:0, pl:3 }}>
 
-                                            <ListItemButton sx={{ pl: 4 }} onClick={() => navigate("/Album")}>
+                                            <ListItemButton sx={{ pl: 4 }} onClick={() => navigate("/New/Playlist")}>
+
                                                 <ListItemIcon>
                                                 <AddCircleIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
                                                 </ListItemIcon>
@@ -188,34 +199,18 @@ export default function CustomDrawer() {
                                                     primaryTypographyProps={list_text}/>
                                             </ListItemButton>
 
-                                            <ListItemButton sx={{ pl: 4 }} onClick={() => navigate("/Album")}>
-                                                <ListItemIcon>
-                                                <FeaturedPlayListIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
-                                                </ListItemIcon>
-                                                <ListItemText primary="Playlist #1" sx={{ color: '#fff', }}
-                                                    primaryTypographyProps={list_text}/>
-                                            </ListItemButton>
-                                            <ListItemButton sx={{ pl: 4 }} onClick={() => navigate("/Album")}>
-                                                <ListItemIcon>
-                                                <FeaturedPlayListIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
-                                                </ListItemIcon>
-                                                <ListItemText primary="Playlist #2" sx={{ color: '#fff',}}
-                                                    primaryTypographyProps={list_text}/>
-                                            </ListItemButton>
-                                            <ListItemButton sx={{ pl: 4 }} onClick={() => navigate("/Album")}>
-                                                <ListItemIcon>
-                                                <FeaturedPlayListIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
-                                                </ListItemIcon>
-                                                <ListItemText primary="Playlist #3" sx={{ color: '#fff',}}
-                                                    primaryTypographyProps={list_text}/>
-                                            </ListItemButton>
-                                            <ListItemButton sx={{ pl: 4 }} onClick={() => navigate("/Album")}>
-                                                <ListItemIcon>
-                                                <FeaturedPlayListIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
-                                                </ListItemIcon>
-                                                <ListItemText primary="Playlist #4" sx={{ color: '#fff',}}
-                                                    primaryTypographyProps={list_text}/>
-                                            </ListItemButton>
+                                            {
+                                                playlists.map((playlist) => (
+                                                    <ListItemButton sx={{ pl: 4 }} onClick={() => navigate(`/Playlist/${playlist.id}`)} key={playlist.id}>
+                                                        <ListItemIcon>
+                                                        <FeaturedPlayListIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
+                                                        </ListItemIcon>
+                                                        <ListItemText primary={playlist.name} sx={{ color: '#fff',}}
+                                                            primaryTypographyProps={list_text}/>
+                                                    </ListItemButton>
+                                                ))
+                                            }
+
                                         </List>
                                     </Collapse>
 
