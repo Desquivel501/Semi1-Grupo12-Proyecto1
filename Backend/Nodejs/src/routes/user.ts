@@ -10,6 +10,8 @@ export const userRouter = Router();
 const upload = multer({ storage: s3Storage({ userType: "user" }) });
 
 userRouter.get("/:id", checkRole(Roles.user), UserController.getUser);
+userRouter.get("/:email/favorites", UserController.getFavorites);
+userRouter.post("/addFavorite", UserController.addFavorite);
 userRouter.post("/newUser", upload.single("avatar"), UserController.createUser);
 userRouter.patch("/", upload.single("avatar"),  UserController.editUser);
 // playlist

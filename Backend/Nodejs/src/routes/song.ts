@@ -25,4 +25,3 @@ songRouter.patch(
   SongController.editSong,
 );
 songRouter.delete("/:id", SongController.deleteSong);
-songRouter.post("/addFavorite", SongController.addToFavorites);

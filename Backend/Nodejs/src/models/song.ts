@@ -1,5 +1,5 @@
 import { pool } from "./database/connection";
-import { FavoriteSong, Song, SongFiles, UpdateSong } from "./types";
+import { Song, SongFiles, UpdateSong } from "./types";
 
 export class SongModel {
   static createSong(
@@ -109,27 +109,6 @@ export class SongModel {
     try {
       pool.query("CALL DeleteSong(?)", [
         id,
-      ], (err, result) => {
-        if (err) throw err;
-        if (result[0][0].TYPE == "ERROR") callback(result[0][0], false);
-        else {
-          callback(result[0][0], true);
-        }
-      });
-    } catch (error) {
-      console.log(error);
-      callback(error, false);
-    }
-  }
-
-  static addToFavorite(
-    favorite: FavoriteSong,
-    callback: (response: any, ok: Boolean) => void,
-  ) {
-    try {
-      pool.query("CALL AddToFavorites(?,?)", [
-        favorite.song,
-        favorite.email,
       ], (err, result) => {
         if (err) throw err;
         if (result[0][0].TYPE == "ERROR") callback(result[0][0], false);

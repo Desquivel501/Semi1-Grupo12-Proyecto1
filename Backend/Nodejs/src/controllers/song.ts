@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { FavoriteSong, Song, SongFiles, UpdateSong } from "../models/types";
+import {  Song, SongFiles, UpdateSong } from "../models/types";
 import { SongModel } from "../models/song";
 import { checkKeys } from "../utils/checkKeys";
 
@@ -54,15 +54,4 @@ export class SongController {
     });
   }
 
-  static addToFavorites(req: Request, res: Response) {
-    const song = req.body as FavoriteSong;
-    // Validar datos
-    if (!checkKeys(song)) {
-      return res.status(400).json({ message: "Faltan datos" });
-    }
-    SongModel.addToFavorite(song, (response: any, ok: Boolean) => {
-      // Respuesta
-      res.status(ok ? 200 : 400).json(response);
-    });
-  }
 }
