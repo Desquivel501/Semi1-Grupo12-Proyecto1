@@ -20,6 +20,10 @@ export type Song = {
   artist: number;
   source: string;
 };
+export type FavoriteSong = {
+  song: number;
+  email: string;
+};
 
 export type Playlist = {
   name: string;

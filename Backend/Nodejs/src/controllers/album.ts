@@ -7,7 +7,7 @@ export class AlbumController {
   static createAlbum(req: Request, res: Response) {
     const album = req.body as Album;
     const file = req.file as Express.MulterS3.File;
-    if (!album || !file) {
+    if (!checkKeys(album, ["cover", "email", "description"]) || !file) {
       return res.status(400).json({ MESSAGE: "Faltan datos" });
     }
     AlbumModel.createAlbum(album, file, (response, ok) => {
@@ -57,7 +57,7 @@ export class AlbumController {
     const album = req.body as UpdateAlbum;
     const file = req.file as Express.MulterS3.File;
     // Validar datos
-    if (!checkKeys(album, ["cover","email"])) {
+    if (!checkKeys(album, ["cover", "email", "description"])) {
       return res.status(400).json({ message: "Faltan datos" });
     }
     // Crear usuario
