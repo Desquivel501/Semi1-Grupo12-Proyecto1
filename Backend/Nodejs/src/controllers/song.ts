@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Song, SongFiles, UpdateSong } from "../models/types";
+import { FavoriteSong, Song, SongFiles, UpdateSong } from "../models/types";
 import { SongModel } from "../models/song";
 import { checkKeys } from "../utils/checkKeys";
 
@@ -38,7 +38,7 @@ export class SongController {
     if (!checkKeys(song, ["cover"])) {
       return res.status(400).json({ message: "Faltan datos" });
     }
-    SongModel.editSong(song, file, (response: string, ok: boolean) => {
+    SongModel.editSong(song, file, (response: string, ok: Boolean) => {
       // Respuesta
       res.status(ok ? 200 : 400).json(response);
     });
@@ -49,6 +49,18 @@ export class SongController {
     if (!id) return res.status(401).json({ MESSAGE: "Falta el id" });
     const id_album = parseInt(id);
     SongModel.deleteSong({ id: id_album }, (response, ok) => {
+      res.status(ok ? 200 : 400).json(response);
+    });
+  }
+
+  static addToFavorites(req: Request, res: Response) {
+    const song = req.body as FavoriteSong;
+    // Validar datos
+    if (!checkKeys(song)) {
+      return res.status(400).json({ message: "Faltan datos" });
+    }
+    SongModel.addToFavorite(song, (response: any, ok: Boolean) => {
+      // Respuesta
       res.status(ok ? 200 : 400).json(response);
     });
   }
