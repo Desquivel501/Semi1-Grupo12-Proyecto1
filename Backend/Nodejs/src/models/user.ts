@@ -1,7 +1,7 @@
 import { encrypt } from "../libs/object-hash";
 import { formatDate } from "../utils/formatDate";
 import { pool } from "./database/connection";
-import { UpdateUser, User } from "./types";
+import { FavoriteSong, UpdateUser, User } from "./types";
 
 export class UserModel {
   static createUser(
@@ -74,6 +74,40 @@ export class UserModel {
         }
       });
     } catch (error) {
+    }
+  }
+
+  static addToFavorite(
+    favorite: FavoriteSong,
+    callback: (response: any, ok: Boolean) => void,
+  ) {
+    try {
+      pool.query("CALL AddToFavorites(?,?)", [
+        favorite.song,
+        favorite.email,
+      ], (err, result) => {
+        if (err) throw err;
+        if (result[0][0].TYPE == "ERROR") callback(result[0][0], false);
+        else {
+          callback(result[0][0], true);
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      callback(error, false);
+    }
+  }
+
+  static getFavorites({ email }: { email: string }, callback: Function) {
+    try {
+      pool.query("CALL GetFavorites(?)", [
+        email,
+      ], (err, result) => {
+        if (err) throw err;
+        callback(result[0], true);
+      });
+    } catch (error) {
+      callback(error, false);
     }
   }
 }

@@ -5,8 +5,10 @@ from src.controllers.playlist import PlaylistController
 user_blueprint = Blueprint("blueprint", __name__)
 
 user_blueprint.route("/<id>", methods=["GET"])(UserController.get_user)
+user_blueprint.route("/<email>/favorites", methods=["GET"])(UserController.get_favorites)
 user_blueprint.route("/", methods=["PATCH"])(UserController.edit_user)
 user_blueprint.route("/newUser", methods=["POST"])(UserController.create_user)
+user_blueprint.route("/addFavorite", methods=["POST"])(UserController.add_to_favorite)
 
 user_blueprint.route("/<email>/playlists", methods=["GET"])(PlaylistController.get_users_playlists)
 user_blueprint.route("/playlists/<int:id>/songs", methods=["GET"])(PlaylistController.get_songs)
