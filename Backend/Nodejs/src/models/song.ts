@@ -72,11 +72,14 @@ export class SongModel {
 
   static editSong(
     newSong: UpdateSong,
-    file: Express.MulterS3.File,
+    files: SongFiles,
     callback: Function,
   ) {
     try {
-      newSong.cover = file ? file.location : "";
+
+      newSong.cover = files.cover === undefined ? "" : files.cover[0].location;
+      newSong.source = files.source === undefined ? "" : files.source[0].location;
+
       // Encriptando
       // Guardar en DB
       pool.query("CALL UpdateSong(?,?,?,?,?,?)", [
@@ -94,6 +97,8 @@ export class SongModel {
         }
       });
     } catch (error) {
+      console.log(error);
+      callback(error, false);
     }
   }
 

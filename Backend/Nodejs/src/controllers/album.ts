@@ -53,11 +53,25 @@ export class AlbumController {
     );
   }
 
+  static removeSong(req: Request, res: Response) {
+    const { id_album, id_song } = req.body;
+    if (!id_album || !id_song) {
+      return res.status(400).json({ MESSAGE: "Faltan datos" });
+    }
+    AlbumModel.removeSong(
+      parseInt(id_album),
+      parseInt(id_song),
+      (response, ok) => {
+        res.status(ok ? 200 : 400).json(response);
+      },
+    );
+  }
+
   static editAlbum(req: Request, res: Response) {
     const album = req.body as UpdateAlbum;
     const file = req.file as Express.MulterS3.File;
     // Validar datos
-    if (!checkKeys(album, ["cover", "email", "description"])) {
+    if (!checkKeys(album, ["cover", "description"])) {
       return res.status(400).json({ message: "Faltan datos" });
     }
     // Crear usuario

@@ -13,4 +13,5 @@ playlistRouter.get("/:id/missing",PlaylistController.getSongsNotInPlaylist);
 playlistRouter.post("/newPlaylist",uploadPlaylist.single("cover"),PlaylistController.createPlaylist);
 playlistRouter.post("/addSong",PlaylistController.addSong);
 playlistRouter.post("/removeSong",PlaylistController.removeSong);
-playlistRouter.delete("/:id",PlaylistController.removePlaylist);
+playlistRouter.patch("/",uploadPlaylist.single("cover"),PlaylistController.editPlaylist);
+playlistRouter.post("/removePlaylist",PlaylistController.removePlaylist);
