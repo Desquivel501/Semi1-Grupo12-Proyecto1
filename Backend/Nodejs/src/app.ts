@@ -7,6 +7,7 @@ import { songRouter } from "./routes/song";
 import { artistRouter } from "./routes/artist";
 import { albumRouter } from "./routes/album";
 import { playlistRouter } from "./routes/playlist";
+import { reportRouter } from "./routes/reports";
 
 const app = express();
 app.use(cors())
@@ -18,6 +19,7 @@ app.use("/api/songs",songRouter)
 app.use("/api/artists",artistRouter)
 app.use("/api/albums",albumRouter)
 app.use("/api/playlists", playlistRouter)
+app.use("/api/reports", reportRouter)
 
 app.get("/", (req, res) => {
   res.send("<h1>Hola mundo</h1>");

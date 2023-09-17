@@ -122,7 +122,7 @@ class UserModel:
             cursor = db.cursor(buffered=True)
             # Query
             cursor.callproc(
-                "GetFavorites",
+                "GetSongsInFavorites",
                 (email,),
             )
             data = []

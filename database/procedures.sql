@@ -818,22 +818,6 @@ add_to_favorites:BEGIN
 	'SUCCESS' AS 'TYPE';
 END $$
 
--- Procedimiento para obtener las canciones favoritas de un usuario
-DROP PROCEDURE IF EXISTS GetFavorites $$
-CREATE PROCEDURE GetFavorites (
-	IN email_in VARCHAR(255)
-)
-get_favorites:BEGIN
-	IF NOT email_exists(email_in) THEN
-		SELECT 'El correo que ha ingresado no pertenece a una cuenta' AS 'MESSAGE',
-		'ERROR' AS 'TYPE';
-		LEAVE get_favorites;
-	END IF;	
-  SELECT s.id_song AS id, s.name, a.name AS singer,s.image AS cover, s.file AS musicSrc FROM Songs s 
-  JOIN Artists a ON s.id_artist=a.id_artist
-  JOIN Favorites f ON s.id_song=f.id_song 
-  WHERE f.email=email_in;
-END $$
 /*********************************************** PROCEDIMIENTOS PARA EL MANEJO DEL HISTORIAL ***********************************************/
 
 -- Procedimiento para agregar una canción al historial
@@ -854,6 +838,8 @@ add_to_history:BEGIN
 
 	INSERT INTO History
 	VALUES (email_in, id_song, NOW());
+	SELECT 'Historial actualizado' AS 'MESSAGE',
+	'SUCCESS' AS 'TYPE';
 END $$
 
 /*********************************************** PROCEDIMIENTOS PARA RECUPERACIÓN DE DATOS ***********************************************/

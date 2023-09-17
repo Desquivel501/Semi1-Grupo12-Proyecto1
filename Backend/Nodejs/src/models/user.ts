@@ -100,7 +100,7 @@ export class UserModel {
 
   static getFavorites({ email }: { email: string }, callback: Function) {
     try {
-      pool.query("CALL GetFavorites(?)", [
+      pool.query("CALL GetSongsInFavorites(?)", [
         email,
       ], (err, result) => {
         if (err) throw err;
