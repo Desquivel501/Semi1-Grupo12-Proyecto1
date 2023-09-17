@@ -93,29 +93,7 @@ const CssTextField = styled(TextField)({
     },
   });
 
-function createData(no, title) {
-    return {no, title };
-  }
-
-var rows = [
-    createData(1,'Prison Song'),
-    createData(2,'Needles'),
-    createData(3,'Deer Dance'),
-    createData(4,'Jet Pilot'),
-    createData(5,'X'),
-    createData(6,'Chop Suey!'),
-    createData(7,'Bounce'),
-    createData(8,'Forest'),
-    createData(9,'ATWA'),
-    createData(10,'Science'),
-    createData(11,'Shimmy'),
-    createData(12,'Toxicity'),
-    createData(13,'Psycho'),
-    createData(14,'Aerials'),
-  ];
-
-
-export default function EditAlbum(props) {
+export default function EditPlaylist(props) {
 
     const {
         playlist = false,
@@ -144,60 +122,78 @@ export default function EditAlbum(props) {
 
     useEffect(() => {
 
-        if(edit){
-            let current_name = ""
-            let artist_id = 0;
-            let endpoint = `/api/albums/${id}`
-            getData({endpoint})
-            .then(data => {
-                current_name = data.singer;
-                setAlbum(data)
-            })
+        let endpoint = `/api/playlists/${id}/data`;
+        getData({endpoint})
+        .then(data => {
+            if(data.email != localStorage.getItem('id')){
+                navigate('/')
+            }
+            setAlbum(data)
+        })
+        
+        endpoint = `/api/playlists/${id}/songs`;
+        getData({endpoint})
+        .then(data => {
+            setCurrentSongs(data)
+        })
 
-            endpoint = `/api/artists`;
-            getData({endpoint})
-            .then(data => {
-                data.find(element => {
-                    if(element.name === current_name){
-                        setArtistId(element.id)
-                        return
-                    }
-                })
-            })
+        endpoint = `/api/playlists/${id}/missing`;
+        getData({endpoint})
+        .then(data => {
+            setSongList(data)
+        })
+
+        // if(edit){
+        //     let current_name = ""
+        //     let artist_id = 0;
+        //     let endpoint = `/api/albums/${id}`
+        //     getData({endpoint})
+        //     .then(data => {
+        //         current_name = data.singer;
+        //         setAlbum(data)
+        //     })
+
+        //     endpoint = `/api/artists`;
+        //     getData({endpoint})
+        //     .then(data => {
+        //         data.find(element => {
+        //             if(element.name === current_name){
+        //                 setArtistId(element.id)
+        //                 return
+        //             }
+        //         })
+        //     })
             
-            endpoint = `/api/albums/${id}/songs`;
-            // endpoint = playlist ? `/api/playlist/${id}/songs` : `/api/albums/${id}/songs`;
-            getData({endpoint})
-            .then(data => {
-                setCurrentSongs(data)
-            })
+        //     endpoint = `/api/albums/${id}/songs`;
+        //     getData({endpoint})
+        //     .then(data => {
+        //         setCurrentSongs(data)
+        //     })
 
 
-            setCount(count + 1);
-       }
-
+        //     setCount(count + 1);
+        // }
+        
     },[]);
 
-    useEffect(() => {
-        if(edit){
-            let endpoint = `/api/artists/${artistId}/songs/notInAlbum`;
-            // endpoint = playlist ? `/api/playlist/${id}/songs` : `/api/albums/${id}/songs`;
-            getData({endpoint})
-            .then(data => {
-                console.log(data)
-                setSongList(data)
-            })
-        }
-    }, [currentSongs]);
+    // useEffect(() => {
+    //     let endpoint = `/api/artists/${artistId}/songs/notInAlbum`;
+    //     getData({endpoint})
+    //     .then(data => {
+    //         console.log(data)
+    //         setSongList(data)
+    //     })
+
+    // }, [currentSongs]);
 
     const removeSong = (id) => {
-
+        
     }
 
     const addSong = (id_song) => {
         console.log(id_song)
-        let endpoint = `/api/albums/addSong`;
-        sendJsonData({endpoint, data: {id_album: album.id, id_song: id_song}})
+        let endpoint = `/api/playlists/addSong`;
+        sendJsonData({endpoint, data: {playlist: album.id, song: id_song, email: localStorage.getItem('id')}})
         .then(data => {
             console.log(data)
             if(data.TYPE === 'SUCCESS'){
@@ -206,21 +202,29 @@ export default function EditAlbum(props) {
                     title: 'Cancion agregada exitosamente',
                     showConfirmButton: false,
                   })
+                  for(var i = 0; i < songList.length; i++){
+                        if(songList[i].id == id_song){
+                            setCurrentSongs([...currentSongs, songList[i]])
+                            break;
+                        }
+                    }
             }else{
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
                     text: data.MESSAGE,
                   })
+                  return;
             }
         })
 
-        for(var i = 0; i < songList.length; i++){
-            if(songList[i].id == id_song){
-                setCurrentSongs([...currentSongs, songList[i]])
-                break;
-            }
-        }
+        endpoint = `/api/playlists/${id}/missing`;
+        getData({endpoint})
+        .then(data => {
+            setSongList(data)
+        })
+
+        setCount(count + 1);
 
     }
 
@@ -267,7 +271,6 @@ export default function EditAlbum(props) {
         return '#' + fill(red.toString(16)) + fill(green.toString(16)) + fill(blue.toString(16))
     }
 
-    
     const handleSubmit  = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -290,6 +293,7 @@ export default function EditAlbum(props) {
                 overflow: 'auto',
                 p: 3,
                 m:-2,
+                pb:'100px',
                 backgroundColor: color,
                 borderRadius: 5,
             }}
@@ -386,7 +390,7 @@ export default function EditAlbum(props) {
                                     color: "#fff",
                                 }}
                                 >
-                                {playlist ? 'Playlist' : 'Album'}
+                                Playlist
                             </Typography>
 
 
@@ -409,86 +413,37 @@ export default function EditAlbum(props) {
                             />  
 
 
-                            {
-                                playlist ?  
-                                <>
-                                    <Typography
-                                        variant="h5"
-                                        component="h5"
-                                        align="left"
-                                        sx={{
-                                            mt:2,
-                                            fontFamily: "monospace",
-                                            fontWeight: 700,
-                                            color: "#fff",
-                                        }}
-                                        >
-                                        Descripcion
-                                    </Typography>
+                            <Typography
+                                variant="h5"
+                                component="h5"
+                                align="left"
+                                sx={{
+                                    mt:2,
+                                    fontFamily: "monospace",
+                                    fontWeight: 700,
+                                    color: "#fff",
+                                }}
+                                >
+                                Descripcion
+                            </Typography>
 
-                                    <CssTextField
-                                        margin="normal"
-                                        required
-                                        fullWidth
-                                        id="name"
-                                        name="name"
-                                        value={album.description}
-                                        onChange={(e) => setAlbum({...album, description: e.target.value})}
-                                        sx={{ 
-                                            input: { 
-                                                color: '#fff',
-                                                fontFamily: "monospace",
-                                                fontWeight: 700,
-                                                fontSize: "2.5rem",
-                                            }, 
-                                            borderColor: '#fff' }}
-                                    />
-
-                                    {/* <Typography
-                                        variant="h6"
-                                        component="h6"
-                                        align="left"
-                                        sx={{
-                                            fontFamily: "monospace",
-                                            fontWeight: 700,
-                                            color: "#fff",
-                                        }}
-                                        >
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer pulvinar nibh vel enim gravida sodales. Aliquam erat volutpat. Fusce eget est ante. Morbi vitae ante quis lacus imperdiet tristique id vel orci. Aliquam congue purus libero, eget pellentesque odio efficitur a. Duis tincidunt cursus finibus. Sed egestas erat id elit finibus mollis. 
-                                    </Typography> */}
-                                </>
-                                :
-
-                                <>
-                                    <Typography
-                                        variant="h5"
-                                        component="h5"
-                                        align="left"
-                                        sx={{
-                                            mt:2,
-                                            fontFamily: "monospace",
-                                            fontWeight: 700,
-                                            color: "#fff",
-                                        }}
-                                        >
-                                        Artist
-                                    </Typography>
-
-                                    <Typography
-                                        variant="h3"
-                                        component="h3"
-                                        align="left"
-                                        sx={{
-                                            fontFamily: "monospace",
-                                            fontWeight: 700,
-                                            color: "#fff",
-                                        }}
-                                        >
-                                        {album.singer}
-                                    </Typography>
-                                </>
-
-                            }
+                            <CssTextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="name"
+                                name="name"
+                                value={album.description}
+                                onChange={(e) => setAlbum({...album, description: e.target.value})}
+                                sx={{ 
+                                    input: { 
+                                        color: '#fff',
+                                        fontFamily: "monospace",
+                                        fontWeight: 700,
+                                        fontSize: "2.5rem",
+                                    }, 
+                                    borderColor: '#fff' }}
+                            />
 
                             <Grid
                                 container

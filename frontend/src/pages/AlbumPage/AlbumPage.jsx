@@ -94,6 +94,8 @@ export default function AlbumPage(props) {
         admin = (localStorage.getItem('type') == 1),
     } = props;
 
+    const navigate = useNavigate();
+
     const { id } = useParams();
 
     const [isHovered, setIsHovered] = useState(0);
@@ -101,7 +103,7 @@ export default function AlbumPage(props) {
     const [count, setCount] = useState(0);
     const [album, setAlbum] = useState({
         id: 0,
-        name: 'Test',
+        name: '',
         cover:
             'https://soundstream-semi1-g12.s3.us-east-2.amazonaws.com/no_album.jpg',
         description: '',
@@ -122,15 +124,26 @@ export default function AlbumPage(props) {
             setSongList(song_list)
 
         } else if(playlist){
-            setAlbum({
-                id: 0,
-                name: 'Playlist',
-                cover:
-                    'https://soundstream-semi1-g12.s3.us-east-2.amazonaws.com/no_album.jpg',
-                description: 'Lopem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies aliquam, nisl nisl ultricies nisl, nec ultricies nisl nisl nec nisl.',
-                singer: ''
+
+            let endpoint = `/api/playlists/${id}/data`;
+            getData({endpoint})
+            .then(data => {
+                if(data.email != localStorage.getItem('id') || data === undefined){
+                    navigate('/')
+                }
+                setAlbum({...data})
             })
-            setSongList(song_list)
+            .catch(err => {
+                console.log(err)
+                navigate('/')
+            })
+            
+            endpoint = `/api/playlists/${id}/songs`;
+            getData({endpoint})
+            .then(data => {
+                setSongList(data)
+            })
+
         } else if(radio){
             setAlbum({
                 id: 0,
@@ -143,49 +156,23 @@ export default function AlbumPage(props) {
             let endpoint = '/api/songs';
             getData({endpoint})
             .then(data => {
-                console.log(data)
                 setSongList(data)
             })
             .catch(err => console.log(err))
 
         }else{
-            // console.log(id)
-            // for(var i = 0; i < album_list.length; i++){
-            //     if(album_list[i].id == id){
-            //         setAlbum({...album_list[i], description: ''})
-            //         break;
-            //     }
-            // }
 
-            let endpoint = '/api/albums';
-            let artist = '';
+            let endpoint = `/api/albums/${id}`;
             getData({endpoint})
             .then(data => {
-                // setAlbumList(data)
-                data.find((item) => {
-                    if(item.id == id){
-                        setAlbum({...item, description: ''})
-                        artist = item.singer;
-                        return;
-                    }
-                })
-
+                setAlbum({...data, description: ''})
             })
-            .catch(err => console.log(err))
 
-            endpoint = '/api/songs';
+            endpoint = `/api/albums/${id}/songs`;
             getData({endpoint})
             .then(data => {
-                let tempList = []
-                data.find((song) => {
-                    console.log(song.singer, artist)
-                    if(song.singer == artist){
-                        tempList.push(song)
-                    }
-                })
-                setSongList(tempList)
-            })  
-
+                setSongList(data)
+            })
         }
         setCount(count + 1);
     },[]);
@@ -220,7 +207,7 @@ export default function AlbumPage(props) {
         setIsHovered(0);
       };
 
-    const navigate = useNavigate();
+    
 
     
     function selectColor(str) {
@@ -378,22 +365,6 @@ export default function AlbumPage(props) {
                                 </Typography>
                             }
 
-                            {/* {
-                                playlist &&
-                                <Typography
-                                    variant="h6"
-                                    component="h6"
-                                    align="left"
-                                    sx={{
-                                        fontFamily: "monospace",
-                                        fontWeight: 700,
-                                        color: "#fff",
-                                    }}
-                                    >
-                                    {album.description}
-                                </Typography>
-                            } */}
-
                             <Typography
                                 variant="h6"
                                 component="h6"
@@ -425,9 +396,9 @@ export default function AlbumPage(props) {
                                 </IconButton> 
 
                                 {
-                                    admin &&
+                                    ((playlist || admin) && (!favoritos && !radio)) &&
                                     <Button id='1'
-                                        onClick={() => navigate('/Edit/Album/'+id)}
+                                        onClick={() => navigate(playlist ? `/Edits/Playlist/${id}` : `/Edit/Album/${id}`)}
                                         sx={{backgroundColor:'#1f1f1f', color:'#fff', borderRadius: "20px", fontSize: '0.9rem', fontWeight: 700, mx:1, py:1, px:2,
                                         "&:hover": {
                                             backgroundColor: "#353535",

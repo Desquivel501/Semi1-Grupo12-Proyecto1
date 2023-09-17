@@ -124,35 +124,19 @@ export default function EditArtist(props) {
     });
     const [preview, setPreview] = useState('https://soundstream-semi1-g12.s3.us-east-2.amazonaws.com/no_album.jpg',);
 
-    // const [name, setName] = useState('Test');
-    // const [birthDate, setBirthDate] = useState('2021-10-10');
-    // const [picture, setPicture] = useState('https://soundstream-semi1-g12.s3.us-east-2.amazonaws.com/no_album.jpg');
-
 
     useEffect(() => {
-        // for(var i = 0; i < artist_list.length; i++){
-        //     if(artist_list[i].id == id){
-        //         setArtist(artist_list[i])
-        //         setPreview(artist_list[i].cover)
-        //         break;
-        //     }
-        // }
-
-        let endpoint = '/api/artists';
-        getData({endpoint})
-        .then(data => {
-            data.find((item) => {
-                if(item.id == id){
-                    setArtist(item)
-                    setPreview(item[i].cover)
-                    return;
-                }
+        if(edit){
+            let endpoint = `/api/artists/${id}`;
+            getData({endpoint})
+            .then(data => {
+                setArtist(data)
+                setPreview(data.cover)
             })
-        })
-        .catch(err => console.log(err))
+            .catch(err => console.log(err))
 
-
-        setCount(count + 1);
+            setCount(count + 1);
+        }
     },[]);
 
 
@@ -181,8 +165,7 @@ export default function EditArtist(props) {
         const data = new FormData(event.currentTarget);
         data.append('id', artist.id);
         console.log(data)
-    }
-
+    };
 
     return (
       <>
