@@ -30,7 +30,7 @@ import song_list from '../../assets/song_list';
 import album_list from '../../assets/album_list';
 import artist_list from '../../assets/artist_list';
 
-import { getData, sendJsonData } from '../../api/api';
+import { deleteData, getData, patchData, sendJsonData } from '../../api/api';
 import Swal from 'sweetalert2';
 
 
@@ -142,53 +142,58 @@ export default function EditPlaylist(props) {
         .then(data => {
             setSongList(data)
         })
-
-        // if(edit){
-        //     let current_name = ""
-        //     let artist_id = 0;
-        //     let endpoint = `/api/albums/${id}`
-        //     getData({endpoint})
-        //     .then(data => {
-        //         current_name = data.singer;
-        //         setAlbum(data)
-        //     })
-
-        //     endpoint = `/api/artists`;
-        //     getData({endpoint})
-        //     .then(data => {
-        //         data.find(element => {
-        //             if(element.name === current_name){
-        //                 setArtistId(element.id)
-        //                 return
-        //             }
-        //         })
-        //     })
-            
-        //     endpoint = `/api/albums/${id}/songs`;
-        //     getData({endpoint})
-        //     .then(data => {
-        //         setCurrentSongs(data)
-        //     })
-
-
-        //     setCount(count + 1);
-        // }
         
     },[]);
 
-    // useEffect(() => {
-    //     let endpoint = `/api/artists/${artistId}/songs/notInAlbum`;
-    //     getData({endpoint})
-    //     .then(data => {
-    //         console.log(data)
-    //         setSongList(data)
-    //     })
 
-    // }, [currentSongs]);
+    const handleSubmit  = (event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        data.append('id', album.id);
+        data.append('email', localStorage.getItem('id')); 
 
-    const removeSong = (id) => {
-        
+        if(album.cover === ''){
+            Swal.fire({
+                color: '#fff',
+                background: '#1f1f1f',
+                icon: 'error',
+                title: 'Oops...',
+                text: "No se ha seleccionado una imagen.",
+                showConfirmButton: true,
+            })
+            return
+        }
+
+        if(data.get('cover').size == 0){
+            data.set('cover', '')
+        }
+
+        console.log(data)
+
+        let endpoint = `/api/playlists`;
+        patchData({endpoint, data})
+        .then(data => {
+            console.log(data)
+            if(data.TYPE === 'SUCCESS'){
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Playlist actualizada exitosamente',
+                    showConfirmButton: false,
+                }).then(() => {
+                    navigate(-1)
+                })
+            }else{
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: data.MESSAGE,
+                  })
+                  return;
+            }
+        })
     }
+
+
 
     const addSong = (id_song) => {
         console.log(id_song)
@@ -201,13 +206,20 @@ export default function EditPlaylist(props) {
                     icon: 'success',
                     title: 'Cancion agregada exitosamente',
                     showConfirmButton: false,
-                  })
-                  for(var i = 0; i < songList.length; i++){
-                        if(songList[i].id == id_song){
-                            setCurrentSongs([...currentSongs, songList[i]])
-                            break;
-                        }
-                    }
+                })
+                
+                endpoint = `/api/playlists/${id}/songs`;
+                getData({endpoint})
+                .then(data => {
+                    setCurrentSongs(data)
+                })
+
+                endpoint = `/api/playlists/${id}/missing`;
+                getData({endpoint})
+                .then(data => {
+                    setSongList(data)
+                })
+
             }else{
                 Swal.fire({
                     icon: 'error',
@@ -218,14 +230,96 @@ export default function EditPlaylist(props) {
             }
         })
 
-        endpoint = `/api/playlists/${id}/missing`;
-        getData({endpoint})
-        .then(data => {
-            setSongList(data)
-        })
-
         setCount(count + 1);
 
+    }
+
+
+    const removeSong = (id_song) => {
+        Swal.fire({
+            title: '¿Estas seguro?',
+            text: "No podras revertir esta accion",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#9d0000',
+            cancelButtonColor: '#717171',
+            confirmButtonText: 'Si, eliminar',
+            cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if(result.isConfirmed){
+                    let endpoint = `/api/playlists/removeSong`;
+                    sendJsonData({endpoint, data: {playlist: album.id, song: id_song, email: localStorage.getItem('id')}})
+                    .then(data => {
+                        console.log(data)
+                        if(data.TYPE === 'SUCCESS'){
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Cancion eliminada exitosamente',
+                                showConfirmButton: false,
+                            })
+                            
+                            endpoint = `/api/playlists/${id}/songs`;
+                            getData({endpoint})
+                            .then(data => {
+                                setCurrentSongs(data)
+                            })
+            
+                            endpoint = `/api/playlists/${id}/missing`;
+                            getData({endpoint})
+                            .then(data => {
+                                setSongList(data)
+                            })
+            
+                        }else{
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: data.MESSAGE,
+                            })
+                            return;
+                        }
+                    })
+               } 
+               
+            })
+    }
+
+    const onDelete = () => {
+        Swal.fire({
+            title: '¿Estas seguro?',
+            text: "No podras revertir esta accion",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#9d0000',
+            cancelButtonColor: '#717171',
+            confirmButtonText: 'Si, eliminar',
+            cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if(result.isConfirmed){
+                    let endpoint = `/api/playlists/removePlaylist`;
+                    sendJsonData({endpoint, data: {email: localStorage.getItem('id'), playlist: id}})
+                    .then(data => {
+                        console.log(data)
+                        if(data.TYPE === 'SUCCESS'){
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Playlist eliminada exitosamente',
+                                showConfirmButton: false,
+                            }).then(() => {
+                                navigate(-2)
+                            })
+
+                        }else{
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: data.MESSAGE,
+                            })
+                            return;
+                        }
+                    })
+                }
+            })
     }
 
 
@@ -271,13 +365,7 @@ export default function EditPlaylist(props) {
         return '#' + fill(red.toString(16)) + fill(green.toString(16)) + fill(blue.toString(16))
     }
 
-    const handleSubmit  = (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        data.append('id', album.id);
-        console.log(data)
-    }
-
+    
 
     return (
       <>
@@ -293,7 +381,7 @@ export default function EditPlaylist(props) {
                 overflow: 'auto',
                 p: 3,
                 m:-2,
-                pb:'100px',
+                pb:'90px',
                 backgroundColor: color,
                 borderRadius: 5,
             }}
@@ -431,8 +519,8 @@ export default function EditPlaylist(props) {
                                 margin="normal"
                                 required
                                 fullWidth
-                                id="name"
-                                name="name"
+                                id="description"
+                                name="description"
                                 value={album.description}
                                 onChange={(e) => setAlbum({...album, description: e.target.value})}
                                 sx={{ 
@@ -453,6 +541,7 @@ export default function EditPlaylist(props) {
                             >
                                 <Button 
                                     align='right'
+                                    onClick={() => edit ? onDelete() : navigate(-1)}
                                     sx={{
                                         backgroundColor:'#9d0000', color:'#fff', borderRadius: "20px", fontSize: '0.9rem', fontWeight: 700, px:2, mx:1,
                                         "&:hover": {
@@ -676,7 +765,7 @@ export default function EditPlaylist(props) {
                                 justifyContent="right"
                             >
                                 <IconButton key={"remove"+ i+1}
-                                    onClick={() => removeSong(row.no)}
+                                    onClick={() => removeSong(item.id)}
                                     sx={{
                                         color:'#fff', 
                                         backgroundColor: "#9d0000",
@@ -712,7 +801,7 @@ export default function EditPlaylist(props) {
                         <div className="modal-body" style={{display:'flex', flexDirection:'column', justifyContent:'flex-end', alignItems:'center'}}>
                             <img src={preview}
                                 alt="Avatar" className="img-fluid my-5" style={{ width: '200px' }} />
-                             <input type="file" name="image" sx={{ align:'center' }}
+                             <input type="file" name="cover" sx={{ align:'center' }}
                              onChange= {(e) => {
                                 setPreview(URL.createObjectURL(e.target.files[0]))
                              }} />
