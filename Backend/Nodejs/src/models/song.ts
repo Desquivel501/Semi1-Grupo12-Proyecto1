@@ -31,18 +31,15 @@ export class SongModel {
   }
 
   static getSong(
-    { id }: { id: number },
+    { id, email }: { id: number; email: string },
     callback: (response: any, ok: Boolean) => void,
   ) {
     try {
       pool.query(
-        `SELECT s.id_song as 'id', s.name, s.image as 'cover', s.\`length\` as 'duration', s.file as 'musicSrc', a.name as 'singer'
-          FROM PR1.Songs s
-          JOIN PR1.Artists a ON a.id_artist = s.id_artist
-          WHERE s.id_song=?`,
-        [id],
-        (error, result, fields) => {
-          if (error) throw error;
+        `CALL GetSong(?,?)`,
+        [id, email],
+        (err, result) => {
+          if (err) throw err;
           callback(result[0], true);
         },
       );
@@ -55,13 +52,10 @@ export class SongModel {
   static getSongs(callback: (response: any, ok: Boolean) => void) {
     try {
       pool.query(
-        `SELECT s.id_song as 'id', s.name, s.image as 'cover', s.\`length\` as 'duration', s.file as 'musicSrc', a.name as 'singer'
-        FROM PR1.Songs s
-        JOIN PR1.Artists a ON a.id_artist = s.id_artist ;
-        `,
-        (error, result, fields) => {
-          if (error) throw error;
-          callback(result, true);
+        `CALL GetAllSongs()`,
+        (err, result) => {
+          if (err) throw err;
+          callback(result[0], true);
         },
       );
     } catch (error) {
@@ -76,9 +70,10 @@ export class SongModel {
     callback: Function,
   ) {
     try {
-
       newSong.cover = files.cover === undefined ? "" : files.cover[0].location;
-      newSong.source = files.source === undefined ? "" : files.source[0].location;
+      newSong.source = files.source === undefined
+        ? ""
+        : files.source[0].location;
 
       // Encriptando
       // Guardar en DB

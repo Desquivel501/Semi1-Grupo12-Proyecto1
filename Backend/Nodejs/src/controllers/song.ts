@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import {  Song, SongFiles, UpdateSong } from "../models/types";
+import { Song, SongFiles, UpdateSong } from "../models/types";
 import { SongModel } from "../models/song";
 import { checkKeys } from "../utils/checkKeys";
 
@@ -21,10 +21,10 @@ export class SongController {
   }
 
   static getSong(req: Request, res: Response) {
-    const { id } = req.params;
-    if (!id) return res.status(401).json({ message: "Falta el id" });
+    const { id, email } = req.params;
+    if (!id || !email) return res.status(401).json({ message: "Falta el id" });
     const id_song = parseInt(id);
-    SongModel.getSong({ id: id_song }, (response: any, ok: Boolean) => {
+    SongModel.getSong({ id: id_song, email }, (response: any, ok: Boolean) => {
       res.status(ok ? 200 : 400).json(response);
     });
   }
@@ -38,7 +38,7 @@ export class SongController {
   static editSong(req: Request, res: Response) {
     const song = req.body as UpdateSong;
     const files = req.files as SongFiles;
-    
+
     SongModel.editSong(song, files, (response: string, ok: Boolean) => {
       // Respuesta
       res.status(ok ? 200 : 400).json(response);
@@ -53,5 +53,4 @@ export class SongController {
       res.status(ok ? 200 : 400).json(response);
     });
   }
-
 }
