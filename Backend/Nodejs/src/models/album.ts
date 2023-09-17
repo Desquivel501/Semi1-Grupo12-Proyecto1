@@ -1,5 +1,5 @@
 import { pool } from "./database/connection";
-import { Album } from "./types";
+import { Album, UpdateAlbum } from "./types";
 
 export class AlbumModel {
   static createAlbum(
@@ -108,7 +108,30 @@ export class AlbumModel {
     }
   }
 
-  static editAlbum({ data }: { data: any }) {
+  static editAlbum(
+    newAlbum : UpdateAlbum,
+    file: Express.MulterS3.File,
+    callback: Function,
+  ) {
+    try {
+      newAlbum.cover = file ? file.location : "";
+      // Encriptando
+      // Guardar en DB
+      pool.query("CALL UpdateAlbum(?,?,?,?,?)", [
+        newAlbum.id,
+        newAlbum.name,
+        newAlbum.description,
+        newAlbum.cover,
+        newAlbum.artist,
+      ], (err, result) => {
+        if (err) throw err;
+        if (result[0][0].TYPE == "ERROR") callback(result[0][0], false);
+        else {
+          callback(result[0][0], true);
+        }
+      });
+    } catch (error) {
+    }
   }
 
   static deleteAlbum(

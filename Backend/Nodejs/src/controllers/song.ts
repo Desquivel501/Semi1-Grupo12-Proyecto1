@@ -1,12 +1,16 @@
 import { Request, Response } from "express";
-import { Song, SongFiles } from "../models/types";
+import { FavoriteSong, Song, SongFiles, UpdateSong } from "../models/types";
 import { SongModel } from "../models/song";
+import { checkKeys } from "../utils/checkKeys";
 
 export class SongController {
   static createSong(req: Request, res: Response) {
     const song = req.body as Song;
     const files = req.files as SongFiles;
-    if (!song || !("cover" in files) || !("source" in files)) {
+    if (
+      checkKeys(song, ["cover", "source"]) || !("cover" in files) ||
+      !("source" in files)
+    ) {
       return res.status(400).json({ MESSAGE: "Faltan parámetros" });
     }
     SongModel.createSong(song, files, (response: any, ok: Boolean) => {
@@ -31,7 +35,16 @@ export class SongController {
   }
 
   static editSong(req: Request, res: Response) {
-    res.json({ message: "Song edited" });
+    const song = req.body as UpdateSong;
+    const file = req.file as Express.MulterS3.File;
+    // Validar datos
+    if (!checkKeys(song, ["cover"])) {
+      return res.status(400).json({ message: "Faltan datos" });
+    }
+    SongModel.editSong(song, file, (response: string, ok: Boolean) => {
+      // Respuesta
+      res.status(ok ? 200 : 400).json(response);
+    });
   }
 
   static deleteSong(req: Request, res: Response) {
@@ -39,6 +52,18 @@ export class SongController {
     if (!id) return res.status(401).json({ MESSAGE: "Falta el id" });
     const id_album = parseInt(id);
     SongModel.deleteSong({ id: id_album }, (response, ok) => {
+      res.status(ok ? 200 : 400).json(response);
+    });
+  }
+
+  static addToFavorites(req: Request, res: Response) {
+    const song = req.body as FavoriteSong;
+    // Validar datos
+    if (!checkKeys(song)) {
+      return res.status(400).json({ message: "Faltan datos" });
+    }
+    SongModel.addToFavorite(song, (response: any, ok: Boolean) => {
+      // Respuesta
       res.status(ok ? 200 : 400).json(response);
     });
   }

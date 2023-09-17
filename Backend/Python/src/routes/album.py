@@ -9,3 +9,4 @@ album_blueprint.route("/<int:id>/songs", methods=["GET"])(AlbumController.get_so
 album_blueprint.route("/newAlbum", methods=["POST"])(AlbumController.create_album)
 album_blueprint.route("/addSong", methods=["POST"])(AlbumController.add_song)
 album_blueprint.route("/<int:id>", methods=["DELETE"])(AlbumController.delete_album)
+album_blueprint.route("/", methods=["PATCH"])(AlbumController.edit_album)
