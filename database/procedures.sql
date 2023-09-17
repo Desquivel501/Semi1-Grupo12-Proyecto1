@@ -838,6 +838,8 @@ add_to_history:BEGIN
 
 	INSERT INTO History
 	VALUES (email_in, id_song, NOW());
+	SELECT 'Historial actualizado' AS 'MESSAGE',
+	'SUCCESS' AS 'TYPE';
 END $$
 
 /*********************************************** PROCEDIMIENTOS PARA RECUPERACIÓN DE DATOS ***********************************************/
