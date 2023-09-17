@@ -50,3 +50,6 @@ export type UpdateSong = {
 export type UpdateAlbum = {
   id: number;
 } & Album;
+export type UpdatePlaylist = {
+  id: number;
+} & Playlist;

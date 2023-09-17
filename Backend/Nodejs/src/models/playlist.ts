@@ -1,5 +1,5 @@
 import { pool } from "./database/connection";
-import { Playlist } from "./types";
+import { Playlist, UpdatePlaylist } from "./types";
 
 export class PlaylistModel {
   static createPlaylist(
@@ -110,7 +110,30 @@ export class PlaylistModel {
     }
   }
 
-  static editPlaylist({ data }: { data: any }) {
+  static editPlaylist(
+    newPlaylist: UpdatePlaylist,
+    file: Express.MulterS3.File,
+    callback: Function,
+  ) {
+    try {
+      newPlaylist.cover = file ? file.location : "";
+      console.log(newPlaylist)
+      // Guardar en DB
+      pool.query("CALL UpdatePlaylist(?,?,?,?,?)", [
+        newPlaylist.id,
+        newPlaylist.name,
+        newPlaylist.description,
+        newPlaylist.cover,
+        newPlaylist.email,
+      ], (err, result) => {
+        if (err) throw err;
+        if (result[0][0].TYPE == "ERROR") callback(result[0][0], false);
+        else {
+          callback(result[0][0], true);
+        }
+      });
+    } catch (error) {
+    }
   }
 
   static deletePlaylist(
@@ -133,5 +156,4 @@ export class PlaylistModel {
       callback(error, false);
     }
   }
-
 }

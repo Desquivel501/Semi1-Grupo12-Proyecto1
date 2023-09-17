@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import { Playlist } from "../models/types";
+import { Playlist, UpdatePlaylist } from "../models/types";
 import { PlaylistModel } from "../models/playlist";
+import { checkKeys } from "../utils/checkKeys";
 
 export class PlaylistController {
   static createPlaylist(req: Request, res: Response) {
@@ -67,6 +68,20 @@ export class PlaylistController {
     }
     const id = parseInt(playlist);
     PlaylistModel.deletePlaylist({ id, email }, (response, ok) => {
+      res.status(ok ? 200 : 400).json(response);
+    });
+  }
+
+  static editPlaylist(req: Request, res: Response) {
+    const playlist = req.body as UpdatePlaylist;
+    const file = req.file as Express.MulterS3.File;
+    // Validar datos
+    if (!checkKeys(playlist, ["cover"])) {
+      return res.status(400).json({ message: "Faltan datos" });
+    }
+    // Crear usuario
+    PlaylistModel.editPlaylist(playlist, file, (response: string, ok: boolean) => {
+      // Respuesta
       res.status(ok ? 200 : 400).json(response);
     });
   }

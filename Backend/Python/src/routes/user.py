@@ -14,3 +14,4 @@ user_blueprint.route("/newPlaylist", methods=["POST"])( PlaylistController.creat
 user_blueprint.route("/playlists/addSong", methods=["POST"])(PlaylistController.add_song)
 user_blueprint.route("/playlists/removeSong", methods=["POST"])(PlaylistController.remove_song)
 user_blueprint.route("/removePlaylist", methods=["POST"])(PlaylistController.remove_playlist)
+user_blueprint.route("/playlists", methods=["PATCH"])(PlaylistController.edit_playlist)
