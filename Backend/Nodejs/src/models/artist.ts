@@ -46,15 +46,12 @@ export class ArtistModel {
 
   static getArtists(callback: Function) {
     try {
-      pool.query(
-        `SELECT a.id_artist AS id, a.name,a.image AS cover,a.birthdate  FROM Artists a`,
-        (error, result) => {
-          if (error) throw error;
-          callback(result, true);
-        },
-      );
+      pool.query("CALL GetAllArtists()", [
+      ], (err, result) => {
+        if (err) throw err;
+        callback(result[0], true);
+      });
     } catch (error) {
-      console.log(error);
       callback(error, false);
     }
   }

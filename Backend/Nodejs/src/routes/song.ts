@@ -7,7 +7,7 @@ export const songRouter = Router();
 const uploadMP3 = multer({ storage: s3Storage({ userType: "song" }) });
 
 songRouter.get("/", SongController.getSongs);
-songRouter.get("/:id", SongController.getSong);
+songRouter.get("/:id/:email", SongController.getSong);
 songRouter.post(
   "/newSong",
   uploadMP3.fields([
