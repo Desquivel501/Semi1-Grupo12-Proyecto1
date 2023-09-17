@@ -18,6 +18,7 @@ class PlaylistModel:
                     playlist["email"],
                 ),
             )
+            db.commit()
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
@@ -44,7 +45,7 @@ class PlaylistModel:
                 for playlist in result.fetchall():
                     # Falta el cover
                     print(playlist)
-                    result = dict(zip(("id","cover", "name", "description"), playlist))
+                    result = dict(zip(("id", "cover", "name", "description"), playlist))
                     data.append(result)
             return data, True
         except Exception as e:
@@ -84,6 +85,7 @@ class PlaylistModel:
                 "AddSongPlaylist",
                 (playlist, song, email),
             )
+            db.commit()
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
@@ -105,6 +107,7 @@ class PlaylistModel:
                 "RemoveSongPlaylist",
                 (playlist, song, email),
             )
+            db.commit()
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
@@ -126,6 +129,36 @@ class PlaylistModel:
                 "RemovePlaylist",
                 (id, email),
             )
+            db.commit()
+            for result in cursor.stored_results():
+                result = dict(zip(result.column_names, result.fetchone()))
+                if result["TYPE"] == "ERROR":
+                    return result, False
+                else:
+                    return result, True
+        except Exception as e:
+            return str(e), False
+        finally:
+            cursor.close()
+
+    @staticmethod
+    def edit_playlist(playlist, cover_filename):
+        try:
+            db = getCnx()  # Obtiene una conexión desde la función
+            cursor = db.cursor(buffered=True)
+            print(playlist,cover_filename)
+            # Query
+            cursor.callproc(
+                "UpdatePlaylist",
+                (
+                    playlist["id"],
+                    playlist["name"],
+                    playlist["description"],
+                    cover_filename,
+                    playlist["email"],
+                ),
+            )
+            db.commit()
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":

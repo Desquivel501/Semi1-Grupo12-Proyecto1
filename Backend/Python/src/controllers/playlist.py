@@ -52,3 +52,14 @@ class PlaylistController:
             return {"MESSAGE": "Faltan datos", "TYPE": "ERROR"}, 401
         response = PlaylistModel.remove_playlist(body["playlist"], body["email"])
         return response[0], (200 if response[1] else 400)
+
+    @staticmethod
+    def edit_playlist():
+        body = dict(request.form)
+        file = request.files
+        if len(body) == 0 or len(file) == 0:
+            return {"MESSAGE": "Faltan datos", "TYPE": "ERROR"}, 401
+        cover_location = upload_file("playlist", file["cover"])
+        response = PlaylistModel.edit_playlist(body, cover_location)
+        return response[0], (200 if response[1] else 400)
+

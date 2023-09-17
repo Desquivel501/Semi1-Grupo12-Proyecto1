@@ -19,3 +19,4 @@ userRouter.post("/newPlaylist", upload.single("cover"), PlaylistController.creat
 userRouter.post("/playlists/addSong", PlaylistController.addSong);
 userRouter.post("/playlists/removeSong", PlaylistController.removeSong);
 userRouter.post("/removePlaylist", PlaylistController.removePlaylist);
+userRouter.patch("/playlists", upload.single("cover"), PlaylistController.editPlaylist);
