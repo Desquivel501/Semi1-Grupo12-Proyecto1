@@ -20,13 +20,22 @@ def createApp():
 
 
 app = createApp()
+
+
+@app.route("/")
+def home():
+    return "<h1>Hello world</h1>", 200
+
+
 # Manejo de rutas
 app.register_blueprint(Authblueprint, url_prefix="/api/", name="auth")
 app.register_blueprint(user_blueprint, url_prefix="/api/users/", name="user")
 app.register_blueprint(artist_blueprint, url_prefix="/api/artists/", name="artist")
 app.register_blueprint(song_blueprint, url_prefix="/api/songs/", name="song")
 app.register_blueprint(album_blueprint, url_prefix="/api/albums/", name="album")
-app.register_blueprint(playlist_blueprint, url_prefix="/api/playlists/", name="playlist")
+app.register_blueprint(
+    playlist_blueprint, url_prefix="/api/playlists/", name="playlist"
+)
 app.register_blueprint(report_blueprint, url_prefix="/api/reports/", name="reports")
 
 if __name__ == "__main__":
