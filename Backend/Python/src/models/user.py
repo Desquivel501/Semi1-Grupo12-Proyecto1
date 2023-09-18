@@ -137,3 +137,26 @@ class UserModel:
             return str(e), False
         finally:
             cursor.close()
+
+    @staticmethod
+    def get_history(email):
+        try:
+            db = getCnx()  # Obtiene una conexión desde la función
+            cursor = db.cursor(buffered=True)
+            # Query
+            cursor.callproc(
+                "GetHistory",
+                (email,),
+            )
+            data = []
+            for result in cursor.stored_results():
+                for song in result.fetchall():
+                    result = dict(
+                        zip(("cancion", "artista", "album"), song)
+                    )
+                    data.append(result)
+            return data, True
+        except Exception as e:
+            return str(e), False
+        finally:
+            cursor.close()

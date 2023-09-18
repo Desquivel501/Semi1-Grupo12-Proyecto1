@@ -402,9 +402,6 @@ export default function EditAlbum(props) {
         return '#' + fill(red.toString(16)) + fill(green.toString(16)) + fill(blue.toString(16))
     }
 
-    
-    
-
 
     return (
       <>

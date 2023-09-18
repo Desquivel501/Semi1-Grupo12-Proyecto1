@@ -32,24 +32,28 @@ class SongModel:
             cursor.close()
 
     @staticmethod
-    def get_song(id):
+    def get_song(id, email):
         try:
             db = getCnx()  # Obtiene una conexión desde la función
             cursor = db.cursor(buffered=True)
-            # Ejecuta la consulta SQL para obtener el usuario por su email
-            cursor.execute(
-                f"""SELECT s.name as name,a.name as singer,s.image as cover, s.file as musicSrc FROM Songs s  
-                    JOIN Song_artists sa ON s.id_song=sa.id_song
-                    JOIN Artists a ON sa.id_artist=a.id_artist
-                    WHERE s.id_song={int(id)}"""
+            # Query
+            cursor.callproc(
+                "GetSong",
+                (
+                    id,
+                    email,
+                ),
             )
-            result = cursor.fetchone()
-            if result is not None and len(result) > 0:
-                # Convierte el resultado en un diccionario y lo devuelve
-                response = dict(zip(cursor.column_names, result))
-                return response, True
-            else:
-                return {"MESSAGE": "Canción no encontrada", "TYPE": "ERROR"}, False
+            data = []
+            for result in cursor.stored_results():
+                for song in result.fetchall():
+                    result = dict(
+                        zip(
+                            ("id", "name", "singer", "cover", "musicSrc", "inFav"), song
+                        )
+                    )
+                    data.append(result)
+            return data, True
         except Exception as e:
             return str(e), False
         finally:
@@ -60,19 +64,20 @@ class SongModel:
         try:
             db = getCnx()  # Obtiene una conexión desde la función
             cursor = db.cursor(buffered=True)
-            # Ejecuta la consulta SQL para obtener el usuario por su email
-            cursor.execute(
-                """SELECT s.name as name,a.name as singer,s.image as cover, s.file as musicSrc FROM Songs s  
-                    JOIN Song_artists sa ON s.id_song=sa.id_song
-                    JOIN Artists a ON sa.id_artist=a.id_artist"""
+            # Query
+            cursor.callproc(
+                "GetAllSongs",
             )
-            result = cursor.fetchall()
-            # Convierte el resultado en un diccionario y lo devuelve
-            response = []
-            for obj in result:
-                song = dict(zip(cursor.column_names, obj))
-                response.append(song)
-            return response, True
+            data = []
+            for result in cursor.stored_results():
+                for song in result.fetchall():
+                    result = dict(
+                        zip(
+                            ("id", "name", "cover", "musicSrc", "artist", "album"), song
+                        )
+                    )
+                    data.append(result)
+            return data, True
         except Exception as e:
             return str(e), False
         finally:

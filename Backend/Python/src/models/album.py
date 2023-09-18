@@ -78,24 +78,20 @@ class AlbumModel:
             cursor.close()
 
     @staticmethod
-    def get_songs(id):
+    def get_songs():
         try:
             db = getCnx()  # Obtiene una conexión desde la función
             cursor = db.cursor(buffered=True)
-            # Ejecuta la consulta SQL para obtener el usuario por su email
-            cursor.execute(
-                f"""SELECT s.name, ar.name as singer, s.image AS cover, s.file AS musicSrc FROM Albums_details ad
-        JOIN Songs s ON ad.id_song=s.id_song
-        JOIN Artists ar ON s.id_artist=ar.id_artist
-        WHERE ad.id_album={int(id)}""",
+            # Query
+            cursor.callproc(
+                "GetAlbumSongs",
             )
-            result = cursor.fetchall()
-            # Convierte el resultado en un diccionario y lo devuelve
-            response = []
-            for obj in result:
-                album = dict(zip(cursor.column_names, obj))
-                response.append(album)
-            return response, True
+            data = []
+            for result in cursor.stored_results():
+                for song in result.fetchall():
+                    result = dict(zip(("id", "name", "cover", "musicSrc"), song))
+                    data.append(result)
+            return data, True
         except Exception as e:
             return str(e), False
         finally:
@@ -110,6 +106,28 @@ class AlbumModel:
             cursor.callproc(
                 "AddSongAlbum",
                 (int(id_album), int(id_song)),
+            )
+            db.commit()
+            for result in cursor.stored_results():
+                result = dict(zip(result.column_names, result.fetchone()))
+                if result["TYPE"] == "ERROR":
+                    return result, False
+                else:
+                    return result, True
+        except Exception as e:
+            return str(e), False
+        finally:
+            cursor.close()
+
+    @staticmethod
+    def remove_song(id_album, id_song):
+        try:
+            db = getCnx()  # Obtiene una conexión desde la función
+            cursor = db.cursor(buffered=True)
+            # Query
+            cursor.callproc(
+                "RemoveSongAlbum",
+                (int(id_song), int(id_album)),
             )
             db.commit()
             for result in cursor.stored_results():

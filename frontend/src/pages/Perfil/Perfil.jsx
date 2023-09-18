@@ -316,11 +316,6 @@ export default function Perfil() {
 
                                             </div>
                                         </div>
-                                        {/* <hr className="mt-0 mb-4" />
-                                        <div className="d-flex justify-content-start">
-                                            <a className="button" data-mdb-toggle="modal" data-mdb-target="#replacePictureModal">Cambiar Foto</a>
-                                            <a className="button">Actualizar</a>
-                                        </div> */}
                                     </div>
                                 </div>
                             </div>

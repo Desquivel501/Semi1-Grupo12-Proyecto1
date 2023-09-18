@@ -241,7 +241,7 @@ export default function CustomDrawer() {
 
                                     <ListItem key="historico">
                                         <ListItemButton   
-                                        // component={Link} to="/Profile"   
+                                         onClick={() => navigate("/History")}
                                         >
                                             <ListItemIcon>
                                                 <EqualizerIcon sx={{ color: '#fff', fontSize: '2rem'}}/>
