@@ -54,3 +54,11 @@ class UserController:
         # Guardar en db
         response = UserModel.get_favorites(email)
         return response[0], (200 if response[1] else 400)
+
+    @staticmethod
+    def get_history(email):
+        if email == "":
+            return {"MESSAGE": "Falta el correo"}, 400
+        # Guardar en db
+        response = UserModel.get_history(email)
+        return response[0], (200 if response[1] else 400)

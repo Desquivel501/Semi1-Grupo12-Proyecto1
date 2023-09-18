@@ -49,3 +49,9 @@ class ArtistController:
         # Guardar en db
         response = ArtistModel.edit_artist(artist, artist["avatar"])
         return response[0], (200 if response[1] else 400)
+
+    @staticmethod
+    def song_not_album(id):
+        response = ArtistModel.song_not_album(id)
+        return response[0], (200 if response[1] else 400)
+
