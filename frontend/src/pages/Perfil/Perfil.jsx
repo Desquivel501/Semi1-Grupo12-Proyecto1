@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import { ColorExtractor } from 'react-color-extractor'
 import './Perfil.css';
-import { Button, TextField, CssBaseline, Typography } from "@mui/material";
+import { Button, TextField, CssBaseline, Typography, Box } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { alpha, styled } from '@mui/material/styles';
 
 import Swal from 'sweetalert2'
-import { useContext } from "react";
 import { sesionContext } from "../../context/SessionContext";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { useNavigate } from "react-router-dom";
 
-import { getDataAuth } from '../../api/api';
+import { getDataAuth, patchData } from '../../api/api';
 
 
 const CssTextField = styled(TextField)({
@@ -40,24 +40,26 @@ const CssTextField = styled(TextField)({
 
 export default function Perfil() {
 
-    const miCampo = React.createRef();
-    const fr = new FileReader();
+    const navigate = useNavigate();
+    const { logout, login } = useContext(sesionContext);
 
     const [state, setState] = useState({
-        nombre: '', //aca se guarda el nuevo nombre
-        nombretemp: 'Kevin', // aca se guarda el nombre que se recibe desde la base de datos 
-        apellido: '', // aca se guarda el nuevo apellido 
-        apellidotemp: 'Garcia', // aca se guarda el apellido que se recibe desde la base de datos 
-        tipo_usuario: 'Administrador', // aca se guarda el tipo que se recibe desde la base de datos 
-        correo: 'demo@correo.com', // aca se guarda el correo que se recibe desde la base de datos 
-        foto: "https://static.wikia.nocookie.net/pokemon-pasta/images/4/4f/Likeaboss.jpg/revision/latest?cb=20130402202456", // aca se guarda la foto que se recibe desde la base de datos 
+        nombre: '', 
+        nombretemp: '',
+        apellido: '',
+        apellidotemp: '', 
+        tipo_usuario: '', 
+        correo: '', 
+        foto: 'https://ih0.redbubble.net/image.1046392278.3346/raf,360x360,075,t,fafafa:ca443f4786.jpg',
         contrasena: '',
         nueva_contrasena: '',
         verificar_contrasena: '',
-        preview: "https://t4.ftcdn.net/jpg/05/63/85/35/360_F_563853540_ULfiVXqhEzaNgPrIvr0QQV8ibBnhDUP6.jpg",
-        color: ''
+        preview: 'https://ih0.redbubble.net/image.1046392278.3346/raf,360x360,075,t,fafafa:ca443f4786.jpg',
+        color: '#7f7f7f'
     })
     const [count, setCount] = useState(0);
+
+
 
     useEffect(() => {
         const endpoint = `/api/users/${window.localStorage.getItem("id")}`;
@@ -79,62 +81,59 @@ export default function Perfil() {
         setCount(count + 1);
     }, []);
 
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+
+        const mensaje = await login({
+            email: window.localStorage.getItem("id"),
+            password: state.verificar_contrasena,
+        });
+
+        if(mensaje.TYPE == "SUCCESS"){
+            
+            data.append('email', window.localStorage.getItem("id"))
+            data.append('newEmail', window.localStorage.getItem("id"))
+            data.append('password', state.verificar_contrasena)
+            data.append('birthDate', '2021-10-10')
+
+            if(data.get('avatar').size == 0){
+                data.set('avatar', '')
+            }
+
+            let endpoint = `/api/users/`;
+            patchData({endpoint, data})
+            .then(data => {
+                console.log(data)
+                if(data.TYPE == "SUCCESS"){
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Datos actualizados!',
+                        text: 'Se actualizaron los datos correctamente',
+                    }).then((result) => {
+                        if(result.isConfirmed){
+                            window.location.reload(false);
+                        }
+                    })
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: data.MESSAGE,
+                    })
+                }
+            })
 
 
-    const inputChangedHandler1 = (e) => {
-        //cuando ingresa el nombre en el input
-        setState({ ...state, nombre: e.target.value })
-
-    }
-
-    const inputChangedHandler2 = (e) => {
-        //cuando ingresa el apellido en el input
-        setState({...state, apellido: e.target.value })
-
-    }
-
-    const inputChangedHandler3 = (e) => {
-        //cuando ingresa la contraseña actual, aca se debe encriptar contraseña para validar en el backend 
-        setState({...state, contrasena: e.target.value})
-    }
-
-    const inputChangedHandlernuevaContrasena = (e) => {
-        //cuando ingresa la nueva constraseña, aca se debe encriptar contrasena en el backend debe hacer la validadcion
-        setState({...state, nueva_contrasena: e.target.value})
-    }
-
-    const inputChangedHandlerverificarContrasena = (e) => {
-        //cuando ingresa otra vez la nueva contraseña, aca se debe encriptar contrasena en el backend debe hacer validacion
-        setState({...state, verificar_contrasena: e.target.value})
-    }
-
-    const onChange =(e) => {
-        // nueva foto 
-        setState({...state, preview : URL.createObjectURL(e.target.files[0])})  
-    }
-
-    const guardarfoto = (e) =>{
-        setState({...state, foto : state.preview})
-        // setState({preview : ''})
-    }
-
-    const actualizar_datos = (e) =>{
-        //campos que se enviara a la base de datos para actualizar informacion 
-        // state.nombre, state.apellidos, state.foto
-        if(state.contrasena === state.verificar_contrasena){
-            console.log("contraseñas iguales")
-            console.log({
-                nombre: state.nombretemp,
-                apellido: state.apellidotemp,
-                foto: state.foto,
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: "Contraseña incorrecta",
             })
         }
     }
 
-    const actuazlizar_contraseña = (e) => {
-        // campos que se enviara a la base de datos para actualizar contraseña, alla debe hacer las validaciones con las contraseñans encriptadas 
-        // state.contrasena, state.verificar_contrasena, state.verificar_contrasena
-    }
 
     const close_contrasena  = (e) => {
         setState({...state, contrasena: '', nueva_contrasena: '', verificar_contrasena: ''})
@@ -176,6 +175,14 @@ export default function Perfil() {
 
         <>
         {/* <h1>Mi Perfil</h1> */}
+
+        <Box 
+            component="form"
+            sx={{ width: '100%' }}
+            onSubmit={handleSubmit}
+        >
+
+                                
         <section className="vh-170">
             <div className="container pb-3 h-80" style={{maxWidth:'100%'}}>
                 <div className="row d-flex justify-content-center align-items-center h-50">
@@ -192,6 +199,7 @@ export default function Perfil() {
                                                 margin: '4em', 
                                                 borderRadius: '50%',
                                         }} 
+                                        onLoad={() => setCount(count + 1)}
                                     />
 
                                     <ColorExtractor
@@ -208,116 +216,127 @@ export default function Perfil() {
                                     <h4>{state.tipo_usuario}</h4>
 
                                 </div>
-                                <div className="col-md-10">
-                                    <div className="row d-flex p-4">
-                                        <div className="row pt-1 pb-1">
-                                            <h3>Actualizar mis datos</h3>
-                                        </div>
-                                        <hr className="mt-0 mb-4" />
-                                        <div className="row pt-1" style={{justifyContent:'center'}}>
-                                            <div className="col-5 mb-3">
-                                                <h5>Nombre</h5>
 
-                                                {/* <input type="text" className="form-control" value={state.nombre} onChange={inputChangedHandler1} name="Nombre" placeholder="Nombre" /> */}
 
-                                                <CssTextField
-                                                    margin="normal"
-                                                    fullWidth
-                                                    id="name"
-                                                    name="name"
-                                                    value={state.nombretemp}
-                                                    onChange={(e) => setState({...state, nombretemp: e.target.value})}
-                                                    sx={{ input: { color: '#fff' }, borderColor: '#fff' }}
-                                                />
+                                
 
-                                            </div>
-                                            <div className="col-5 mb-3">
-                                                <h5>Apellido</h5>
-                                                {/* <input type="text" className="form-control" value={state.apellido} onChange={inputChangedHandler2} name="Apellido" placeholder="Apellido" /> */}
-                                                <CssTextField
-                                                    margin="normal"
-                                                    fullWidth
-                                                    id="lastname"
-                                                    name="lastname"
-                                                    value={state.apellidotemp}
-                                                    onChange={(e) => setState({...state, apellidotemp : e.target.value})}
-                                                    sx={{ input: { color: '#fff' }, borderColor: '#fff' }}
-                                                />
-                                            </div>
-                                        </div>
-                                        <hr className="mt-0 mb-4" />
-                                        <div className="row pt-1" style={{justifyContent:'center'}}>
-                                            <div className="col-7 mb-3">
-                                                <h5>Correo</h5>
-                                                <p className="text-muted">{state.correo}</p>
-                                            </div>
-{/* 
-                                            <hr className="mt-0 mb-4" />
-                                            <div className="col-7 mb-3">
-                                                <h5>Actualizar Contraseña</h5>
-                                                <Button className="button my-3" data-mdb-toggle="modal" data-mdb-target="#exampleModal2" 
-                                                    sx={{
-                                                        background:state.color,
-                                                        color: '#fff',
-                                                        "&:hover": {
-                                                            background: changeColor(state.color, -30),
-                                                        }
-                                                    }}
-                                                >
-                                                    Actualizar
-                                                </Button>
-                                            </div> */}
 
-                                            <hr className="mt-0 mb-4" />
-                                            <div className="col-7 mb-3">
-                                                <h5>Actualizar Foto de Perfil</h5>
-                                                <Button className="button my-3" data-mdb-toggle="modal" data-mdb-target="#replacePictureModal"
-                                                    sx={{
-                                                        background:state.color,
-                                                        color: '#fff',
-                                                        "&:hover": {
-                                                            background: changeColor(state.color, -30),
-                                                        }
-                                                    }}
-                                                >
-                                                    Cambiar
-                                                </Button>
+                                    <div className="col-md-10">
+                                        <div className="row d-flex p-4">
+                                            <div className="row pt-1 pb-1">
+                                                <h3>Actualizar mis datos</h3>
                                             </div>
                                             <hr className="mt-0 mb-4" />
-                                            <div className="col-7 mb-3">
-                                                <Button 
-                                                
-                                                data-mdb-toggle="modal" data-mdb-target="#confirmModal"
-                                                    className="button my-3"
-                                                    sx={{
-                                                        mx:1,
-                                                        background:state.color,
-                                                        color: '#fff',
-                                                        "&:hover": {
-                                                            background: changeColor(state.color, -30),
-                                                        }
-                                                    }}
-                                                >
-                                                    Actualizar Datos
-                                                </Button>
+                                            <div className="row pt-1" style={{justifyContent:'center'}}>
+                                                <div className="col-5 mb-3">
+                                                    <h5>Nombre</h5>
 
-                                                <Button className="button my-3"
-                                                    sx={{
-                                                        mx:1,
-                                                        background:'#9d0000',
-                                                        color: '#fff',
-                                                        "&:hover": {
-                                                            background: "#b03232",
-                                                        }
-                                                    }}
-                                                >
-                                                    Cerrar Sesión
-                                                </Button>
+                                                    {/* <input type="text" className="form-control" value={state.nombre} onChange={inputChangedHandler1} name="Nombre" placeholder="Nombre" /> */}
 
+                                                    <CssTextField
+                                                        margin="normal"
+                                                        fullWidth
+                                                        id="name"
+                                                        name="name"
+                                                        value={state.nombretemp}
+                                                        onChange={(e) => setState({...state, nombretemp: e.target.value})}
+                                                        sx={{ input: { color: '#fff' }, borderColor: '#fff' }}
+                                                    />
+
+                                                </div>
+                                                <div className="col-5 mb-3">
+                                                    <h5>Apellido</h5>
+                                                    {/* <input type="text" className="form-control" value={state.apellido} onChange={inputChangedHandler2} name="Apellido" placeholder="Apellido" /> */}
+                                                    <CssTextField
+                                                        margin="normal"
+                                                        fullWidth
+                                                        id="lastname"
+                                                        name="lastname"
+                                                        value={state.apellidotemp}
+                                                        onChange={(e) => setState({...state, apellidotemp : e.target.value})}
+                                                        sx={{ input: { color: '#fff' }, borderColor: '#fff' }}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <hr className="mt-0 mb-4" />
+                                            <div className="row pt-1" style={{justifyContent:'center'}}>
+                                                <div className="col-7 mb-3">
+                                                    <h5>Correo</h5>
+                                                    <p className="text-muted">{state.correo}</p>
+                                                </div>
+
+                                                <hr className="mt-0 mb-4" />
+                                                <div className="col-7 mb-3">
+                                                    <h5>Actualizar Foto de Perfil</h5>
+                                                    <Button className="button my-3" data-mdb-toggle="modal" data-mdb-target="#replacePictureModal"
+                                                        sx={{
+                                                            background:state.color,
+                                                            color: '#fff',
+                                                            "&:hover": {
+                                                                background: changeColor(state.color, -30),
+                                                            }
+                                                        }}
+                                                    >
+                                                        Cambiar
+                                                    </Button>
+                                                </div>
+                                                <hr className="mt-0 mb-4" />
+                                                <div className="col-7 mb-3">
+                                                    <Button 
+                                                    
+                                                    data-mdb-toggle="modal" data-mdb-target="#confirmModal"
+                                                        className="button my-3"
+                                                        sx={{
+                                                            mx:1,
+                                                            background:state.color,
+                                                            color: '#fff',
+                                                            "&:hover": {
+                                                                background: changeColor(state.color, -30),
+                                                            }
+                                                        }}
+                                                    >
+                                                        Actualizar Datos
+                                                    </Button>
+
+                                                    <Button className="button my-3"
+                                                        onClick={() => {
+                                                                Swal.fire({
+                                                                    title: '¿Estas seguro?',
+                                                                    text: "Se cerrará la sesión actual",
+                                                                    icon: 'warning',
+                                                                    showCancelButton: true,
+                                                                    confirmButtonColor: '#9d0000',
+                                                                    cancelButtonColor: '#717171',
+                                                                    confirmButtonText: 'Cerrar Sesión',
+                                                                    cancelButtonText: 'Cancelar'
+                                                                }).then((result) => {
+                                                                    if (result.isConfirmed) {
+                                                                        logout();
+                                                                        navigate("/");
+                                                                    }
+                                                                })
+                                                            }
+                                                        }
+                                                        sx={{
+                                                            mx:1,
+                                                            background:'#9d0000',
+                                                            color: '#fff',
+                                                            "&:hover": {
+                                                                background: "#b03232",
+                                                            }
+                                                        }}
+                                                    >
+                                                        Cerrar Sesión
+                                                    </Button>
+
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+
+         
+
+
                             </div>
                         </div>
                     </div>
@@ -338,7 +357,7 @@ export default function Perfil() {
                         <div className="modal-body" style={{display:'flex', flexDirection:'column', justifyContent:'flex-end', alignItems:'center'}}>
                             <img src={state.preview}
                                 alt="Avatar" className="img-fluid my-5" style={{ width: '200px' }} />
-                             <input type="file" name="cover" accept='.png, .jpg, .jpeg'
+                             <input type="file" name="avatar" accept='.png, .jpg, .jpeg'
                                 onChange= {(e) => {
                                     setState({...state, preview : URL.createObjectURL(e.target.files[0])})
                                 }} 
@@ -379,7 +398,7 @@ export default function Perfil() {
                         </div> 
                     </div>
                 </div>
-            </div>
+        </div>
 
 
         <div className="modal fade" id="confirmModal" tabIndex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
@@ -397,23 +416,19 @@ export default function Perfil() {
                             Confirme su contraseña para guardar los cambios
                         </Typography>
 
-                        <form>
-
-                            <CssTextField
-                                margin="normal"
-                                fullWidth
-                                autoComplete='off'
-                                required
-                                id="actual"
-                                name="actual"
-                                type='password'
-                                value={state.verificar_contrasena}
-                                onChange={(e) => setState({...state, verificar_contrasena: e.target.value})}
-                                sx={{ input: { color: '#fff' }, borderColor: '#fff' }}
-                            />
-
-                        </form>
-
+                        <CssTextField
+                            margin="normal"
+                            fullWidth
+                            autoComplete='off'
+                            required
+                            id="actual"
+                            name="actual"
+                            type='password'
+                            value={state.verificar_contrasena}
+                            onChange={(e) => setState({...state, verificar_contrasena: e.target.value})}
+                            sx={{ input: { color: '#fff' }, borderColor: '#fff' }}
+                        />
+   
                     </div>
 
                     <div className="modal-footer">
@@ -431,7 +446,8 @@ export default function Perfil() {
                             Cancelar
                         </Button>
                         
-                        <Button className="button my-3" onClick={actualizar_datos} data-mdb-dismiss="modal"
+                        <Button className="button my-3" data-mdb-dismiss="modal"
+                            type='submit'
                             sx={{
                                 background:state.color,
                                 color: '#fff',
@@ -447,7 +463,11 @@ export default function Perfil() {
                     </div>
                 </div>
             </div>
-        </div></>
+        </div>
+
+        </Box>
+        
+        </>
 
 
 
