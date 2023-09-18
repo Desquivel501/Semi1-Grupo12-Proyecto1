@@ -8,6 +8,7 @@ import AlbumPage from './pages/AlbumPage/AlbumPage';
 import Login from './pages/Login/Login';
 import Signup from './pages/Signup/Signup';
 import Perfil from './pages/Perfil/Perfil';
+import Historial from './pages/Historial/Historial';
 import SearchPage from './pages/SearchPage/SearchPage';
 import SongPage from './pages/SongPage/SongPage';
 import EditSong from './pages/SongPage/EditSong';
@@ -27,7 +28,8 @@ function App() {
     <SesionProvider>
     <BrowserRouter>
 
-      <CustomDrawer />
+    
+       <CustomDrawer />
       <Player />
 
       <Routes>
@@ -45,6 +47,7 @@ function App() {
             <Route path={"/Album/:id"} element={<AlbumPage />} />
             <Route path={"/Albums"} element={<GetAll type="album" title={true} crud={false}/>} />
             <Route path={"/Profile"} element={<Perfil />} />
+            <Route path={"/History"} element={<Historial />} />
 
             <Route path={"/Playlist/:id"} element={<AlbumPage playlist={true}/>} />
             <Route path={"/Edits/Playlist/:id"} element={<EditPlaylist />} />
@@ -75,7 +78,7 @@ function App() {
 
           <Route path={"*"} element={<h1>Not Found</h1>} />
           
-      </Routes> 
+  </Routes> 
 
     </BrowserRouter>
     </SesionProvider>

@@ -43,6 +43,17 @@ class AlbumController:
         return response[0], (200 if response[1] else 400)
 
     @staticmethod
+    def remove_song():
+        body = request.json
+        if not body or "id_song" not in body or "id_album" not in body:
+            return {"MESSAGE": "Faltan datos", "TYPE": "ERROR"}, 401
+        id_album = body["id_album"]
+        id_song = body["id_song"]
+        response = AlbumModel.remove_song(id_album, id_song)
+        return response[0], (200 if response[1] else 400)
+
+
+    @staticmethod
     def delete_album(id):
         response = AlbumModel.delete_album(id)
         return response[0], (200 if response[1] else 400)

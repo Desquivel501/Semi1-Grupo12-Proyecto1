@@ -21,8 +21,8 @@ class SongController:
         return response[0], (200 if response[1] else 400)
 
     @staticmethod
-    def get_song(id):
-        response = SongModel.get_song(id)
+    def get_song(id, email):
+        response = SongModel.get_song(id, email)
         return response[0], (200 if response[1] else 400)
 
     @staticmethod
