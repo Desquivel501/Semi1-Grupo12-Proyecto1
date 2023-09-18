@@ -13,7 +13,6 @@ export function registrar(data) {
 }
 
 export function inicioSesion(data) {
-  console.log(data);
   return fetch(`${API}/api/login`, {
     method: "POST",
     body: JSON.stringify(data),

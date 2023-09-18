@@ -46,10 +46,15 @@ export default function Login() {
       password: data.get("password"),
     });
 
-    console.log(mensaje);
-
     if (mensaje.TYPE == "SUCCESS") {
-      navigate("/");
+      Swal.fire({
+        icon: 'success',
+        title: '¡Bienvenido!'
+      }).then((result) => {
+        if(result.isConfirmed){
+          navigate("/");
+        }
+      })
     } else {
       Swal.fire({
         icon: 'error',
