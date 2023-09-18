@@ -117,6 +117,8 @@ CALL GetAllArtists()
 
 CALL GetUserPlaylists('a@b.com')
 
+CALL GetHistory('admin@gmail.com') 
+
 /*Actualizando usuario*/
 CALL UpdateUser('testUpdate@mail.com', 'testUpdate@mail.com', 'firstname1', 'lastname1', 'edsfaeaf', 'password12', '2001-08-28') 
 CALL UpdateUser(:email_in, :new_email_in, :firstname_in, :lastname_in, :photo_in, :password_in, :birthdate_in) 

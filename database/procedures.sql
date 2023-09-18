@@ -855,10 +855,14 @@ top_canciones:BEGIN
 		LEAVE top_canciones;
 	END IF;
 
-	SELECT s.id_song, s.name, s.image, COUNT(*) AS times_played 
+	SELECT s.id_song, s.name, s.image, 
+	a.name AS artist,
+	COUNT(*) AS times_played 
 	FROM History h 
 	JOIN Songs s 
 	ON h.id_song =s.id_song 
+	JOIN Artists a 
+	ON s.id_artist = a.id_artist 
 	AND h.email = email_in
 	GROUP BY s.id_song
 	ORDER BY times_played DESC 
@@ -901,16 +905,47 @@ top_albumes:BEGIN
 		LEAVE top_albumes;
 	END IF;	
 
-	SELECT a.id_album, a.name, a.description, a.image, COUNT(*) AS times_played
+	SELECT a.id_album, a.name, a.description, 
+	a.image, 
+	a2.name AS artist,
+	COUNT(*) AS times_played
 	FROM History h 
 	JOIN Songs s 
 	ON h.id_song  = s.id_song 
 	AND h.email = email_in
 	JOIN Albums a 
 	ON s.id_album = a.id_album
+	JOIN Artists a2 
+	ON a.id_artist = a2.id_artist 
 	GROUP BY a.id_album 
 	ORDER BY times_played DESC 
 	LIMIT 5;
+END $$
+
+-- Procedimiento para obtener el historial de canciones de un usuario
+DROP PROCEDURE GetHistory $$
+CREATE PROCEDURE GetHistory (
+	IN email_in VARCHAR(255)
+)
+get_history:BEGIN
+	IF NOT email_exists(email_in) THEN
+		SELECT 'El correo que ha ingresado no existe en la base de datos' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE get_history;
+	END IF;	
+
+	SELECT s.name AS cancion, 
+	a.name  AS artista,
+	a2.name AS album,
+	CONVERT_TZ(h.date, 'SYSTEM', 'America/Guatemala') AS date
+	FROM  History h
+	JOIN Songs s 
+	ON h.id_song = s.id_song
+	JOIN Artists a 
+	ON s.id_artist = a.id_artist
+	LEFT JOIN Albums a2 
+	ON a2.id_album = s.id_album 
+	WHERE h.email = email_in;
 END $$
 
 -- Procedimiento para recuperar datos de una canción especifica
