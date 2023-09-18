@@ -121,7 +121,12 @@ export default function AlbumPage(props) {
                 description: 'Las canciones que te gustan.',
                 singer: ''
             })
-            setSongList(song_list)
+            // setSongList(song_list)
+            let endpoint = `/api/users/${window.localStorage.getItem('id')}/favorites/`;
+            getData({endpoint})
+            .then(data => {
+                setSongList(data)
+            })
 
         } else if(playlist){
 
@@ -253,6 +258,7 @@ export default function AlbumPage(props) {
                 overflow: 'auto',
                 p: 3,
                 m:-2,
+                pb:'90px',
                 backgroundColor: color,
                 borderRadius: 5,
             }}

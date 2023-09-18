@@ -4,7 +4,7 @@ import './styles.css'
 import song_list from "../../assets/song_list";
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
-
+import { sendJsonData } from "../../api/api";
 
 const options = {
   quietUpdate: true,
@@ -26,9 +26,11 @@ export default function Player() {
   const [state, setState] = useState({
     first: true,
     lastUpdate: 0,
-    list: song_list,
+    list: [],
     playerOptions: {...options, autoPlay: false, audioLists: []}
   });
+
+  const [lastSend, setLastSend] = useState(-1);
 
   useEffect(() => {
 
@@ -38,7 +40,7 @@ export default function Player() {
         console.log("first")  
         const date = Date.now();
         const queue = {
-          song_list: song_list,
+          song_list: [],
           lastUpdate: date
         }
         window.sessionStorage.setItem("queue", JSON.stringify(queue));
@@ -46,7 +48,7 @@ export default function Player() {
         setState ({
           first: false,
           lastUpdate: date,
-          playerOptions: {...options, autoPlay: false, audioLists: song_list}
+          playerOptions: {...options, autoPlay: false, audioLists: []}
         })
 
       } else {
@@ -80,6 +82,18 @@ export default function Player() {
 
   function onAudioPlay(audioInfo) {
     console.log('audio playing', audioInfo)
+
+    if(lastSend == -1 || lastSend != audioInfo.id){
+      let endpoint = "/api/reports/addHistory";
+      sendJsonData({endpoint, data: {song: audioInfo.musicSrc, email: window.localStorage.getItem("id")}})
+      .then((response) => {
+        console.log(response);
+        setLastSend(audioInfo.id);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    }
   }
 
 
@@ -92,7 +106,7 @@ export default function Player() {
           {...state.playerOptions}
           // showMediaSession
           quietUpdate={false}
-          locale={{ playListsText: "Test" }}
+          locale={{ playListsText: "Cola de reproducción" }}
           onAudioPlay={onAudioPlay}
         />
       }
