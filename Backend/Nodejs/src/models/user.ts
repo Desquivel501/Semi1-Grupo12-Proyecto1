@@ -54,7 +54,7 @@ export class UserModel {
     callback: Function,
   ) {
     try {
-      newUser.avatar = file?file.location:"";
+      newUser.avatar = file ? file.location : "";
       // Encriptando
       const password = encrypt(newUser.password);
       // Guardar en DB
@@ -101,6 +101,19 @@ export class UserModel {
   static getFavorites({ email }: { email: string }, callback: Function) {
     try {
       pool.query("CALL GetSongsInFavorites(?)", [
+        email,
+      ], (err, result) => {
+        if (err) throw err;
+        callback(result[0], true);
+      });
+    } catch (error) {
+      callback(error, false);
+    }
+  }
+
+  static getHistory({ email }: { email: string }, callback: Function) {
+    try {
+      pool.query("CALL GetHistory(?)", [
         email,
       ], (err, result) => {
         if (err) throw err;

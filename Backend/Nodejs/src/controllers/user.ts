@@ -60,4 +60,13 @@ export class UserController {
       res.status(ok ? 200 : 400).json(response);
     });
   }
+
+  static getHistory(req: Request, res: Response) {
+    const { email } = req.params;
+    // Validar datos
+    UserModel.getHistory({ email }, (response: any, ok: Boolean) => {
+      // Respuesta
+      res.status(ok ? 200 : 400).json(response);
+    });
+  }
 }
