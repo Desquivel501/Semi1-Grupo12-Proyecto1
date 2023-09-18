@@ -25,7 +25,7 @@ import song_list from '../../assets/song_list';
 import album_list from '../../assets/album_list';
 import artist_list from '../../assets/artist_list';
 
-import { getData } from '../../api/api';
+import { getData, sendJsonData } from '../../api/api';
 
 const theme = createTheme({
     typography: {
@@ -85,22 +85,26 @@ export default function SongPage(props) {
     
       const [count, setCount] = useState(0);
 
+    
+    const sendFavorite = () => {
+        const endpoint = '/api/users/addFavorite';
+        sendJsonData({endpoint, data: {song: song.id, email: window.localStorage.getItem('id')}})
+        .then(data => {
+            console.log(data)
+            setFavorite(!favorite)
+        })
+    };
+
 
     useEffect(() => {
-        console.log(id)
-        let endpoint = '/api/songs';
+        let endpoint = `/api/songs/${id}/${window.localStorage.getItem('id')}`;
         getData({endpoint})
         .then(data => {
-            for(var i = 0; i < data.length; i++){
-                console.log(data[i].id + " " + id)
-                if(data[i].id == id){
-                    console.log(data[i])
-                    setSong(data[i])
-                    break;
-                }
-            }
+            console.log(data[0])
+            setSong(data[0])
+            setFavorite(data[0].inFav)
         })
-        .catch(err => console.log(err))
+
         setCount(count + 1);
      
     },[]);
@@ -304,7 +308,7 @@ export default function SongPage(props) {
                                 </IconButton> 
 
                                 <IconButton aria-label="favorite" 
-                                    onClick={() => setFavorite(!favorite)}
+                                    onClick={() => sendFavorite()}
                                     sx={{
                                         mr:1,
                                         color:'#fff', 
