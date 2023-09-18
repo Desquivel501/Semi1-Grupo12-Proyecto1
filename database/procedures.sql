@@ -1056,7 +1056,8 @@ get_user_playlists:BEGIN
 
 	SELECT p.id_playlist AS id,
 	p.name,
-	p.description 
+	p.description,
+	p.image cover,
 	FROM Playlists p 
 	WHERE p.email = email_in;
 END $$
