@@ -63,3 +63,13 @@ class PlaylistController:
         response = PlaylistModel.edit_playlist(body, cover_location)
         return response[0], (200 if response[1] else 400)
 
+    @staticmethod
+    def get_song_not_playlist(id):
+        response = PlaylistModel.songs_not_playlist(id)
+        return response[0], (200 if response[1] else 400)
+
+    @staticmethod
+    def get_playlist(id):
+        response = PlaylistModel.get_playlist(id)
+        return response[0], (200 if response[1] else 400)
+

@@ -52,26 +52,27 @@ class ArtistModel:
         finally:
             cursor.close()
 
+
     @staticmethod
     def get_artists():
         try:
             db = getCnx()  # Obtiene una conexión desde la función
             cursor = db.cursor(buffered=True)
-            # Ejecuta la consulta SQL para obtener el usuario por su email
-            cursor.execute(
-                "SELECT a.id_artist AS id, a.name,a.image AS cover,a.birthdate  FROM Artists a"
+            # Query
+            cursor.callproc(
+                "GetAllArtists",
             )
-            result = cursor.fetchall()
-            # Convierte el resultado en un diccionario y lo devuelve
-            response = []
-            for obj in result:
-                artist = dict(zip(cursor.column_names, obj))
-                response.append(artist)
-            return response, True
+            data = []
+            for result in cursor.stored_results():
+                for song in result.fetchall():
+                    result = dict(zip(("id", "name", "cover"), song))
+                    data.append(result)
+            return data, True
         except Exception as e:
             return str(e), False
         finally:
             cursor.close()
+
 
     @staticmethod
     def get_songs(artist):
@@ -140,6 +141,26 @@ class ArtistModel:
                     return result, False
                 else:
                     return result, True
+        except Exception as e:
+            return str(e), False
+        finally:
+            cursor.close()
+
+    @staticmethod
+    def song_not_album(id):
+        try:
+            db = getCnx()  # Obtiene una conexión desde la función
+            cursor = db.cursor(buffered=True)
+            # Query
+            cursor.callproc("GetArtistSongsNotInAlbum", (id,))
+            data = []
+            for result in cursor.stored_results():
+                for song in result.fetchall():
+                    result = dict(
+                        zip(("id", "name", "cover", "musicSrc", "album"), song)
+                    )
+                    data.append(result)
+            return data, True
         except Exception as e:
             return str(e), False
         finally:
