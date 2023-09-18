@@ -1115,3 +1115,29 @@ get_playlist_songs:BEGIN
     );
    
 END $$
+
+
+-- Procedimiento para retornar el listado de todas las canciones que un usuario tenga en favoritos
+DROP PROCEDURE IF EXISTS GetSongsInFavorites $$
+CREATE PROCEDURE GetSongsInFavorites (
+	IN email_in VARCHAR(255)
+)
+get_songs_in_favorites:BEGIN
+	IF NOT email_exists(email_in) THEN
+		SELECT 'El correo que ha ingresado no existe en la base de datos' AS 'MESSAGE',
+		'ERROR' AS 'TYPE';
+		LEAVE get_songs_in_favorites;
+	END IF;	
+
+	SELECT s.id_song AS id,
+	s.name,
+	s.image AS cover,
+	s.file AS musicSrc,
+	a.name AS singer
+	FROM Favorites f 
+	JOIN Songs s 
+	ON f.id_song  = s.id_song 
+	JOIN Artists a 
+	ON a.id_artist = s.id_artist 
+	AND f.email  = email_in;
+END $$
