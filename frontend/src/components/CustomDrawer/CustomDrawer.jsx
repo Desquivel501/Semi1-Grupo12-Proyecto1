@@ -98,10 +98,13 @@ export default function CustomDrawer() {
     };
 
     useEffect(() => {
-        let endpoint = `/api/playlists/${user.id}`;
-        getData({endpoint})
-        .then(data => setPlaylists(data))
-        .catch(err => console.log(err))
+        console.log(user)
+        if(user.id != null && user.id != "" && user.id != undefined){
+            let endpoint = `/api/playlists/${user.id}`;
+            getData({endpoint})
+            .then(data => setPlaylists(data))
+            .catch(err => console.log(err))
+        }
     }, [])
 
     return (
