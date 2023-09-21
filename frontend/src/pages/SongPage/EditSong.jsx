@@ -107,26 +107,19 @@ export default function EditSong(props) {
     useEffect(() => {
         console.log(id)
 
-        let endpoint = '/api/songs';
-        if(edit){
-            getData({endpoint})
-            .then(data => {
-                for(var i = 0; i < data.length; i++){
-                    console.log(data[i].id + " " + id)
-                    if(data[i].id == id){
-                        console.log(data[i])
-                        setSong(data[i])
-                        break;
-                    }
-                }
-            })
-            .catch(err => console.log(err))
-        }
-        
+        let endpoint = `/api/songs/${id}/${window.localStorage.getItem('id')}`;
+        getData({endpoint})
+        .then(data => {
+            console.log(data[0])
+            setSong(data[0])
+        })
 
         endpoint = '/api/artists';
         getData({endpoint})
-        .then(data => setArtistList(data))
+        .then(data => {
+            console.log(data)
+            setArtistList(data)
+        })
         .catch(err => console.log(err))
 
         setCount(count + 1);
