@@ -22,13 +22,14 @@ class AlbumModel:
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
+                    cursor.close()
                     return result, False
                 else:
+                    cursor.close()
                     return result, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def get_album(id):
@@ -47,13 +48,14 @@ class AlbumModel:
             if result is not None and len(result) > 0:
                 # Convierte el resultado en un diccionario y lo devuelve
                 response = dict(zip(cursor.column_names, result))
+                cursor.close()
                 return response, True
             else:
+                cursor.close()
                 return {"MESSAGE": "Album no encontrado", "TYPE": "ERROR"}, False
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def get_albums():
@@ -71,11 +73,11 @@ class AlbumModel:
             for obj in result:
                 album = dict(zip(cursor.column_names, obj))
                 response.append(album)
+            cursor.close()
             return response, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def get_songs():
@@ -91,11 +93,11 @@ class AlbumModel:
                 for song in result.fetchall():
                     result = dict(zip(("id", "name", "cover", "musicSrc"), song))
                     data.append(result)
+            cursor.close()
             return data, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def add_song(id_album, id_song):
@@ -111,13 +113,14 @@ class AlbumModel:
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
+                    cursor.close()
                     return result, False
                 else:
+                    cursor.close()
                     return result, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def remove_song(id_album, id_song):
@@ -133,13 +136,14 @@ class AlbumModel:
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
+                    cursor.close()
                     return result, False
                 else:
+                    cursor.close()
                     return result, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def delete_album(id_album):
@@ -155,13 +159,14 @@ class AlbumModel:
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
+                    cursor.close()
                     return result, False
                 else:
+                    cursor.close()
                     return result, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def edit_album(album, cover_filename):
@@ -183,10 +188,11 @@ class AlbumModel:
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
+                    cursor.close()
                     return result, False
                 else:
+                    cursor.close()
                     return result, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False

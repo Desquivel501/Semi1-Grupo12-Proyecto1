@@ -23,13 +23,14 @@ class SongModel:
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
+                    cursor.close()
                     return result, False
                 else:
+                    cursor.close()
                     return result, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def get_song(id, email):
@@ -53,11 +54,11 @@ class SongModel:
                         )
                     )
                     data.append(result)
+            cursor.close()
             return data, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def get_songs():
@@ -77,11 +78,11 @@ class SongModel:
                         )
                     )
                     data.append(result)
+            cursor.close()
             return data, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def delete_song(id_song):
@@ -97,13 +98,14 @@ class SongModel:
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
+                    cursor.close()
                     return result, False
                 else:
+                    cursor.close()
                     return result, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def edit_song(song, cover_filename, source_filename):
@@ -126,10 +128,11 @@ class SongModel:
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
+                    cursor.close()
                     return result, False
                 else:
+                    cursor.close()
                     return result, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False

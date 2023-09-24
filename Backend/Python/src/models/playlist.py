@@ -22,13 +22,14 @@ class PlaylistModel:
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
+                    cursor.close()
                     return result, False
                 else:
+                    cursor.close()
                     return result, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def get_users_playlists(email):
@@ -47,11 +48,11 @@ class PlaylistModel:
                     print(playlist)
                     result = dict(zip(("id", "cover", "name", "description"), playlist))
                     data.append(result)
+            cursor.close()
             return data, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def get_songs(id):
@@ -69,11 +70,11 @@ class PlaylistModel:
                     # Falta el cover
                     result = dict(zip(("id", "name", "cover", "musicSrc"), song))
                     data.append(result)
+            cursor.close()
             return data, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def songs_not_playlist(id):
@@ -93,11 +94,11 @@ class PlaylistModel:
                         zip(("id", "name", "cover", "musicSrc", "singer"), song)
                     )
                     data.append(result)
+            cursor.close()
             return data, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def add_song(playlist, song, email):
@@ -113,13 +114,14 @@ class PlaylistModel:
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
+                    cursor.close()
                     return result, False
                 else:
+                    cursor.close()
                     return result, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def remove_song(playlist, song, email):
@@ -135,13 +137,14 @@ class PlaylistModel:
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
+                    cursor.close()
                     return result, False
                 else:
+                    cursor.close()
                     return result, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def remove_playlist(id, email):
@@ -157,13 +160,14 @@ class PlaylistModel:
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
+                    cursor.close()
                     return result, False
                 else:
+                    cursor.close()
                     return result, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def edit_playlist(playlist, cover_filename):
@@ -186,13 +190,14 @@ class PlaylistModel:
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
+                    cursor.close()
                     return result, False
                 else:
+                    cursor.close()
                     return result, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def get_playlist(id):
@@ -211,8 +216,8 @@ class PlaylistModel:
             for obj in result:
                 album = dict(zip(cursor.column_names, obj))
                 response.append(album)
+            cursor.close()
             return response, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False

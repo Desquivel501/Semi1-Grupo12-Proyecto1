@@ -30,13 +30,14 @@ class UserModel:
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
+                    cursor.close()
                     return result, False
                 else:
+                    cursor.close()
                     return result, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def get_user(email):
@@ -49,13 +50,14 @@ class UserModel:
             if len(result) > 0:
                 # Convierte el resultado en un diccionario y lo devuelve
                 response = dict(zip(cursor.column_names, result))
+                cursor.close()
                 return response, True
             else:
+                cursor.close()
                 return {"MESSAGE": "Usuario no encontrado", "TYPE": "ERROR"}, False
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def edit_user(user, avatar_filename):
@@ -82,13 +84,14 @@ class UserModel:
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
+                    cursor.close()
                     return result, False
                 else:
+                    cursor.close()
                     return result, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def add_to_favorite(song, email):
@@ -107,13 +110,14 @@ class UserModel:
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
+                    cursor.close()
                     return result, False
                 else:
+                    cursor.close()
                     return result, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def get_favorites(email):
@@ -132,11 +136,11 @@ class UserModel:
                         zip(("id", "name", "singer", "cover", "musicSrc"), song)
                     )
                     data.append(result)
+            cursor.close()
             return data, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def get_history(email):
@@ -155,8 +159,8 @@ class UserModel:
                         zip(("cancion", "artista", "album"), song)
                     )
                     data.append(result)
+            cursor.close()
             return data, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
