@@ -20,13 +20,14 @@ class ReportModel:
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
+                    cursor.close()
                     return result, False
                 else:
+                    cursor.close()
                     return result, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def top_songs(email):
@@ -43,11 +44,11 @@ class ReportModel:
                 for song in result.fetchall():
                     result = dict(zip(("id", "name", "cover", "times_played"), song))
                     data.append(result)
+            cursor.close()
             return data, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def top_artists(email):
@@ -64,11 +65,11 @@ class ReportModel:
                 for song in result.fetchall():
                     result = dict(zip(("id", "name", "cover", "times_played"), song))
                     data.append(result)
+            cursor.close()
             return data, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def top_albums(email):
@@ -89,8 +90,8 @@ class ReportModel:
                         )
                     )
                     data.append(result)
+            cursor.close()
             return data, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False

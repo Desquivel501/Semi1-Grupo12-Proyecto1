@@ -23,13 +23,14 @@ class ArtistModel:
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
+                    cursor.close()
                     return result, False
                 else:
+                    cursor.close()
                     return result, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def get_artist(id):
@@ -44,14 +45,14 @@ class ArtistModel:
             if result is not None and len(result) > 0:
                 # Convierte el resultado en un diccionario y lo devuelve
                 response = dict(zip(cursor.column_names, result))
+                cursor.close()
                 return response, True
             else:
+                cursor.close()
                 return {"MESSAGE": "Artista no encontrado", "TYPE": "ERROR"}, False
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
-
+            return str(e), False
 
     @staticmethod
     def get_artists():
@@ -67,12 +68,11 @@ class ArtistModel:
                 for song in result.fetchall():
                     result = dict(zip(("id", "name", "cover"), song))
                     data.append(result)
+            cursor.close()
             return data, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
-
+            return str(e), False
 
     @staticmethod
     def get_songs(artist):
@@ -89,11 +89,11 @@ class ArtistModel:
                 for song in result.fetchall():
                     result = dict(zip(("id", "name", "cover", "musicSrc"), song))
                     data.append(result)
+            cursor.close()
             return data, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def edit_artist(artist, avatar_filename):
@@ -116,13 +116,14 @@ class ArtistModel:
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
+                    cursor.close()
                     return result, False
                 else:
+                    cursor.close()
                     return result, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def delete_artist(id):
@@ -138,13 +139,14 @@ class ArtistModel:
             for result in cursor.stored_results():
                 result = dict(zip(result.column_names, result.fetchone()))
                 if result["TYPE"] == "ERROR":
+                    cursor.close()
                     return result, False
                 else:
+                    cursor.close()
                     return result, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
 
     @staticmethod
     def song_not_album(id):
@@ -160,8 +162,8 @@ class ArtistModel:
                         zip(("id", "name", "cover", "musicSrc", "album"), song)
                     )
                     data.append(result)
+            cursor.close()
             return data, True
         except Exception as e:
-            return str(e), False
-        finally:
             cursor.close()
+            return str(e), False
