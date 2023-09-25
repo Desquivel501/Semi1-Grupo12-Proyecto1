@@ -238,7 +238,7 @@ export default function EditAlbum(props) {
 
         console.log(data)
 
-        let endpoint = `/api/albums`;
+        let endpoint = `/api/albums/`;
         patchData({endpoint, data})
         .then(data => {
             console.log(data)

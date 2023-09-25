@@ -67,24 +67,6 @@ function createData(no, title) {
     return {no, title };
   }
 
-const rows = [
-    createData(1,'Prison Song'),
-    createData(2,'Needles'),
-    createData(3,'Deer Dance'),
-    createData(4,'Jet Pilot'),
-    createData(5,'X'),
-    createData(6,'Chop Suey!'),
-    createData(7,'Bounce'),
-    createData(8,'Forest'),
-    createData(9,'ATWA'),
-    createData(10,'Science'),
-    createData(11,'Shimmy'),
-    createData(12,'Toxicity'),
-    createData(13,'Psycho'),
-    createData(14,'Aerials'),
-  ];
-
-
 export default function AlbumPage(props) {
 
     const {
@@ -133,9 +115,19 @@ export default function AlbumPage(props) {
             let endpoint = `/api/playlists/${id}/data`;
             getData({endpoint})
             .then(data => {
-                if(data.email != localStorage.getItem('id') || data === undefined){
+
+                if(data === undefined){
                     navigate('/')
                 }
+                
+                if(Array.isArray(data)){
+                    data = data[0]
+                }
+
+                if(data.email !== localStorage.getItem('id')){
+                    navigate('/')
+                }
+
                 setAlbum({...data})
             })
             .catch(err => {
@@ -161,6 +153,7 @@ export default function AlbumPage(props) {
             let endpoint = '/api/songs';
             getData({endpoint})
             .then(data => {
+                console.log(data)
                 setSongList(data)
             })
             .catch(err => console.log(err))
@@ -176,6 +169,7 @@ export default function AlbumPage(props) {
             endpoint = `/api/albums/${id}/songs`;
             getData({endpoint})
             .then(data => {
+                console.log(data)
                 setSongList(data)
             })
         }
@@ -604,7 +598,7 @@ export default function AlbumPage(props) {
                                             py:1.5
                                         }}
                                         >
-                                        {item.singer}
+                                        {item.artist !== undefined ? item.artist : item.singer}
                                     </Typography>
                                     
                                 </Grid>

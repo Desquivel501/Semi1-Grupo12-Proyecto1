@@ -85,28 +85,6 @@ const CssTextField = styled(TextField)({
     },
   });
 
-function createData(no, title) {
-    return {no, title };
-  }
-
-const rows = [
-    createData(1,'Prison Song'),
-    createData(2,'Needles'),
-    createData(3,'Deer Dance'),
-    createData(4,'Jet Pilot'),
-    createData(5,'X'),
-    createData(6,'Chop Suey!'),
-    createData(7,'Bounce'),
-    createData(8,'Forest'),
-    createData(9,'ATWA'),
-    createData(10,'Science'),
-    createData(11,'Shimmy'),
-    createData(12,'Toxicity'),
-    createData(13,'Psycho'),
-    createData(14,'Aerials'),
-  ];
-
-
 export default function EditArtist(props) {
     const {
         edit = false
@@ -210,7 +188,7 @@ export default function EditArtist(props) {
                         icon: 'success',
                         title: 'Artista creado exitosamente',
                         showConfirmButton: false,
-                    }).them(() => navigate(-1))
+                    }).then(() => navigate(-1))
                 }else{
                     Swal.fire({
                         icon: 'error',

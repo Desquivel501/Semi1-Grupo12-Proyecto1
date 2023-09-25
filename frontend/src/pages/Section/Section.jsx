@@ -105,7 +105,7 @@ export const Section = (props) => {
                             id={i}
                             title={item.name}
                             image={item.cover}
-                            descripcion={item.singer}
+                            descripcion={item.artist !== undefined ? item.artist : item.singer}
                             size={2}
                             data={item}
                             type={type}

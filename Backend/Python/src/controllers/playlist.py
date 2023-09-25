@@ -57,9 +57,13 @@ class PlaylistController:
     def edit_playlist():
         body = dict(request.form)
         file = request.files
-        if len(body) == 0 or len(file) == 0:
+        if len(body) == 0:
             return {"MESSAGE": "Faltan datos", "TYPE": "ERROR"}, 401
-        cover_location = upload_file("playlist", file["cover"])
+        
+        cover_location = ""
+        if "cover" in file:
+            cover_location = upload_file("playlist", file["cover"])
+            
         response = PlaylistModel.edit_playlist(body, cover_location)
         return response[0], (200 if response[1] else 400)
 

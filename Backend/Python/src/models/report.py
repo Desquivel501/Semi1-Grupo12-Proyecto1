@@ -42,7 +42,7 @@ class ReportModel:
             data = []
             for result in cursor.stored_results():
                 for song in result.fetchall():
-                    result = dict(zip(("id", "name", "cover", "times_played"), song))
+                    result = dict(zip(("id", "name", "cover", "artist", "times_played"), song))
                     data.append(result)
             cursor.close()
             return data, True
@@ -63,7 +63,7 @@ class ReportModel:
             data = []
             for result in cursor.stored_results():
                 for song in result.fetchall():
-                    result = dict(zip(("id", "name", "cover", "times_played"), song))
+                    result = dict(zip(("id", "name", "cover", "times_listened"), song))
                     data.append(result)
             cursor.close()
             return data, True
@@ -84,9 +84,10 @@ class ReportModel:
             data = []
             for result in cursor.stored_results():
                 for song in result.fetchall():
+                    print(song)
                     result = dict(
                         zip(
-                            ("id", "name", "description", "cover", "times_played"), song
+                            ("id", "name", "description", "cover", "artist", "times_played"), song
                         )
                     )
                     data.append(result)

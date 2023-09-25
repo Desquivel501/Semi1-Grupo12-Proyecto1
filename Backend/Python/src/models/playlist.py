@@ -45,7 +45,6 @@ class PlaylistModel:
             for result in cursor.stored_results():
                 for playlist in result.fetchall():
                     # Falta el cover
-                    print(playlist)
                     result = dict(zip(("id", "cover", "name", "description"), playlist))
                     data.append(result)
             cursor.close()
@@ -196,6 +195,7 @@ class PlaylistModel:
                     cursor.close()
                     return result, True
         except Exception as e:
+            print(e)
             cursor.close()
             return str(e), False
 

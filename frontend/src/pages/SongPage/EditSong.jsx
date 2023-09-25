@@ -211,7 +211,7 @@ export default function EditSong(props) {
             .catch((err) => console.log(err));
         } else {
             patchData({
-                endpoint: '/api/songs',
+                endpoint: '/api/songs/',
                 data: data,
             }).then((response) => {
                 console.log(response)

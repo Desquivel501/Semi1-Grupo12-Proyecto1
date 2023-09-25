@@ -43,45 +43,6 @@ export default function Historial() {
         },
     }));
 
-    const [state, setState] = useState({
-        arreglo_historial: [], // historial de canciones  arreglo: {cancion, artista: album: }
-        arreglo_top5_mas_reproducidas: [], // top 5 mas reproducidas, arreglo: {cancion:, artista:, album:}
-        arreglo_top5_mas_albumes: [], // top 5 mas albumes, arreglo:{album:, artista: ,year:}
-        arreglo_top_3: [], // top 3 mas artistas escuchado, arreglo: {artista:}
-        arreglo_ejemplo: [{ cancion: 'Aleluya', artista: 'Mexican Group', album: 'Somos Banda' },
-        { cancion: 'Aleluya', artista: 'Mexican Group', album: 'Somos Banda' },
-        { cancion: 'Aleluya', artista: 'Mexican Group', album: 'Somos Banda' },
-        { cancion: 'Aleluya', artista: 'Mexican Group', album: 'Somos Banda' },
-        { cancion: 'Aleluya', artista: 'Mexican Group', album: 'Somos Banda' },
-        { cancion: 'Aleluya', artista: 'Mexican Group', album: 'Somos Banda' },
-        { cancion: 'Aleluya', artista: 'Mexican Group', album: 'Somos Banda' },
-        { cancion: 'Aleluya', artista: 'Mexican Group', album: 'Somos Banda' },
-        { cancion: 'Aleluya', artista: 'Mexican Group', album: 'Somos Banda' },
-        { cancion: 'Aleluya', artista: 'Mexican Group', album: 'Somos Banda' },
-        { cancion: 'Aleluya', artista: 'Mexican Group', album: 'Somos Banda' },
-        { cancion: 'Aleluya', artista: 'Mexican Group', album: 'Somos Banda' },
-        { cancion: 'Aleluya', artista: 'Mexican Group', album: 'Somos Banda' },
-        { cancion: 'Aleluya', artista: 'Mexican Group', album: 'Somos Banda' },
-        { cancion: 'Aleluya', artista: 'Mexican Group', album: 'Somos Banda' },
-        { cancion: 'Aleluya', artista: 'Mexican Group', album: 'Somos Banda' },
-        { cancion: 'Aleluya', artista: 'Mexican Group', album: 'Somos Banda' },
-        { cancion: 'Aleluya', artista: 'Mexican Group', album: 'Somos Banda' },
-        { cancion: 'Aleluya', artista: 'Mexican Group', album: 'Somos Banda' },
-        { cancion: 'Aleluya', artista: 'Mexican Group', album: 'Somos Banda' },
-        { cancion: 'Aleluya', artista: 'Mexican Group', album: 'Somos Banda' }],
-        arreglo_ejemplo2: [
-            { year: '2000', artista: 'Mexican Group', album: 'Somos Banda' },
-        { year: '2000', artista: 'Mexican Group', album: 'Somos Banda' },
-        { year: '2000', artista: 'Mexican Group', album: 'Somos Banda' },
-        { year:'2000', artista: 'Mexican Group', album: 'Somos Banda' },
-        { year: '2000', artista: 'Mexican Group', album: 'Somos Banda' },
-        { year: '2000', artista: 'Mexican Group', album: 'Somos Banda' },
-        { year: '2000', artista: 'Mexican Group', album: 'Somos Banda' },
-        { year: '2000', artista: 'Mexican Group', album: 'Somos Banda' },
-        { year: '2000', artista: 'Mexican Group', album: 'Somos Banda' }
-        ]
-    });
-
 
     const [buttons, setButtons] = useState([ 
         {id: 1, name: 'Historial de reproducciones', active: true, color: '#626262', type: 'history'},
@@ -277,7 +238,6 @@ export default function Historial() {
                             <TableHead>
                                 <StyledTableRow>
                                     <StyledTableCell>#</StyledTableCell>
-                                    <StyledTableCell>Cover</StyledTableCell>
                                     <StyledTableCell>Cancion</StyledTableCell>
                                     <StyledTableCell>Artista</StyledTableCell>
                                     <StyledTableCell>Reproduciones</StyledTableCell>
@@ -287,9 +247,6 @@ export default function Historial() {
                                 {canciones.map((song, i) => (
                                     <StyledTableRow key={i}>
                                         <StyledTableCell>{i+1}</StyledTableCell>
-                                        <StyledTableCell>
-                                            <img src={song.image} style={{width: 120, height: '100%'}}/>
-                                        </StyledTableCell>
                                         <StyledTableCell>{song.name}</StyledTableCell>
                                         <StyledTableCell>{song.artist}</StyledTableCell>
                                         <StyledTableCell>{song.times_played}</StyledTableCell>
@@ -311,7 +268,6 @@ export default function Historial() {
                             <TableHead>
                                 <StyledTableRow>
                                     <StyledTableCell>#</StyledTableCell>
-                                    <StyledTableCell>Cover</StyledTableCell>
                                     <StyledTableCell>Álbum</StyledTableCell>
                                     <StyledTableCell>Artista</StyledTableCell>
                                     <StyledTableCell>Reproduciones</StyledTableCell>
@@ -321,9 +277,6 @@ export default function Historial() {
                                 {albumes.map((album, i) => (
                                     <StyledTableRow key={i}>
                                         <StyledTableCell>{i+1}</StyledTableCell>
-                                        <StyledTableCell>
-                                            <img src={album.image} style={{width: 120, height: '100%'}}/>    
-                                        </StyledTableCell>
                                         <StyledTableCell>{album.name}</StyledTableCell>
                                         <StyledTableCell>{album.artist}</StyledTableCell>
                                         <StyledTableCell>{album.times_played}</StyledTableCell>
@@ -345,7 +298,6 @@ export default function Historial() {
                             <TableHead>
                                 <TableRow>
                                     <StyledTableCell>#</StyledTableCell>
-                                    <StyledTableCell>Imagen</StyledTableCell>
                                     <StyledTableCell>Nombre</StyledTableCell>
                                     <StyledTableCell>Reproduciones</StyledTableCell>
                                 </TableRow>
@@ -354,9 +306,6 @@ export default function Historial() {
                                 {artistas.map((artist, i) => (
                                     <StyledTableRow key={i}>
                                         <StyledTableCell>{i+1}</StyledTableCell>
-                                        <StyledTableCell>
-                                            <img src={artist.image} style={{width: 120, height: '100%'}}/>
-                                        </StyledTableCell>
                                         <StyledTableCell>{artist.name}</StyledTableCell>
                                         <StyledTableCell>{artist.times_listened}</StyledTableCell>
                                     </StyledTableRow>
