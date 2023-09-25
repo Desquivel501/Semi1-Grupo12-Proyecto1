@@ -60,13 +60,14 @@ class AlbumController:
 
     def edit_album():
         album = dict(request.form)
-        files = request.files
-        if len(album) == 0 or len(files) == 0:
+        file = request.files
+        if len(album) == 0:
             return {"MESSAGE": "Faltan datos"}, 400
-        for value in album:
-            if album[value] == "":
-                return {"MESSAGE": "Faltan datos"}, 400
-        album["cover"] = upload_file("album", files["cover"])
+
+        cover_location = ""
+        if "cover" in file:
+            cover_location = upload_file("album", file["cover"])
+
         # Guardar en db
-        response = AlbumModel.edit_album(album, album["cover"])
+        response = AlbumModel.edit_album(album, cover_location)
         return response[0], (200 if response[1] else 400)

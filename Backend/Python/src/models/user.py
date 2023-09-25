@@ -133,7 +133,7 @@ class UserModel:
             for result in cursor.stored_results():
                 for song in result.fetchall():
                     result = dict(
-                        zip(("id", "name", "singer", "cover", "musicSrc"), song)
+                        zip(("id", "name", "cover", "musicSrc", "singer"), song)
                     )
                     data.append(result)
             cursor.close()
@@ -156,7 +156,7 @@ class UserModel:
             for result in cursor.stored_results():
                 for song in result.fetchall():
                     result = dict(
-                        zip(("cancion", "artista", "album"), song)
+                        zip(("cancion", "artista", "album", "date"), song)
                     )
                     data.append(result)
             cursor.close()

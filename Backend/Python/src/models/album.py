@@ -80,13 +80,14 @@ class AlbumModel:
             return str(e), False
 
     @staticmethod
-    def get_songs():
+    def get_songs(id):
         try:
             db = getCnx()  # Obtiene una conexión desde la función
             cursor = db.cursor(buffered=True)
             # Query
             cursor.callproc(
-                "GetAlbumSongs",
+                "GetAlbumSongs", 
+                (int(id),),
             )
             data = []
             for result in cursor.stored_results():
@@ -96,6 +97,7 @@ class AlbumModel:
             cursor.close()
             return data, True
         except Exception as e:
+            print(e)
             cursor.close()
             return str(e), False
 
@@ -107,7 +109,7 @@ class AlbumModel:
             # Query
             cursor.callproc(
                 "AddSongAlbum",
-                (int(id_album), int(id_song)),
+                (int(id_song), int(id_album)),
             )
             db.commit()
             for result in cursor.stored_results():

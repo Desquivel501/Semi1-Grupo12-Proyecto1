@@ -39,10 +39,17 @@ class SongController:
     def edit_song():
         song = dict(request.form)
         files = request.files
-        if len(song) == 0 or len(files) == 0:
+        if len(song) == 0:
             return {"MESSAGE": "Faltan datos"}, 400
-        cover_location = upload_file("song", files["cover"])
-        sourcer_location = upload_file("song", files["source"], False)
+
+        cover_location = ""
+        if "cover" in files:
+            cover_location = upload_file("song", files["cover"])
+
+        sourcer_location = ""
+        if "source" in files:
+            sourcer_location = upload_file("song", files["source"], False)
+
         # Guardar en db
         response = SongModel.edit_song(song, cover_location, sourcer_location)
         return response[0], (200 if response[1] else 400)

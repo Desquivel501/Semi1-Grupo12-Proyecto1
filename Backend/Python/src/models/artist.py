@@ -7,16 +7,17 @@ class ArtistModel:
     @staticmethod
     def create_artist(artist, avatar_filename):
         try:
+            print(artist)
             db = getCnx()  # Obtiene una conexión desde la función
             cursor = db.cursor(buffered=True)
-            birth_date = formatDate(artist["birthDate"])
+            # birth_date = formatDate(artist["birthDate"])
             # Query
             cursor.callproc(
                 "CreateArtist",
                 (
                     artist["name"],
                     avatar_filename,
-                    birth_date,
+                    artist["birthDate"],
                 ),
             )
             db.commit()
@@ -29,6 +30,7 @@ class ArtistModel:
                     cursor.close()
                     return result, True
         except Exception as e:
+            print(e)
             cursor.close()
             return str(e), False
 

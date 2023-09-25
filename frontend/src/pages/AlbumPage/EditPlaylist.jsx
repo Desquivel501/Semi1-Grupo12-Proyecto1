@@ -125,10 +125,20 @@ export default function EditPlaylist(props) {
         let endpoint = `/api/playlists/${id}/data`;
         getData({endpoint})
         .then(data => {
-            if(data.email != localStorage.getItem('id')){
+            
+            if(data === undefined){
                 navigate('/')
             }
-            setAlbum(data)
+            
+            if(Array.isArray(data)){
+                data = data[0]
+            }
+
+            if(data.email !== localStorage.getItem('id')){
+                navigate('/')
+            }
+
+            setAlbum({...data})
         })
         
         endpoint = `/api/playlists/${id}/songs`;
@@ -170,7 +180,7 @@ export default function EditPlaylist(props) {
 
         console.log(data)
 
-        let endpoint = `/api/playlists`;
+        let endpoint = `/api/playlists/`;
         patchData({endpoint, data})
         .then(data => {
             console.log(data)
