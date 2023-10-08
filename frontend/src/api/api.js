@@ -1,7 +1,7 @@
 const API = import.meta.env.VITE_API;
 
 export function registrar(data) {
-  return fetch(`${API}/api/users/newUser`, {
+  return fetch(`${API}/api/users/newUser/`, {
     method: "POST",
     body: data,
     headers: {

@@ -120,7 +120,11 @@ export default function NewAlbum(props) {
         let endpoint = '/api/artists';
         getData({endpoint})
         .then(data => {
-            setArtistList(data)
+            if (data != null || data != undefined) {
+                setArtistList(data)
+            } else {
+                setArtistList([])
+            }
         })
     },[]);
 

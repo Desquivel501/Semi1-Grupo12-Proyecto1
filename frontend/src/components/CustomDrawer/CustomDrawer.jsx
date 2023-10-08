@@ -102,7 +102,13 @@ export default function CustomDrawer() {
         if(user.id != null && user.id != "" && user.id != undefined){
             let endpoint = `/api/playlists/${user.id}`;
             getData({endpoint})
-            .then(data => setPlaylists(data))
+            .then(data => {
+                if(data != null || data != undefined){
+                    setPlaylists(data)
+                } else {
+                    setPlaylists([])
+                }
+            })
             .catch(err => console.log(err))
         }
     }, [])
@@ -267,7 +273,7 @@ export default function CustomDrawer() {
                                     </ListItem>
 
                                     {
-                                        user.type == 1 &&
+                                        user.type == 0 &&
                                         <ListItem key="admin">
                                             <ListItemButton   
                                                 onClick={() => navigate("/Admin")}  

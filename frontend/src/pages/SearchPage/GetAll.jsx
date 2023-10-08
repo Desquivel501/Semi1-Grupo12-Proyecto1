@@ -74,20 +74,40 @@ export default function GetAll(props) {
     const [artistList, setArtistList] = useState([]);
 
     useEffect(() => {
+
         let endpoint = '/api/songs';
         getData({endpoint})
-        .then(data => setSongList(data))
+        .then(data => {
+            if(data != null || data != undefined){
+                setSongList(data)
+            } else {
+                setSongList([])
+            }        
+        })
         .catch(err => console.log(err))
 
         endpoint = '/api/artists';
         getData({endpoint})
-        .then(data => setArtistList(data))
+        .then(data => {
+            if(data != null || data != undefined){
+                setArtistList(data)
+            } else {
+                setArtistList([])
+            }        
+        })
         .catch(err => console.log(err))
 
         endpoint = '/api/albums';
         getData({endpoint})
-        .then(data => setAlbumList(data))
+        .then(data => {
+            if(data != null || data != undefined){
+                setAlbumList(data)
+            } else {
+                setAlbumList([])
+            }
+        })
         .catch(err => console.log(err))
+
     }, []);
 
 

@@ -46,6 +46,8 @@ export default function Login() {
       password: data.get("password"),
     });
 
+    console.log(mensaje)
+
     if (mensaje.TYPE == "SUCCESS") {
       Swal.fire({
         icon: 'success',

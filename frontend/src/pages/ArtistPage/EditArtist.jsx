@@ -109,8 +109,12 @@ export default function EditArtist(props) {
             let endpoint = `/api/artists/${id}`;
             getData({endpoint})
             .then(data => {
-                setArtist(data)
-                setPreview(data.cover)
+                if(data != null || data != undefined){
+                    setArtist(data)
+                    setPreview(data.cover)
+                } else {
+                    navigate(-1)
+                }
             })
             .catch(err => console.log(err))
 

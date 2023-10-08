@@ -11,9 +11,38 @@
 
 ## Objetivos del Manual
 
-## Arquitectura del proyecto.
+- Dar a entender la arquitectura que se utilizó para crear la aplicación, a manera de brindar una idea a las personas acerca de la forma en la que funciona y las tecnologías que se utilizaron.
+
+- Describir y dar a entender la forma en la que se encuentra organizada la información, a manera de facilitar algún tipo de mantenimiento a futuro o la implementación de nuevas funciones en la aplicación.
+
+- Explicar de una forma clara la configuración de cada uno de los servicios en la nube utilizados en la arquitectura del proyecto, a manera de dar una idea de cual es el propósito de cada uno, así como de sus ventajas y limitaciones.
+
+- Informar acerca de los usuarios IAM creados para la administración de cada uno de los servicios involucrados en la aplicacion, de forma que se pueda interactuar con cada uno de los servicios sin poner en peligro información importante de los demás servicios o del usuario root.
+
+## Arquitectura del proyecto
+
+Toda la aplicación será desplegada usando exclusivamente servicios en la nube. La primera caba de la aplicación será el Frontend, el cuál será desarrollado usando el maro de trabajo React, después de haber realizado la aplicación esta será almacenada haciendo uso de S3 (Amazon Simple Storage Service), el cual es un servicio de almacenamiento de objetos ofrecido en AWS. Este servicio también posee la opción para alojar un sitio web estático por lo cual ser hará uso de esta característica para alojar y presentar al usuario el sitio web creado.
+
+![Arquitectura](./img/Arquitectura_1.png)
+
+Posteriormente, la siguiente capa de la aplicación será la de backend, para manejar las peticiones que se hagan desde el frontend se utilizarán dos API's desarrolladas en Nodejs y en Python, estas API's estarán EC2 (Amazon Elastic Compute Cloud) el cual es un servicio con el que se pueden crear instancias de computadoras virtuales, por lo que cada API se encontrará en su propia instancia. Debido a esto se necesita una forma de distribuir el tráfico proveniente desde el Frontend hacia estas API's, para solucionar este problema se utilizará un balanceador de carga (igualmente de AWS) que se encargue de recibir el tráfico proveniente de el Frontend alojadon en S3 y lo distribuya ya sea a la API desarrollada en Python o a la desarrollada en NodeJS.
+
+![Arquitectura](./img/Arquitectura_2.png)
+
+Finalmente se encuentra la base de datos, para la base de datos se utilizará el servicio RDS (Amazon Relational Database Services) el cual, como indica su nombre, es un servicio de base de datos relacionales de Amazon en el cual se pueden desplegar bases de datos que sigan este esquema. El DBMS elegido es MySQL y a este se conectarán las API's para almacenar la información necesaria para la aplicación.
+
+![Arquitectura](./img/Arquitectura_3.png)
+
+Sin embargo, almacenar archivos multimedia resultaría muy costoso en términos de espacio (y precio) si se hace en la base de datos, por lo tanto se hará uso nuevamente de S3, en el cual se creará un bucket donde almacenar todos estos archivos y en la base de datos solamente se almacenará el enlace a estos recursos.
+Debido a esta implementación, las API's también contarán con una conexión hacia S3 (aparte de la conexión hacia RDS).
+
+![Arquitectura](./img/Arquitectura_4.png)
 
 ## Diagrama Entidad Relación
+
+En el diagrama entidad relacion se puede observar que se creó una entidad **User** la cual será la encargada de almacenar los usuarios registrados en la base de datos y su información, así como su rol, el cual indicará si son usuarios comunes o administradores. La entidad **History** será la encargada de almacenar el historial de canciones reproducidas de todos los usuarios en la base de datos. Las entidades **Playlist** y **Playlist_detail** son las encargadas de almacenar la información de las listas de reproducción creadas por los usuarios y las canciones que pertenecen a estas canciones. La entidad **Favorites** se encarga de almacenar la canciones que los usuarios agregan a sus canciones favoritas. **Song** se encarga de almacenar las canciones registradas en la base de datos, **Artist** de almacenar los artistas y, finalmente, **Album** almacena la información de los albumes registrados.
+
+![Relacional](./img/Relational_1.png)
 
 ## Usuarios IAM
 
@@ -112,8 +141,6 @@ Agregamos un objetivo ingresando su dirección IP y puerto.
 ![TargetGroup](./img/TG_1.png)
 
 Monitoreo de objetivos configurados. ![TargetGroup](./img/TG_2.png)
-
-### RDS
 
 ## Conclusiones
 

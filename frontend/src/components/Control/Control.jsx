@@ -11,7 +11,7 @@ export function ControlLogin() {
 
 export function ControlType() {
     const { user } = useSesion();
-    if (user.type == 0) {
+    if (user.type != 0) {
         return <Navigate to="/" />;
     }
     return <Outlet />;
