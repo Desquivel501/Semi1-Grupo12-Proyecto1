@@ -152,6 +152,10 @@ export default function EditAlbum(props) {
             let endpoint = `/api/albums/${id}`
             getData({endpoint})
             .then(data => {
+                if(data === null || data === undefined){
+                    navigate(-1)
+                    return
+                }
                 current_name = data.singer;
                 setAlbum(data)
             })
@@ -165,7 +169,11 @@ export default function EditAlbum(props) {
                         let endpoint = `/api/artists/${element.id}/songs/notInAlbum`;
                         getData({endpoint})
                         .then(data => {
-                            setSongList(data)
+                            if(data != null || data != undefined){
+                                setSongList(data)
+                            } else {
+                                setSongList([]) 
+                            }
                         })
                         return
                     }
@@ -175,9 +183,12 @@ export default function EditAlbum(props) {
             endpoint = `/api/albums/${id}/songs`;
             getData({endpoint})
             .then(data => {
-                setCurrentSongs(data)
+                if(data != null || data != undefined){
+                    setCurrentSongs(data)
+                } else {
+                    setCurrentSongs([]) 
+                }
             })
-
             setCount(count + 1);
        }
 
@@ -195,7 +206,11 @@ export default function EditAlbum(props) {
                         let endpoint = `/api/artists/${element.id}/songs/notInAlbum`;
                         getData({endpoint})
                         .then(data => {
-                            setSongList(data)
+                            if(data != null || data != undefined){
+                                setSongList(data)
+                            } else {
+                                setSongList([]) 
+                            }
                         })
                         return
                     }
@@ -205,7 +220,11 @@ export default function EditAlbum(props) {
             endpoint = `/api/albums/${id}/songs`;
             getData({endpoint})
             .then(data => {
-                setCurrentSongs(data)
+                if(data != null || data != undefined){
+                    setCurrentSongs(data)
+                } else {
+                    setCurrentSongs([]) 
+                }
             })
 
             setCount(count + 1);

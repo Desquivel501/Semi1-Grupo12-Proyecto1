@@ -8,7 +8,7 @@ export class UserController {
     const user = req.body;
     const file = req.file as Express.MulterS3.File;
     // Validar datos
-    if (checkKeys(user, ["avatar"]) || !file) {
+    if (!checkKeys(user, ["avatar"])) {
       return res.status(400).json({ message: "Falta la fotografía" });
     }
     // Crear usuario

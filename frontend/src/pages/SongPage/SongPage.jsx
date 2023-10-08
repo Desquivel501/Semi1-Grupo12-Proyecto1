@@ -71,9 +71,7 @@ export default function SongPage(props) {
     const navigate = useNavigate();
     const { id } = useParams();
     
-    const [songList, setSongList] = useState([]);
     const [color, setColor] = useState('#626262');
-    const [favorite, setFavorite] = useState(false);
     const [song, setSong] = useState({
         id: 0,
         name: '',
@@ -81,6 +79,7 @@ export default function SongPage(props) {
         cover:
           'https://soundstream-semi1-g12.s3.us-east-2.amazonaws.com/no_album.jpg',
         musicSrc: '',
+        inFav: 0
       });
     
       const [count, setCount] = useState(0);
@@ -91,7 +90,11 @@ export default function SongPage(props) {
         sendJsonData({endpoint, data: {song: song.id, email: window.localStorage.getItem('id')}})
         .then(data => {
             console.log(data)
-            setFavorite(!favorite)
+            if(song.inFav === 0){
+                setSong({...song, inFav: 1})
+            } else {
+                setSong({...song, inFav: 0})
+            }
         })
     };
 
@@ -100,9 +103,13 @@ export default function SongPage(props) {
         let endpoint = `/api/songs/${id}/${window.localStorage.getItem('id')}`;
         getData({endpoint})
         .then(data => {
-            console.log(data[0])
-            setSong(data[0])
-            setFavorite(data[0].inFav)
+            if(data != null || data != undefined){
+                console.log(data)
+                setSong(data[0])
+            } else {
+                console.log('error')
+                navigate(-1)
+            }        
         })
 
         setCount(count + 1);
@@ -321,7 +328,7 @@ export default function SongPage(props) {
                                     }} 
                                 >
                                     {
-                                        favorite ? <FavoriteIcon fontSize='large'/> : <FavoriteBorderIcon fontSize='large'/>
+                                        song.inFav === 1 ? <FavoriteIcon fontSize='large'/> : <FavoriteBorderIcon fontSize='large'/>
                                     }
                                 </IconButton> 
 

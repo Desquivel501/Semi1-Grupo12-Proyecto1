@@ -73,7 +73,7 @@ export default function AlbumPage(props) {
         playlist = false,
         favoritos = false,
         radio = false,
-        admin = (localStorage.getItem('type') == 1),
+        admin = (localStorage.getItem('type') == 0),
     } = props;
 
     const navigate = useNavigate();
@@ -107,7 +107,11 @@ export default function AlbumPage(props) {
             let endpoint = `/api/users/${window.localStorage.getItem('id')}/favorites/`;
             getData({endpoint})
             .then(data => {
-                setSongList(data)
+                if(data === undefined){
+                    setSongList([])
+                } else {    
+                    setSongList(data)
+                }
             })
 
         } else if(playlist){
@@ -153,8 +157,11 @@ export default function AlbumPage(props) {
             let endpoint = '/api/songs';
             getData({endpoint})
             .then(data => {
-                console.log(data)
-                setSongList(data)
+                if(data != null || data != undefined){
+                    setSongList(data)
+                } else {
+                    setSongList([])
+                }
             })
             .catch(err => console.log(err))
 
@@ -163,14 +170,20 @@ export default function AlbumPage(props) {
             let endpoint = `/api/albums/${id}`;
             getData({endpoint})
             .then(data => {
+                if(data === undefined){
+                    navigate('/')
+                }
                 setAlbum({...data, description: ''})
             })
 
             endpoint = `/api/albums/${id}/songs`;
             getData({endpoint})
             .then(data => {
-                console.log(data)
-                setSongList(data)
+                if(data === undefined){
+                    setSongList([])
+                } else {
+                    setSongList(data)
+                }
             })
         }
         setCount(count + 1);

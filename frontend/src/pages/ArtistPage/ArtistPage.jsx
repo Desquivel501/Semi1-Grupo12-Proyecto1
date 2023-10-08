@@ -110,13 +110,21 @@ export default function ArtistPage(props) {
         let endpoint = `/api/artists/${id}`;
         getData({endpoint})
         .then(data => {
-            setArtist(data)
+            if (data != null || data != undefined) {
+                setArtist(data)
+            } else {
+                navigate(-1)
+            }
         })
 
         endpoint = `/api/artists/${id}/songs`;
         getData({endpoint})
         .then(data => {
-            setSongList(data)
+            if (data != null || data != undefined) {
+                setSongList(data)
+            } else {
+                setSongList([])
+            }
         })
         setCount(count + 1);
     },[]);

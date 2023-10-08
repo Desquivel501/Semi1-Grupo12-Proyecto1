@@ -63,27 +63,34 @@ export default function Historial() {
         let endpoint = `/api/users/${window.localStorage.getItem('id')}/history`;
         getData({endpoint})
         .then(data => {
-            setHistorial(data);
+            if(data != null || data != undefined){
+                setHistorial(data)
+            }
         }).catch(error => {console.log(error)});
 
         endpoint = `/api/reports/${window.localStorage.getItem('id')}/artists`
         getData({endpoint})
         .then(data => {
-            setArtistas(data);
+            if(data != null || data != undefined){
+                setArtistas(data)
+            }
         }).catch(error => {console.log(error)});
 
         endpoint = `/api/reports/${window.localStorage.getItem('id')}/songs`
         getData({endpoint})
         .then(data => {
-            console.log(data)
-            setCanciones(data);
+            if(data != null || data != undefined){
+                setCanciones(data)
+            }
         }
         ).catch(error => {console.log(error)});
 
         endpoint = `/api/reports/${window.localStorage.getItem('id')}/albums`
         getData({endpoint})
         .then(data => {
-            setAlbumes(data);
+            if(data != null || data != undefined){
+                setAlbumes(data)
+            }
         }
         ).catch(error => {console.log(error)});
         

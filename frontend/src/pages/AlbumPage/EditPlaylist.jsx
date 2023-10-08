@@ -144,13 +144,21 @@ export default function EditPlaylist(props) {
         endpoint = `/api/playlists/${id}/songs`;
         getData({endpoint})
         .then(data => {
-            setCurrentSongs(data)
+            if(data === undefined){
+                setCurrentSongs([])
+            } else {
+                setCurrentSongs(data)
+            }
         })
 
         endpoint = `/api/playlists/${id}/missing`;
         getData({endpoint})
         .then(data => {
-            setSongList(data)
+           if(data === undefined || data === null){
+               setSongList([])
+           } else {
+                setSongList(data)
+           }
         })
         
     },[]);
@@ -221,13 +229,22 @@ export default function EditPlaylist(props) {
                 endpoint = `/api/playlists/${id}/songs`;
                 getData({endpoint})
                 .then(data => {
-                    setCurrentSongs(data)
+                    if(data === undefined){
+                        setCurrentSongs([])
+                    } else {
+                        setCurrentSongs(data)
+                    }
                 })
 
                 endpoint = `/api/playlists/${id}/missing`;
                 getData({endpoint})
                 .then(data => {
-                    setSongList(data)
+                    if (data === undefined || data === null) {
+                        setSongList([])
+                    }
+                    else {
+                        setSongList(data)
+                    }
                 })
 
             }else{
@@ -271,13 +288,22 @@ export default function EditPlaylist(props) {
                             endpoint = `/api/playlists/${id}/songs`;
                             getData({endpoint})
                             .then(data => {
-                                setCurrentSongs(data)
+                                if(data === undefined){
+                                    setCurrentSongs([])
+                                } else {
+                                    setCurrentSongs(data)
+                                }
                             })
             
                             endpoint = `/api/playlists/${id}/missing`;
                             getData({endpoint})
                             .then(data => {
-                                setSongList(data)
+                                if (data === undefined || data === null) {
+                                    setSongList([])
+                                }
+                                else {
+                                    setSongList(data)
+                                }
                             })
             
                         }else{

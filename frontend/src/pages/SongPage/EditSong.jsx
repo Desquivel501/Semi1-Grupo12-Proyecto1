@@ -110,15 +110,18 @@ export default function EditSong(props) {
         let endpoint = `/api/songs/${id}/${window.localStorage.getItem('id')}`;
         getData({endpoint})
         .then(data => {
-            console.log(data[0])
-            setSong(data[0])
+            if(data != null || data != undefined){
+                setSong(data[0])
+            }
+           
         })
 
         endpoint = '/api/artists';
         getData({endpoint})
         .then(data => {
-            console.log(data)
-            setArtistList(data)
+            if(data != null || data != undefined){
+                setArtistList(data)
+            }
         })
         .catch(err => console.log(err))
 

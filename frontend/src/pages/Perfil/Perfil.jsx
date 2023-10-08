@@ -65,13 +65,17 @@ export default function Perfil() {
         const endpoint = `/api/users/${window.localStorage.getItem("id")}`;
         getDataAuth({endpoint})
         .then(data => {
+            if(data === undefined){
+                logout();
+                navigate("/login");
+            }
             setState({
                 ...state, 
                 nombre: data.firstname,
                 nombretemp:  data.firstname, 
                 apellido: data.lastname,
                 apellidotemp: data.lastname, 
-                tipo_usuario: (data.role == 1 ? 'Administrador' : 'Usuario'), 
+                tipo_usuario: (data.role == 0 ? 'Administrador' : 'Usuario'), 
                 correo: data.email, 
                 foto: data.photo,
                 contrasena: data.password,
